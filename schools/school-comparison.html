@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HK Island Primary Schools Comparison 2025</title>
+<style>
+  :root {
+    --bg: #f8f9fa;
+    --card: #ffffff;
+    --border: #e2e8f0;
+    --accent: #2563eb;
+    --accent-light: #eff6ff;
+    --text: #1e293b;
+    --muted: #64748b;
+    --green: #16a34a;
+    --green-bg: #f0fdf4;
+    --amber: #d97706;
+    --amber-bg: #fffbeb;
+    --red: #dc2626;
+    --red-bg: #fef2f2;
+    --purple: #7c3aed;
+    --purple-bg: #f5f3ff;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); font-size: 14px; line-height: 1.5; }
+
+  header { background: var(--accent); color: white; padding: 24px 32px; }
+  header h1 { font-size: 22px; font-weight: 700; }
+  header p { opacity: 0.85; margin-top: 4px; font-size: 13px; }
+
+  .container { max-width: 1400px; margin: 0 auto; padding: 24px 20px; }
+
+  /* Tabs */
+  .tabs { display: flex; gap: 4px; margin-bottom: 24px; flex-wrap: wrap; }
+  .tab { padding: 8px 18px; border-radius: 8px; border: 1px solid var(--border); background: var(--card); cursor: pointer; font-size: 13px; font-weight: 500; color: var(--muted); transition: all 0.15s; }
+  .tab:hover { border-color: var(--accent); color: var(--accent); }
+  .tab.active { background: var(--accent); color: white; border-color: var(--accent); }
+
+  .view { display: none; }
+  .view.active { display: block; }
+
+  /* Overview cards */
+  .school-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; }
+  .school-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; transition: box-shadow 0.15s; }
+  .school-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
+  .card-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 14px; }
+  .card-title { font-size: 15px; font-weight: 700; line-height: 1.3; }
+  .card-chinese { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .badge { display: inline-block; padding: 3px 9px; border-radius: 20px; font-size: 11px; font-weight: 600; white-space: nowrap; }
+  .badge-gov { background: #dbeafe; color: #1d4ed8; }
+  .badge-aided { background: #dcfce7; color: #166534; }
+  .badge-christian { background: #fce7f3; color: #9d174d; }
+  .badge-buddhist { background: #fef9c3; color: #854d0e; }
+  .badge-secular { background: #f1f5f9; color: #475569; }
+
+  .card-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px; }
+  .meta-item label { font-size: 11px; color: var(--muted); display: block; }
+  .meta-item span { font-size: 13px; font-weight: 500; }
+
+  .card-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+  .tag { background: var(--accent-light); color: var(--accent); padding: 2px 8px; border-radius: 4px; font-size: 11px; }
+  .tag.highlight { background: #fef3c7; color: #92400e; }
+
+  .star { color: #f59e0b; }
+
+  /* Comparison table */
+  .table-wrap { overflow-x: auto; border-radius: 12px; border: 1px solid var(--border); }
+  table { width: 100%; border-collapse: collapse; background: var(--card); }
+  thead tr { background: var(--accent); color: white; }
+  th { padding: 12px 14px; text-align: left; font-size: 12px; font-weight: 600; white-space: nowrap; }
+  th:first-child { min-width: 160px; }
+  td { padding: 11px 14px; border-bottom: 1px solid var(--border); font-size: 13px; vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  tr:nth-child(even) { background: #fafafa; }
+  .row-header { font-weight: 600; color: var(--muted); font-size: 12px; background: #f8fafc !important; }
+  .best { color: var(--green); font-weight: 700; }
+  .good { color: var(--accent); font-weight: 600; }
+  .note { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+  /* Criteria detail */
+  .criteria-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  @media (max-width: 768px) { .criteria-grid { grid-template-columns: 1fr; } }
+  .criteria-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+  .criteria-card h3 { font-size: 14px; font-weight: 700; margin-bottom: 14px; display: flex; align-items: center; gap-8px; }
+  .criteria-card h3 .icon { font-size: 18px; margin-right: 8px; }
+
+  .bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+  .bar-label { width: 140px; font-size: 12px; flex-shrink: 0; }
+  .bar-track { flex: 1; background: #e2e8f0; border-radius: 4px; height: 8px; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 4px; background: var(--accent); transition: width 0.4s; }
+  .bar-fill.green { background: var(--green); }
+  .bar-fill.amber { background: var(--amber); }
+  .bar-val { width: 36px; text-align: right; font-size: 12px; font-weight: 600; }
+
+  /* Verdict */
+  .verdict-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 16px; }
+  .verdict-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+  .verdict-card h3 { font-size: 14px; font-weight: 700; margin-bottom: 6px; }
+  .verdict-card .subtitle { font-size: 12px; color: var(--muted); margin-bottom: 12px; }
+  .pro-con { margin-top: 10px; }
+  .pro-con h4 { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; }
+  .pro-con ul { list-style: none; }
+  .pro-con li { font-size: 12px; padding: 2px 0; padding-left: 16px; position: relative; }
+  .pro-con li::before { position: absolute; left: 0; }
+  .pros li::before { content: '✓'; color: var(--green); }
+  .cons li::before { content: '✗'; color: var(--red); }
+  .best-for { margin-top: 12px; padding: 10px 12px; border-radius: 8px; background: var(--accent-light); }
+  .best-for label { font-size: 11px; font-weight: 700; color: var(--accent); display: block; margin-bottom: 3px; }
+  .best-for p { font-size: 12px; color: var(--text); }
+
+  .section-title { font-size: 16px; font-weight: 700; margin-bottom: 16px; }
+  .subtitle-text { color: var(--muted); font-size: 13px; margin-bottom: 20px; margin-top: -10px; }
+
+  /* Sticky school col headers in table */
+  .col-ab { border-top: 3px solid #2563eb; }
+  .col-np { border-top: 3px solid #16a34a; }
+  .col-cm { border-top: 3px solid #ec4899; }
+  .col-cc { border-top: 3px solid #f59e0b; }
+  .col-bk { border-top: 3px solid #8b5cf6; }
+  .col-tp { border-top: 3px solid #0891b2; }
+
+  .school-name-header { font-size: 12px; line-height: 1.3; }
+
+  @media (max-width: 600px) {
+    header { padding: 16px; }
+    .container { padding: 16px 12px; }
+    .tab { padding: 7px 12px; font-size: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Hong Kong Island Primary Schools — Comparison 2025/26</h1>
+  <p>Eastern District · 6 schools · Data sourced from CHSC PSP 2025</p>
+</header>
+
+<div class="container">
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('overview')">Overview</button>
+    <button class="tab" onclick="showTab('table')">Side-by-Side Table</button>
+    <button class="tab" onclick="showTab('criteria')">Key Criteria</button>
+    <button class="tab" onclick="showTab('verdict')">Recommendations</button>
+  </div>
+
+  <!-- OVERVIEW -->
+  <div id="overview" class="view active">
+    <div class="section-title">All 6 Schools at a Glance</div>
+    <div class="school-grid">
+
+      <div class="school-card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Aldrich Bay Government Primary School</div>
+            <div class="card-chinese">愛秩序灣官立小學</div>
+          </div>
+          <span class="badge badge-gov">Government</span>
+        </div>
+        <div class="card-meta">
+          <div class="meta-item"><label>Location</label><span>Shau Kei Wan</span></div>
+          <div class="meta-item"><label>Founded</label><span>2000</span></div>
+          <div class="meta-item"><label>Classes</label><span>30 (5/grade)</span></div>
+          <div class="meta-item"><label>Annual Fees</label><span>~$290</span></div>
+          <div class="meta-item"><label>Religion</label><span>None</span></div>
+          <div class="meta-item"><label>Teachers</label><span>59 total</span></div>
+        </div>
+        <div class="card-tags">
+          <span class="tag highlight">★ Queen's College pathway</span>
+          <span class="tag">STEAM</span>
+          <span class="tag">Multiple Intelligences</span>
+          <span class="tag">3 Playgrounds</span>
+          <span class="tag">Gifted Program</span>
+        </div>
+      </div>
+
+      <div class="school-card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">North Point Government Primary School</div>
+            <div class="card-chinese">北角官立小學</div>
+          </div>
+          <span class="badge badge-gov">Government</span>
+        </div>
+        <div class="card-meta">
+          <div class="meta-item"><label>Location</label><span>North Point</span></div>
+          <div class="meta-item"><label>Founded</label><span>1954</span></div>
+          <div class="meta-item"><label>Classes</label><span>30 (5/grade)</span></div>
+          <div class="meta-item"><label>Annual Fees</label><span>~$400</span></div>
+          <div class="meta-item"><label>Religion</label><span>None</span></div>
+          <div class="meta-item"><label>Teachers</label><span>59 total</span></div>
+        </div>
+        <div class="card-tags">
+          <span class="tag">STEAM</span>
+          <span class="tag">Chinese Culture Room</span>
+          <span class="tag">Established 70+ yrs</span>
+          <span class="tag">Action School</span>
+        </div>
+      </div>
+
+      <div class="school-card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Chinese Methodist School, Tanner Hill</div>
+            <div class="card-chinese">丹拿山循道學校</div>
+          </div>
+          <span class="badge badge-christian">Protestant</span>
+        </div>
+        <div class="card-meta">
+          <div class="meta-item"><label>Location</label><span>North Point</span></div>
+          <div class="meta-item"><label>Founded</label><span>2010*</span></div>
+          <div class="meta-item"><label>Classes</label><span>21 (2025/26)</span></div>
+          <div class="meta-item"><label>Annual Fees</label><span>~$480</span></div>
+          <div class="meta-item"><label>Religion</label><span>Methodist</span></div>
+          <div class="meta-item"><label>Teachers</label><span>44 total</span></div>
+        </div>
+        <div class="card-tags">
+          <span class="tag highlight">45% Masters/PhD</span>
+          <span class="tag">Drama Education</span>
+          <span class="tag">Brass Band</span>
+          <span class="tag">Roof Garden</span>
+          <span class="tag">Life Education</span>
+        </div>
+      </div>
+
+      <div class="school-card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Chan's Creative School (HK Island)</div>
+            <div class="card-chinese">啟基學校（港島）</div>
+          </div>
+          <span class="badge badge-aided">Aided</span>
+        </div>
+        <div class="card-meta">
+          <div class="meta-item"><label>Location</label><span>North Point</span></div>
+          <div class="meta-item"><label>Founded</label><span>1967</span></div>
+          <div class="meta-item"><label>Classes</label><span>10 (very small)</span></div>
+          <div class="meta-item"><label>Annual Fees</label><span>~$80</span></div>
+          <div class="meta-item"><label>Religion</label><span>None</span></div>
+          <div class="meta-item"><label>Teachers</label><span>29 total</span></div>
+        </div>
+        <div class="card-tags">
+          <span class="tag highlight">Smallest school</span>
+          <span class="tag">AR Immersive Room</span>
+          <span class="tag">Fencing</span>
+          <span class="tag">Aerodynamics</span>
+          <span class="tag">Lowest fees</span>
+        </div>
+      </div>
+
+      <div class="school-card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Buddhist Chung Wah Kornhill Primary</div>
+            <div class="card-chinese">佛教中華康山學校</div>
+          </div>
+          <span class="badge badge-buddhist">Buddhist</span>
+        </div>
+        <div class="card-meta">
+          <div class="meta-item"><label>Location</label><span>Quarry Bay</span></div>
+          <div class="meta-item"><label>Founded</label><span>1945</span></div>
+          <div class="meta-item"><label>Classes</label><span>19–20</span></div>
+          <div class="meta-item"><label>Annual Fees</label><span>~$480</span></div>
+          <div class="meta-item"><label>Religion</label><span>Buddhism</span></div>
+          <div class="meta-item"><label>Teachers</label><span>49 total</span></div>
+        </div>
+        <div class="card-tags">
+          <span class="tag highlight">82% Special Ed trained</span>
+          <span class="tag">Robotics + Drones</span>
+          <span class="tag">20+ activities</span>
+          <span class="tag">Happy Wednesday</span>
+          <span class="tag">Meditation Room</span>
+        </div>
+      </div>
+
+      <div class="school-card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Taikoo Primary School</div>
+            <div class="card-chinese">太古小學</div>
+          </div>
+          <span class="badge badge-aided">Aided (Swire)</span>
+        </div>
+        <div class="card-meta">
+          <div class="meta-item"><label>Location</label><span>Quarry Bay / Tai Koo</span></div>
+          <div class="meta-item"><label>Founded</label><span>1923</span></div>
+          <div class="meta-item"><label>Classes</label><span>30 (5/grade)</span></div>
+          <div class="meta-item"><label>Annual Fees</label><span>~$430</span></div>
+          <div class="meta-item"><label>Religion</label><span>None</span></div>
+          <div class="meta-item"><label>Teachers</label><span>61 total</span></div>
+        </div>
+        <div class="card-tags">
+          <span class="tag highlight">Largest campus (10,870m²)</span>
+          <span class="tag">Chinese Opera</span>
+          <span class="tag">Orchestra</span>
+          <span class="tag">English Musical</span>
+          <span class="tag">Cambridge Courses</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- TABLE -->
+  <div id="table" class="view">
+    <div class="section-title">Side-by-Side Comparison</div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Criteria</th>
+            <th class="col-ab"><div class="school-name-header">Aldrich Bay GPS<br><small style="opacity:0.8">愛秩序灣官立</small></div></th>
+            <th class="col-np"><div class="school-name-header">North Point GPS<br><small style="opacity:0.8">北角官立</small></div></th>
+            <th class="col-cm"><div class="school-name-header">CMS Tanner Hill<br><small style="opacity:0.8">丹拿山循道</small></div></th>
+            <th class="col-cc"><div class="school-name-header">Chan's Creative<br><small style="opacity:0.8">啟基（港島）</small></div></th>
+            <th class="col-bk"><div class="school-name-header">Buddhist CW Kornhill<br><small style="opacity:0.8">佛教中華康山</small></div></th>
+            <th class="col-tp"><div class="school-name-header">Taikoo Primary<br><small style="opacity:0.8">太古小學</small></div></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="row-header" colspan="7">BASIC INFO</td></tr>
+          <tr>
+            <td><strong>Type</strong></td>
+            <td>Government</td>
+            <td>Government</td>
+            <td>Aided</td>
+            <td>Aided</td>
+            <td>Aided</td>
+            <td>Aided</td>
+          </tr>
+          <tr>
+            <td><strong>Sponsoring Body</strong></td>
+            <td>EDB / Government</td>
+            <td>EDB / Government</td>
+            <td>Methodist Church HK</td>
+            <td>North Point Kai-fong Assoc.</td>
+            <td>HK Buddhist Association</td>
+            <td>Swire Pacific Ltd</td>
+          </tr>
+          <tr>
+            <td><strong>Religion</strong></td>
+            <td>None</td>
+            <td>None</td>
+            <td class="good">Protestant</td>
+            <td>None</td>
+            <td class="good">Buddhism</td>
+            <td>None</td>
+          </tr>
+          <tr>
+            <td><strong>Founded</strong></td>
+            <td>2000</td>
+            <td>1954</td>
+            <td>2010*</td>
+            <td>1967</td>
+            <td>1945</td>
+            <td class="best">1923 (oldest)</td>
+          </tr>
+          <tr>
+            <td><strong>Location</strong></td>
+            <td>Shau Kei Wan</td>
+            <td>North Point</td>
+            <td>North Point</td>
+            <td>North Point</td>
+            <td>Quarry Bay</td>
+            <td>Quarry Bay / Tai Koo</td>
+          </tr>
+          <tr>
+            <td><strong>Address</strong></td>
+            <td>1 Oi Lai St</td>
+            <td>888 King's Road</td>
+            <td>4 Pak Fuk Road</td>
+            <td>82 Marble Road</td>
+            <td>2 Hong Yue Street</td>
+            <td>1100 King's Road</td>
+          </tr>
+
+          <tr><td class="row-header" colspan="7">SIZE & STRUCTURE</td></tr>
+          <tr>
+            <td><strong>Total Classes</strong></td>
+            <td class="best">30 (5/grade)</td>
+            <td class="best">30 (5/grade)</td>
+            <td>21</td>
+            <td>10 (very small)</td>
+            <td>19–20</td>
+            <td class="best">30 (5/grade)</td>
+          </tr>
+          <tr>
+            <td><strong>Campus Size</strong></td>
+            <td>—</td>
+            <td>—</td>
+            <td>~3,200 m²</td>
+            <td>—</td>
+            <td>—</td>
+            <td class="best">~10,870 m²</td>
+          </tr>
+          <tr>
+            <td><strong>Playgrounds</strong></td>
+            <td class="best">3</td>
+            <td>1</td>
+            <td>2</td>
+            <td>1</td>
+            <td class="best">3</td>
+            <td>2</td>
+          </tr>
+
+          <tr><td class="row-header" colspan="7">FEES (2025/26)</td></tr>
+          <tr>
+            <td><strong>School Fee</strong></td>
+            <td class="best">Free</td>
+            <td class="best">Free</td>
+            <td class="best">Free</td>
+            <td class="best">Free</td>
+            <td class="best">Free</td>
+            <td class="best">Free</td>
+          </tr>
+          <tr>
+            <td><strong>PTA Fee</strong></td>
+            <td>$40/yr</td>
+            <td>$100/yr</td>
+            <td>$30/yr</td>
+            <td>$80/yr</td>
+            <td>$30/yr</td>
+            <td>$30/yr</td>
+          </tr>
+          <tr>
+            <td><strong>Other Charges</strong></td>
+            <td>$250/yr</td>
+            <td>$300/yr</td>
+            <td>$450/yr</td>
+            <td>None</td>
+            <td>$450/yr</td>
+            <td>$400/yr</td>
+          </tr>
+          <tr>
+            <td><strong>Total Annual Cost</strong></td>
+            <td>~$290</td>
+            <td>~$400</td>
+            <td>~$480</td>
+            <td class="best">~$80</td>
+            <td>~$480</td>
+            <td>~$430</td>
+          </tr>
+
+          <tr><td class="row-header" colspan="7">TEACHING STAFF</td></tr>
+          <tr>
+            <td><strong>Total Teachers</strong></td>
+            <td>59</td>
+            <td>59</td>
+            <td>44</td>
+            <td>29</td>
+            <td>49</td>
+            <td class="best">61</td>
+          </tr>
+          <tr>
+            <td><strong>Master / PhD %</strong></td>
+            <td>22%</td>
+            <td>37%</td>
+            <td class="good">45%</td>
+            <td>30%</td>
+            <td class="best">46%</td>
+            <td class="good">44%</td>
+          </tr>
+          <tr>
+            <td><strong>Special Ed Trained</strong></td>
+            <td>54%</td>
+            <td>59%</td>
+            <td class="good">74%</td>
+            <td>46%</td>
+            <td class="best">82%</td>
+            <td class="good">77%</td>
+          </tr>
+
+          <tr><td class="row-header" colspan="7">CURRICULUM & ASSESSMENT</td></tr>
+          <tr>
+            <td><strong>Medium</strong></td>
+            <td>Chinese (CMI)</td>
+            <td>Chinese (CMI)</td>
+            <td>Chinese (CMI)</td>
+            <td>Chinese (CMI)</td>
+            <td>Chinese (CMI)</td>
+            <td>Chinese (CMI)</td>
+          </tr>
+          <tr>
+            <td><strong>P1 Assessment</strong></td>
+            <td class="good">No tests/exams</td>
+            <td>—</td>
+            <td>2 exams (diverse)</td>
+            <td>2 tests + 2 exams</td>
+            <td class="good">Formative only</td>
+            <td class="good">No tests/exams</td>
+          </tr>
+          <tr>
+            <td><strong>P2–P6 Exams</strong></td>
+            <td>3/yr, no tests</td>
+            <td>—</td>
+            <td>3/yr, no tests</td>
+            <td>2 tests + 2 exams</td>
+            <td>Diverse/formative</td>
+            <td>3/yr, formative</td>
+          </tr>
+          <tr>
+            <td><strong>Ability Streaming</strong></td>
+            <td>Mixed ability</td>
+            <td>—</td>
+            <td>P4–P6 streamed</td>
+            <td>Mixed ability</td>
+            <td>Remedial + elite</td>
+            <td>Putonghua track</td>
+          </tr>
+
+          <tr><td class="row-header" colspan="7">FACILITIES</td></tr>
+          <tr>
+            <td><strong>STEAM Room</strong></td>
+            <td>✓ STEAM + Maker</td>
+            <td>✓ STEAM Room</td>
+            <td>✓</td>
+            <td>✓ Creative Tech</td>
+            <td>✓</td>
+            <td>✓</td>
+          </tr>
+          <tr>
+            <td><strong>Special Facilities</strong></td>
+            <td>English Room, Music Rooms</td>
+            <td>Science Room, Chinese Culture</td>
+            <td>Roof Garden, Life Ed Centre</td>
+            <td class="good">AR Immersive Room</td>
+            <td class="good">Meditation Room, Numeracy Lab</td>
+            <td>Dancing Room, Language Room</td>
+          </tr>
+
+          <tr><td class="row-header" colspan="7">SECONDARY PATHWAYS (Government Schools)</td></tr>
+          <tr>
+            <td><strong>Nominated Secondaries</strong></td>
+            <td class="best">Queen's College ★<br><div class="note">SKWGSS, Clementi SS</div></td>
+            <td>Clementi SS<br><div class="note">SKWGSS</div></td>
+            <td>—</td>
+            <td>—</td>
+            <td>—</td>
+            <td>—</td>
+          </tr>
+
+          <tr><td class="row-header" colspan="7">NOTABLE PROGRAMS</td></tr>
+          <tr>
+            <td><strong>Unique Programs</strong></td>
+            <td>Multiple Intelligences Programme, Gifted training</td>
+            <td>Action School (health), "One Sport or Art" policy</td>
+            <td>Drama Education, Life Ed P1–P6</td>
+            <td>Fencing, Aerodynamics (Star Program)</td>
+            <td>Robotics + Drones, "Happy Wednesday", "English Monday"</td>
+            <td>Chinese Opera, English Musical, Cambridge courses</td>
+          </tr>
+          <tr>
+            <td><strong>Music / Arts</strong></td>
+            <td>Standard</td>
+            <td>Standard</td>
+            <td>Brass Band, Choir, Dance</td>
+            <td>Chinese & Oil Painting</td>
+            <td>Standard</td>
+            <td class="best">Orchestra, Chinese Opera, English Musical</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- CRITERIA -->
+  <div id="criteria" class="view">
+    <div class="section-title">Key Criteria Deep Dive</div>
+    <div class="subtitle-text">Visual comparison across the dimensions that matter most.</div>
+    <div class="criteria-grid">
+
+      <div class="criteria-card">
+        <h3><span class="icon">🎓</span> Teacher Postgraduate Qualifications (Masters/PhD %)</h3>
+        <div class="bar-row"><div class="bar-label">Buddhist CW Kornhill</div><div class="bar-track"><div class="bar-fill green" style="width:46%"></div></div><div class="bar-val">46%</div></div>
+        <div class="bar-row"><div class="bar-label">CMS Tanner Hill</div><div class="bar-track"><div class="bar-fill green" style="width:45%"></div></div><div class="bar-val">45%</div></div>
+        <div class="bar-row"><div class="bar-label">Taikoo Primary</div><div class="bar-track"><div class="bar-fill" style="width:44%"></div></div><div class="bar-val">44%</div></div>
+        <div class="bar-row"><div class="bar-label">North Point GPS</div><div class="bar-track"><div class="bar-fill" style="width:37%"></div></div><div class="bar-val">37%</div></div>
+        <div class="bar-row"><div class="bar-label">Chan's Creative</div><div class="bar-track"><div class="bar-fill amber" style="width:30%"></div></div><div class="bar-val">30%</div></div>
+        <div class="bar-row"><div class="bar-label">Aldrich Bay GPS</div><div class="bar-track"><div class="bar-fill amber" style="width:22%"></div></div><div class="bar-val">22%</div></div>
+      </div>
+
+      <div class="criteria-card">
+        <h3><span class="icon">♿</span> Special Education Trained Teachers (%)</h3>
+        <div class="bar-row"><div class="bar-label">Buddhist CW Kornhill</div><div class="bar-track"><div class="bar-fill green" style="width:82%"></div></div><div class="bar-val">82%</div></div>
+        <div class="bar-row"><div class="bar-label">Taikoo Primary</div><div class="bar-track"><div class="bar-fill green" style="width:77%"></div></div><div class="bar-val">77%</div></div>
+        <div class="bar-row"><div class="bar-label">CMS Tanner Hill</div><div class="bar-track"><div class="bar-fill" style="width:74%"></div></div><div class="bar-val">74%</div></div>
+        <div class="bar-row"><div class="bar-label">North Point GPS</div><div class="bar-track"><div class="bar-fill" style="width:59%"></div></div><div class="bar-val">59%</div></div>
+        <div class="bar-row"><div class="bar-label">Aldrich Bay GPS</div><div class="bar-track"><div class="bar-fill amber" style="width:54%"></div></div><div class="bar-val">54%</div></div>
+        <div class="bar-row"><div class="bar-label">Chan's Creative</div><div class="bar-track"><div class="bar-fill amber" style="width:46%"></div></div><div class="bar-val">46%</div></div>
+      </div>
+
+      <div class="criteria-card">
+        <h3><span class="icon">🏫</span> School Size (Total Classes)</h3>
+        <div class="bar-row"><div class="bar-label">Aldrich Bay GPS</div><div class="bar-track"><div class="bar-fill green" style="width:100%"></div></div><div class="bar-val">30</div></div>
+        <div class="bar-row"><div class="bar-label">North Point GPS</div><div class="bar-track"><div class="bar-fill green" style="width:100%"></div></div><div class="bar-val">30</div></div>
+        <div class="bar-row"><div class="bar-label">Taikoo Primary</div><div class="bar-track"><div class="bar-fill green" style="width:100%"></div></div><div class="bar-val">30</div></div>
+        <div class="bar-row"><div class="bar-label">CMS Tanner Hill</div><div class="bar-track"><div class="bar-fill" style="width:70%"></div></div><div class="bar-val">21</div></div>
+        <div class="bar-row"><div class="bar-label">Buddhist CW Kornhill</div><div class="bar-track"><div class="bar-fill" style="width:65%"></div></div><div class="bar-val">19–20</div></div>
+        <div class="bar-row"><div class="bar-label">Chan's Creative</div><div class="bar-track"><div class="bar-fill amber" style="width:33%"></div></div><div class="bar-val">10</div></div>
+        <p style="margin-top:10px;font-size:11px;color:var(--muted)">Larger = more diverse peer network, more teams/clubs. Smaller = more individual attention.</p>
+      </div>
+
+      <div class="criteria-card">
+        <h3><span class="icon">💰</span> Estimated Annual Cost (PTA + Charges)</h3>
+        <div class="bar-row"><div class="bar-label">Chan's Creative</div><div class="bar-track"><div class="bar-fill green" style="width:8%"></div></div><div class="bar-val">$80</div></div>
+        <div class="bar-row"><div class="bar-label">Aldrich Bay GPS</div><div class="bar-track"><div class="bar-fill green" style="width:30%"></div></div><div class="bar-val">$290</div></div>
+        <div class="bar-row"><div class="bar-label">North Point GPS</div><div class="bar-track"><div class="bar-fill" style="width:42%"></div></div><div class="bar-val">$400</div></div>
+        <div class="bar-row"><div class="bar-label">Taikoo Primary</div><div class="bar-track"><div class="bar-fill" style="width:45%"></div></div><div class="bar-val">$430</div></div>
+        <div class="bar-row"><div class="bar-label">CMS Tanner Hill</div><div class="bar-track"><div class="bar-fill amber" style="width:50%"></div></div><div class="bar-val">$480</div></div>
+        <div class="bar-row"><div class="bar-label">Buddhist CW Kornhill</div><div class="bar-track"><div class="bar-fill amber" style="width:50%"></div></div><div class="bar-val">$480</div></div>
+        <p style="margin-top:10px;font-size:11px;color:var(--muted)">All schools are free (government-subsidised). Figures above are non-school-fee charges only. Uniform, transport, and activity costs are separate.</p>
+      </div>
+
+      <div class="criteria-card">
+        <h3><span class="icon">⛪</span> Religious / Ethos Character</h3>
+        <table style="width:100%;font-size:12px;border-collapse:collapse">
+          <tr style="background:#f8fafc"><td style="padding:8px"><strong>Aldrich Bay GPS</strong></td><td style="padding:8px">Secular — government</td></tr>
+          <tr><td style="padding:8px"><strong>North Point GPS</strong></td><td style="padding:8px">Secular — government</td></tr>
+          <tr style="background:#f8fafc"><td style="padding:8px"><strong>CMS Tanner Hill</strong></td><td style="padding:8px">Protestant (Methodist) — scripture, chapel, Christian values woven into daily life</td></tr>
+          <tr><td style="padding:8px"><strong>Chan's Creative</strong></td><td style="padding:8px">Secular — community welfare background</td></tr>
+          <tr style="background:#f8fafc"><td style="padding:8px"><strong>Buddhist CW Kornhill</strong></td><td style="padding:8px">Buddhist — meditation room, mindfulness ethos</td></tr>
+          <tr><td style="padding:8px"><strong>Taikoo Primary</strong></td><td style="padding:8px">Secular — corporate (Swire) backing</td></tr>
+        </table>
+      </div>
+
+      <div class="criteria-card">
+        <h3><span class="icon">🎯</span> Secondary School Pathways</h3>
+        <p style="font-size:12px;color:var(--muted);margin-bottom:12px">Government schools nominate students to linked government secondary schools. Aided schools use the Central Allocation (SSPA) system.</p>
+        <table style="width:100%;font-size:12px;border-collapse:collapse">
+          <tr style="background:#eff6ff"><td style="padding:8px"><strong>Aldrich Bay GPS</strong></td><td style="padding:8px"><span style="color:#16a34a;font-weight:700">★ Queen's College</span> (elite), SKWGSS, Clementi SS</td></tr>
+          <tr><td style="padding:8px"><strong>North Point GPS</strong></td><td style="padding:8px">Clementi SS, SKWGSS</td></tr>
+          <tr style="background:#f8fafc"><td style="padding:8px"><strong>CMS Tanner Hill</strong></td><td style="padding:8px">Central Allocation (SSPA)</td></tr>
+          <tr><td style="padding:8px"><strong>Chan's Creative</strong></td><td style="padding:8px">Central Allocation (SSPA)</td></tr>
+          <tr style="background:#f8fafc"><td style="padding:8px"><strong>Buddhist CW Kornhill</strong></td><td style="padding:8px">Central Allocation (SSPA)</td></tr>
+          <tr><td style="padding:8px"><strong>Taikoo Primary</strong></td><td style="padding:8px">Central Allocation (SSPA)</td></tr>
+        </table>
+        <p style="font-size:11px;color:var(--muted);margin-top:10px">Queen's College is consistently one of HK's top government secondary schools — the Aldrich Bay GPS nomination link is a significant advantage for academically strong boys.</p>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- VERDICT -->
+  <div id="verdict" class="view">
+    <div class="section-title">Recommendations by Priority</div>
+    <div class="subtitle-text">Choose based on what matters most to your family.</div>
+    <div class="verdict-grid">
+
+      <div class="verdict-card">
+        <h3>Aldrich Bay GPS</h3>
+        <div class="subtitle">愛秩序灣官立小學 · Shau Kei Wan</div>
+        <div class="pro-con">
+          <h4>Strengths</h4>
+          <ul class="pros">
+            <li>Only school with Queen's College secondary nomination</li>
+            <li>Free + very low charges (~$290/yr)</li>
+            <li>Formal gifted student program</li>
+            <li>Multiple Intelligences Programme (structured)</li>
+            <li>3 playgrounds — most outdoor space</li>
+            <li>Two Native English Teachers</li>
+          </ul>
+          <h4 style="margin-top:10px">Weaknesses</h4>
+          <ul class="cons">
+            <li>Newest school (est. 2000) — less tradition</li>
+            <li>Lowest postgrad teacher % (22%)</li>
+            <li>Further east — transport from NP/QBay</li>
+          </ul>
+        </div>
+        <div class="best-for">
+          <label>BEST FOR</label>
+          <p>Academically driven families, especially those with boys aiming for elite secondary school. Best long-term pathway in this list.</p>
+        </div>
+      </div>
+
+      <div class="verdict-card">
+        <h3>Taikoo Primary School</h3>
+        <div class="subtitle">太古小學 · Quarry Bay / Tai Koo</div>
+        <div class="pro-con">
+          <h4>Strengths</h4>
+          <ul class="pros">
+            <li>Largest campus (~10,870 m²) by far</li>
+            <li>Best arts program: Chinese opera, orchestra, English musical</li>
+            <li>Cambridge courses available</li>
+            <li>Most experienced teachers (61 staff, 77% special ed trained)</li>
+            <li>Long track record (est. 1923 — oldest in list)</li>
+            <li>Corporate (Swire) backing — well-resourced</li>
+          </ul>
+          <h4 style="margin-top:10px">Weaknesses</h4>
+          <ul class="cons">
+            <li>No direct secondary pathway (SSPA)</li>
+            <li>Putonghua streaming can divide class cohorts</li>
+          </ul>
+        </div>
+        <div class="best-for">
+          <label>BEST FOR</label>
+          <p>Families who value arts, performing arts, and a well-rounded experience on a large, well-resourced campus. Strong all-rounder.</p>
+        </div>
+      </div>
+
+      <div class="verdict-card">
+        <h3>Buddhist Chung Wah Kornhill Primary</h3>
+        <div class="subtitle">佛教中華康山學校 · Quarry Bay</div>
+        <div class="pro-con">
+          <h4>Strengths</h4>
+          <ul class="pros">
+            <li>Best special education support (82% trained)</li>
+            <li>Most flexible learning tracks (remedial + elite)</li>
+            <li>20+ extracurricular activities</li>
+            <li>Robotics and drone courses (rare at primary level)</li>
+            <li>Progressive wellbeing: "Happy Wednesday", "English Monday"</li>
+            <li>3 playgrounds</li>
+          </ul>
+          <h4 style="margin-top:10px">Weaknesses</h4>
+          <ul class="cons">
+            <li>Buddhist ethos — may not suit all families</li>
+            <li>Higher charges (~$480/yr)</li>
+          </ul>
+        </div>
+        <div class="best-for">
+          <label>BEST FOR</label>
+          <p>Families who prioritise diverse extracurriculars, strong SEN support, and a progressive wellbeing approach. Also great for tech-curious kids (robotics/drones).</p>
+        </div>
+      </div>
+
+      <div class="verdict-card">
+        <h3>CMS Tanner Hill</h3>
+        <div class="subtitle">丹拿山循道學校 · North Point</div>
+        <div class="pro-con">
+          <h4>Strengths</h4>
+          <ul class="pros">
+            <li>Highest postgrad teacher qualification rate (45%)</li>
+            <li>Strong drama education (unusual at primary level)</li>
+            <li>Life education P1–P6 (holistic development)</li>
+            <li>Roof garden — unique outdoor space</li>
+            <li>Brass band, choir, dance</li>
+          </ul>
+          <h4 style="margin-top:10px">Weaknesses</h4>
+          <ul class="cons">
+            <li>Christian (Methodist) ethos — mandatory for families</li>
+            <li>Ability streaming from P4 can be pressure-inducing</li>
+            <li>Smaller school (21 classes) — fewer sports team options</li>
+          </ul>
+        </div>
+        <div class="best-for">
+          <label>BEST FOR</label>
+          <p>Christian families who want a values-based education, strong teacher qualifications, and a focus on performing arts and holistic development.</p>
+        </div>
+      </div>
+
+      <div class="verdict-card">
+        <h3>North Point GPS</h3>
+        <div class="subtitle">北角官立小學 · North Point</div>
+        <div class="pro-con">
+          <h4>Strengths</h4>
+          <ul class="pros">
+            <li>Central North Point location — most accessible</li>
+            <li>Free + low charges (~$400/yr)</li>
+            <li>Government school reliability and oversight</li>
+            <li>Established 1954 — strong track record</li>
+            <li>37% postgrad teachers (best among govt schools)</li>
+          </ul>
+          <h4 style="margin-top:10px">Weaknesses</h4>
+          <ul class="cons">
+            <li>Only 1 playground (least outdoor space)</li>
+            <li>Secondary pathway limited vs. Aldrich Bay</li>
+            <li>Fewer standout programs vs. peers</li>
+          </ul>
+        </div>
+        <div class="best-for">
+          <label>BEST FOR</label>
+          <p>Families living in North Point who want a dependable, affordable government school with a long track record and no religious affiliation.</p>
+        </div>
+      </div>
+
+      <div class="verdict-card">
+        <h3>Chan's Creative School</h3>
+        <div class="subtitle">啟基學校（港島）· North Point</div>
+        <div class="pro-con">
+          <h4>Strengths</h4>
+          <ul class="pros">
+            <li>Smallest school — maximum individual attention</li>
+            <li>Lowest fees by far (~$80/yr)</li>
+            <li>Unique programs: fencing, aerodynamics</li>
+            <li>AR immersive learning room</li>
+            <li>Mixed ability throughout (no streaming pressure)</li>
+          </ul>
+          <h4 style="margin-top:10px">Weaknesses</h4>
+          <ul class="cons">
+            <li>Smallest peer network (10 classes total)</li>
+            <li>Fewest teachers (29) and lowest SEN training (46%)</li>
+            <li>Most exams from P1 (2 tests + 2 exams)</li>
+            <li>Lowest postgrad teacher rate (30%)</li>
+          </ul>
+        </div>
+        <div class="best-for">
+          <label>BEST FOR</label>
+          <p>Families who prefer a very small, intimate school environment with unique hands-on programs. Good if child benefits from individual attention over large social environment.</p>
+        </div>
+      </div>
+
+    </div>
+
+    <div style="margin-top:28px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;">
+      <div style="font-size:14px;font-weight:700;margin-bottom:12px">Quick Decision Guide</div>
+      <table style="width:100%;border-collapse:collapse;font-size:13px">
+        <thead><tr style="background:#f1f5f9"><th style="padding:8px 12px;text-align:left">If your top priority is…</th><th style="padding:8px 12px;text-align:left">Best choice</th></tr></thead>
+        <tbody>
+          <tr><td style="padding:8px 12px;border-bottom:1px solid var(--border)">Secondary school pathway (elite)</td><td style="padding:8px 12px;border-bottom:1px solid var(--border);font-weight:600;color:var(--accent)">Aldrich Bay GPS</td></tr>
+          <tr style="background:#fafafa"><td style="padding:8px 12px;border-bottom:1px solid var(--border)">Arts & performing arts</td><td style="padding:8px 12px;border-bottom:1px solid var(--border);font-weight:600;color:var(--accent)">Taikoo Primary</td></tr>
+          <tr><td style="padding:8px 12px;border-bottom:1px solid var(--border)">Special educational needs support</td><td style="padding:8px 12px;border-bottom:1px solid var(--border);font-weight:600;color:var(--accent)">Buddhist CW Kornhill</td></tr>
+          <tr style="background:#fafafa"><td style="padding:8px 12px;border-bottom:1px solid var(--border)">Christian / faith-based values</td><td style="padding:8px 12px;border-bottom:1px solid var(--border);font-weight:600;color:var(--accent)">CMS Tanner Hill</td></tr>
+          <tr><td style="padding:8px 12px;border-bottom:1px solid var(--border)">Buddhist / mindfulness ethos</td><td style="padding:8px 12px;border-bottom:1px solid var(--border);font-weight:600;color:var(--accent)">Buddhist CW Kornhill</td></tr>
+          <tr style="background:#fafafa"><td style="padding:8px 12px;border-bottom:1px solid var(--border)">Minimal fees</td><td style="padding:8px 12px;border-bottom:1px solid var(--border);font-weight:600;color:var(--accent)">Chan's Creative</td></tr>
+          <tr><td style="padding:8px 12px;border-bottom:1px solid var(--border)">North Point location + secular</td><td style="padding:8px 12px;border-bottom:1px solid var(--border);font-weight:600;color:var(--accent)">North Point GPS</td></tr>
+          <tr style="background:#fafafa"><td style="padding:8px 12px;border-bottom:1px solid var(--border)">Individual attention (small school)</td><td style="padding:8px 12px;border-bottom:1px solid var(--border);font-weight:600;color:var(--accent)">Chan's Creative</td></tr>
+          <tr><td style="padding:8px 12px;border-bottom:1px solid var(--border)">STEM / robotics / tech</td><td style="padding:8px 12px;border-bottom:1px solid var(--border);font-weight:600;color:var(--accent)">Buddhist CW Kornhill</td></tr>
+          <tr style="background:#fafafa"><td style="padding:8px 12px">Largest campus + space</td><td style="padding:8px 12px;font-weight:600;color:var(--accent)">Taikoo Primary</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div style="margin-top:16px;font-size:11px;color:var(--muted);text-align:center">
+      Data sourced from CHSC Primary School Profiles 2025 (chsc.hk). For admissions and allocation, refer to the EDB Primary One Admission System.
+    </div>
+  </div>
+
+</div>
+
+<script>
+  function showTab(name) {
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.getElementById(name).classList.add('active');
+    event.target.classList.add('active');
+  }
+</script>
+</body>
+</html>

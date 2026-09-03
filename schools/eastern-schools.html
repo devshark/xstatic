@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Eastern District Primary Schools 2025/26</title>
+<style>
+:root{--bg:#f8f9fa;--card:#fff;--border:#e2e8f0;--accent:#0891b2;--accent-light:#ecfeff;--text:#1e293b;--muted:#64748b;--green:#16a34a;--amber:#d97706;--red:#dc2626}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.5}
+header{background:var(--accent);color:#fff;padding:22px 32px}
+header h1{font-size:21px;font-weight:700}
+header p{opacity:.85;font-size:12px;margin-top:3px}
+.container{max-width:1400px;margin:0 auto;padding:20px}
+.toolbar{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px;align-items:center}
+.search{padding:7px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;flex:1;min-width:160px}
+select{padding:7px 10px;border:1px solid var(--border);border-radius:8px;font-size:12px;background:#fff;cursor:pointer}
+.tabs{display:flex;gap:4px;margin-bottom:20px;flex-wrap:wrap}
+.tab{padding:7px 16px;border-radius:8px;border:1px solid var(--border);background:var(--card);cursor:pointer;font-size:13px;font-weight:500;color:var(--muted);transition:all .15s}
+.tab:hover{border-color:var(--accent);color:var(--accent)}
+.tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.view{display:none}.view.active{display:block}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(295px,1fr));gap:14px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;transition:box-shadow .15s}
+.card:hover{box-shadow:0 4px 14px rgba(0,0,0,.07)}
+.card.winding{opacity:.6;border-style:dashed}
+.card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;gap:8px}
+.card-title{font-size:13px;font-weight:700;line-height:1.3}
+.card-cn{font-size:11px;color:var(--muted);margin-top:2px}
+.badges{display:flex;flex-direction:column;gap:3px;flex-shrink:0}
+.badge{display:inline-block;padding:2px 7px;border-radius:12px;font-size:10px;font-weight:700;white-space:nowrap}
+.b-gov{background:#dbeafe;color:#1d4ed8}.b-aided{background:#dcfce7;color:#166534}
+.b-private{background:#fef9c3;color:#854d0e}.b-dss{background:#f3e8ff;color:#6b21a8}
+.b-boys{background:#e0f2fe;color:#0369a1}.b-girls{background:#fce7f3;color:#9d174d}.b-coed{background:#f1f5f9;color:#475569}
+.b-emi{background:#d1fae5;color:#065f46}.b-bili{background:#fef3c7;color:#92400e}.b-cmi{background:#f1f5f9;color:#475569}
+.b-warn{background:#fee2e2;color:#991b1b}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:10px 0}
+.stat label{font-size:10px;color:var(--muted);display:block}
+.stat span{font-size:12px;font-weight:500}
+.tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px}
+.tag{background:var(--accent-light);color:var(--accent);padding:2px 7px;border-radius:4px;font-size:10px}
+.tag.gold{background:#fef3c7;color:#92400e}.tag.red{background:#fee2e2;color:#991b1b}
+.hidden{display:none!important}
+.count-bar{font-size:12px;color:var(--muted);margin-bottom:12px}
+.tbl-wrap{overflow-x:auto;border-radius:10px;border:1px solid var(--border)}
+table{width:100%;border-collapse:collapse;background:var(--card);min-width:1000px}
+thead tr{background:var(--accent);color:#fff}
+th{padding:10px 11px;text-align:left;font-size:11px;font-weight:600;white-space:nowrap}
+td{padding:8px 11px;border-bottom:1px solid var(--border);font-size:12px;vertical-align:top}
+tr:last-child td{border-bottom:none}
+tr:nth-child(even){background:#fafafa}
+.best{color:var(--green);font-weight:700}
+.nt{font-size:10px;color:var(--muted);margin-top:2px}
+.path-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+.path-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px}
+.path-card h3{font-size:13px;font-weight:700;margin-bottom:4px}
+.path-card .sub{font-size:11px;color:var(--muted);margin-bottom:10px}
+.path-arrow{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid #f1f5f9}
+.path-arrow:last-child{border-bottom:none}
+.pa-from{font-size:12px;flex:1}.pa-arr{color:var(--muted)}.pa-to{font-size:12px;font-weight:600;color:var(--accent);text-align:right;flex:1}
+.pa-to.top{color:var(--green)}
+.verdict-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:14px}
+.v-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px}
+.v-card h3{font-size:13px;font-weight:700;margin-bottom:3px}
+.v-sub{font-size:11px;color:var(--muted);margin-bottom:10px}
+ul{list-style:none;font-size:12px}li{padding:2px 0}
+.pros li::before{content:'✓ ';color:var(--green)}.cons li::before{content:'✗ ';color:var(--red)}
+h4{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin:8px 0 4px}
+.bf{background:var(--accent-light);border-radius:6px;padding:8px 10px;margin-top:8px}
+.bf label{font-size:10px;font-weight:700;color:var(--accent);display:block;margin-bottom:2px}
+.bf p{font-size:12px}
+.dg-table{width:100%;border-collapse:collapse;border-radius:10px;overflow:hidden;border:1px solid var(--border);background:var(--card)}
+.dg-table th{background:#f8fafc;padding:8px 12px;font-size:12px;text-align:left}
+.dg-table td{padding:8px 12px;border-bottom:1px solid var(--border);font-size:12px}
+.dg-table tr:last-child td{border-bottom:none}
+.dg-table tr:nth-child(even){background:#fafafa}
+.sec-title{font-size:16px;font-weight:700;margin-bottom:6px}
+.sec-sub{font-size:12px;color:var(--muted);margin-bottom:16px}
+</style>
+</head>
+<body>
+<header>
+  <h1>Eastern District Primary Schools — 2025/26</h1>
+  <p>28 schools · District 2 · Data sourced from CHSC PSP 2025 · Works fully offline</p>
+</header>
+<div class="container">
+  <div class="toolbar">
+    <input class="search" type="text" id="searchBox" placeholder="Search school name…" oninput="applyFilters()">
+    <select id="fType" onchange="applyFilters()">
+      <option value="">All Types</option>
+      <option value="government">Government</option>
+      <option value="aided">Aided</option>
+      <option value="dss">DSS</option>
+      <option value="private">Private</option>
+    </select>
+    <select id="fGender" onchange="applyFilters()">
+      <option value="">All Genders</option>
+      <option value="coed">Co-ed</option>
+      <option value="boys">Boys</option>
+    </select>
+    <select id="fMoi" onchange="applyFilters()">
+      <option value="">All MOI</option>
+      <option value="english">EMI</option>
+      <option value="bilingual">Bilingual</option>
+      <option value="chinese">CMI</option>
+    </select>
+    <select id="fArea" onchange="applyFilters()">
+      <option value="">All Areas</option>
+      <option value="North Point">North Point</option>
+      <option value="Quarry Bay">Quarry Bay</option>
+      <option value="Shau Kei Wan">Shau Kei Wan</option>
+      <option value="Chai Wan">Chai Wan</option>
+    </select>
+    <button onclick="resetFilters()" style="padding:7px 12px;border-radius:8px;border:1px solid var(--border);background:#fff;cursor:pointer;font-size:12px">Reset</button>
+  </div>
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('cards',this)">All Schools</button>
+    <button class="tab" onclick="showTab('table',this)">Compare Table</button>
+    <button class="tab" onclick="showTab('pathways',this)">Secondary Pathways</button>
+    <button class="tab" onclick="showTab('verdict',this)">Recommendations</button>
+  </div>
+
+  <div id="cards" class="view active">
+    <div class="count-bar" id="countBar"></div>
+    <div class="grid" id="cardGrid"></div>
+  </div>
+  <div id="table" class="view">
+    <div class="sec-title">Side-by-Side Comparison</div>
+    <div class="sec-sub">Use filters above to narrow down. Scroll horizontally to see all columns.</div>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>School</th><th>Type</th><th>Gender</th><th>MOI</th><th>Founded</th><th>Classes</th>
+      <th>Masters%</th><th>SpEd%</th><th>10+yr%</th><th>Ann. Cost</th><th>Playgrounds</th>
+      <th>P1</th><th>P2-6</th><th>Streaming</th><th>Pathways</th></tr></thead>
+      <tbody id="tableBody"></tbody>
+    </table></div>
+  </div>
+  <div id="pathways" class="view">
+    <div class="sec-title">Secondary School Pathways</div>
+    <div class="sec-sub">Eastern District has fewer government secondary nominations than Wan Chai, but notable pathways via through-train DSS schools and Catholic feeder links.</div>
+    <div class="path-grid" id="pathGrid"></div>
+  </div>
+  <div id="verdict" class="view">
+    <div class="sec-title">Recommendations by Priority</div>
+    <div class="sec-sub">Key standouts across Eastern District's 28 schools.</div>
+    <div class="verdict-grid" id="verdictGrid"></div>
+    <div style="margin-top:20px">
+      <div class="sec-title" style="font-size:14px;margin-bottom:10px">Quick Decision Guide</div>
+      <table class="dg-table">
+        <tr><th>If your top priority is…</th><th>Best choice</th></tr>
+        <tr><td>Secondary pathway to Queen's College (govt nomination)</td><td style="font-weight:700;color:var(--accent)">Aldrich Bay GPS</td></tr>
+        <tr><td>Best arts / performing arts school</td><td style="font-weight:700;color:var(--accent)">Taikoo Primary School</td></tr>
+        <tr><td>DSS through-train school (bilingual)</td><td style="font-weight:700;color:var(--accent)">HKUGA PS or Hon Wah College PS</td></tr>
+        <tr><td>Largest school (most classes, biggest campus)</td><td style="font-weight:700;color:var(--accent)">Canossa School (36 classes) or Taikoo PS (10,870m²)</td></tr>
+        <tr><td>Best SEN support</td><td style="font-weight:700;color:var(--accent)">Buddhist Chung Wah Kornhill PS (82% SpEd trained)</td></tr>
+        <tr><td>Boys-only Catholic school → Wah Yan College</td><td style="font-weight:700;color:var(--accent)">Pun U Association Wah Yan Primary School</td></tr>
+        <tr><td>STEAM / Robotics / Innovation focus</td><td style="font-weight:700;color:var(--accent)">Buddhist CW Kornhill PS (drones, robotics)</td></tr>
+        <tr><td>Strong teacher postgrad qualifications + bilingual</td><td style="font-weight:700;color:var(--accent)">HKUGA PS (61% masters, DSS)</td></tr>
+        <tr><td>Lowest fees, bilingual</td><td style="font-weight:700;color:var(--accent)">Endeavourers LLSY Memorial PS (~$30/yr)</td></tr>
+        <tr><td>Historic school, nominated: Victoria Shanghai Academy</td><td style="font-weight:700;color:var(--accent)">Shanghai Alumni Primary School</td></tr>
+      </table>
+    </div>
+    <div style="margin-top:12px;font-size:11px;color:var(--muted);text-align:center">SA Centaline Charity Fund School (sch_id=54) is winding down — P6 only in 2025/26, not accepting new P1 students.</div>
+  </div>
+</div>
+
+<script>
+const SCHOOLS=[
+  {id:30,name:"Buddhist Chung Wah Kornhill PS",cn:"佛教中華康山學校",type:"aided",gender:"coed",moi:"chinese",religion:"buddhism",founded:1945,location:"Quarry Bay",classes:20,masters:46,sped:82,exp10:74,ptaFee:30,charges:450,schoolFee:0,playgrounds:3,p1E:0,p1T:0,p26E:0,p26T:0,streaming:"Remedial + elite tracks",feeder:"",nominated:"",throughtrain:"",windingDown:false,
+  tags:["Buddhist","82% SpEd Trained","Robotics + Drones","20+ Activities","Meditation Room","Happy Wednesday"],
+  pros:["82% SpEd trained — best inclusion support in district","Diverse extracurriculars (20+ activities)","Robotics and drone courses","'Happy Wednesday' — no homework","Buddhist ethos, mindfulness focus"],
+  cons:["No direct secondary pathway","Buddhist ethos may not suit all","High charges (~$480/yr)"],
+  verdict:"Best SEN support in Eastern District. Buddhist ethos with progressive wellbeing (Happy Wednesday, English Monday). Robotics and drones are rare at primary level."},
+
+  {id:33,name:"Canossa School (Hong Kong)",cn:"香港嘉諾撒學校",type:"aided",gender:"coed",moi:"chinese",religion:"catholicism",founded:1951,location:"Quarry Bay",classes:36,masters:57,sped:42,exp10:49,ptaFee:100,charges:260,schoolFee:0,playgrounds:3,p1E:2,p1T:0,p26E:3,p26T:0,streaming:"None",feeder:"",nominated:"Canossa College",windingDown:false,
+  tags:["Largest in District (36 classes)","Catholic","Nominated: Canossa College","57% Masters"],
+  pros:["Largest school in Eastern District (36 classes, 6/grade)","57% masters/PhD — highest in district","No streaming at all","3 playgrounds","STEM lab, 3 computer rooms, 2 music rooms"],
+  cons:["42% SpEd trained (below average)","Higher PTA fee ($100)","No through-train secondary"],
+  verdict:"Eastern District's largest school — 36 classes (6 per grade). Highest postgrad teacher rate (57%). No streaming. Catholic co-ed. Nominated to Canossa College."},
+
+  {id:35,name:"Chan's Creative School (HK Island)",cn:"啟基學校（港島）",type:"aided",gender:"coed",moi:"chinese",religion:"none",founded:1967,location:"North Point",classes:10,masters:30,sped:46,exp10:0,ptaFee:80,charges:0,schoolFee:0,playgrounds:1,p1E:2,p1T:2,p26E:2,p26T:2,streaming:"Mixed",feeder:"",nominated:"",throughtrain:"",windingDown:false,
+  tags:["Smallest School","AR Immersive Room","Fencing","Aerodynamics","Lowest Fees (~$80)"],
+  pros:["Most individual attention (smallest school)","Unique programs: fencing, aerodynamics (Star Program)","AR Immersive Interactive Room","Lowest cost (~$80/yr)"],
+  cons:["Smallest school (10 classes)","Most tests from P1 (2T+2E)","Lowest teacher qualifications","46% SpEd trained — lowest in district"],
+  verdict:"The most intimate school in the district. Uniquely low fees. Rare activities: fencing, aerodynamics. Best for children who thrive with individual attention."},
+
+  {id:29,name:"Chinese Methodist School (North Point)",cn:"北角循道學校",type:"aided",gender:"coed",moi:"chinese",religion:"protestantism",founded:1964,location:"North Point",classes:24,masters:48,sped:89,exp10:48,ptaFee:50,charges:450,schoolFee:0,playgrounds:2,p1E:1,p1T:1,p26E:2,p26T:2,streaming:"P4-P6: Class A = top",feeder:"",nominated:"",throughtrain:"",windingDown:false,
+  tags:["Protestant","89% SpEd Trained","STREAM Lab","AI Writing","Skipping Team"],
+  pros:["89% SpEd trained — 2nd best in district","48% masters/PhD","STREAM Lab, Life Education Centre","Caring School Award (10 consecutive years)","AI Writing Programme"],
+  cons:["Streaming from P4 can be pressuring","P1 has both tests AND exams","Higher charges (~$500/yr)"],
+  verdict:"Strong Protestant school with exceptional SEN support (89% trained). Impressive 10-year Caring School Award streak. AI Writing Programme is forward-looking."},
+
+  {id:34,name:"Chinese Methodist School, Tanner Hill",cn:"丹拿山循道學校",type:"aided",gender:"coed",moi:"chinese",religion:"protestantism",founded:2010,location:"North Point",classes:21,masters:45,sped:74,exp10:0,ptaFee:30,charges:450,schoolFee:0,playgrounds:2,p1E:2,p1T:0,p26E:3,p26T:0,streaming:"Mixed P1-3, ability P4-6",feeder:"",nominated:"",throughtrain:"",windingDown:false,
+  tags:["Protestant","Drama Education","Brass Band","Roof Garden","Life Education P1-6"],
+  pros:["45% masters/PhD","74% SpEd trained","Drama education (unusual at primary level)","Brass Band, Choir, Dance","Roof Garden — unique outdoor space"],
+  cons:["Ability streaming from P4","Youngest school (est. 2010)","No secondary pathway"],
+  verdict:"Strongest performing arts programme in North Point. Drama education, Brass Band, and Choir make it distinct. Good teacher qualifications. Christian ethos."},
+
+  {id:36,name:"North Point Government Primary School",cn:"北角官立小學",type:"government",gender:"coed",moi:"chinese",religion:"none",founded:1954,location:"North Point",classes:30,masters:37,sped:59,exp10:0,ptaFee:100,charges:300,schoolFee:0,playgrounds:1,p1E:0,p1T:0,p26E:0,p26T:0,streaming:"",feeder:"",nominated:"Clementi SS, SKWGSS",throughtrain:"",windingDown:false,
+  tags:["Government","30 Classes","Nominated Secondaries","Chinese Culture Room","STEAM Room"],
+  pros:["Government school (free, EDB oversight)","Nominated to Clementi SS and SKWGSS","30 classes — strong peer network","Established 1954 — long track record"],
+  cons:["Only 1 playground","37% masters (lowest among large schools)","Nomination only to CMI secondaries"],
+  verdict:"Reliable government school in central North Point. 30 classes, two nominated secondaries. Best for families wanting a stable, affordable CMI school in North Point."},
+
+  {id:27,name:"North Point Methodist Primary School",cn:"北角衞理小學",type:"aided",gender:"coed",moi:"chinese",religion:"protestantism",founded:1959,location:"North Point",classes:24,masters:49,sped:58,exp10:57,ptaFee:100,charges:300,schoolFee:0,playgrounds:2,p1E:2,p1T:0,p26E:3,p26T:0,streaming:"P4-6 differentiation",feeder:"",nominated:"",throughtrain:"",windingDown:false,
+  tags:["Protestant","49% Masters","Chapel","Climbing Wall","AI Team (Geneva Silver Award)"],
+  pros:["49% masters/PhD","AI Team won Silver Award at Geneva International Exhibition of Inventions 2025","Chapel, Climbing Wall","57% teachers with 10+ years exp","Strong parent community (150+ active parents)"],
+  cons:["100 PTA fee (higher)","Protestant ethos","No direct secondary pathway"],
+  verdict:"Well-rounded Protestant school with a strong parent community and impressive AI team (Geneva award winner). Good teacher qualifications. Good for North Point families."},
+
+  {id:416,name:"Pun U Association Wah Yan Primary School",cn:"番禺會所華仁小學",type:"aided",gender:"boys",moi:"chinese",religion:"catholicism",founded:1971,location:"North Point",classes:24,masters:35,sped:46,exp10:65,ptaFee:100,charges:450,schoolFee:0,playgrounds:2,p1E:0,p1T:0,p26E:2,p26T:1,streaming:"Mixed",feeder:"Wah Yan College, Hong Kong",nominated:"",throughtrain:"",windingDown:false,
+  tags:["Boys Only","Catholic","Feeder → Wah Yan College HK","Flight Simulation Cabin","VR/AR Room"],
+  pros:["Direct feeder to Wah Yan College HK (elite boys secondary)","Boys school — focused environment","Flight simulation cabin (extremely rare)","VR/AR room","65% teachers with 10+ years exp"],
+  cons:["Boys only","Catholic ethos","35% masters/PhD (lower)","46% SpEd trained (lowest in North Point)"],
+  verdict:"The best choice for Catholic boys families targeting Wah Yan College HK. Flight simulation cabin is unique. Boys-only environment with strong faith values."},
+
+  {id:38,name:"Shanghai Alumni Primary School",cn:"滬江小學",type:"aided",gender:"coed",moi:"chinese",religion:"none",founded:1987,location:"Kornhill/Quarry Bay",classes:24,masters:34,sped:67,exp10:60,ptaFee:80,charges:0,schoolFee:0,playgrounds:2,p1E:2,p1T:0,p26E:4,p26T:0,streaming:"P3+ 1 top class",feeder:"",nominated:"Victoria Shanghai Academy",throughtrain:"",windingDown:false,
+  tags:["Nominated: Victoria Shanghai Academy","MakerSpace","MetaSpace","InnoLab","180+ ECA items"],
+  pros:["Nominated to Victoria Shanghai Academy (highly regarded DSS)","MakerSpace, MetaSpace, InnoLab facilities","180+ extracurricular items","Free (no approved charges)","Multiple award-winning robot/wushu teams"],
+  cons:["4 exams/yr for P2-6 (most in district)","34% masters/PhD","P3 ability streaming"],
+  verdict:"Most extracurricular diversity (180+ items). Nominated to Victoria Shanghai Academy. Unique innovation facilities. High exam frequency is a trade-off."},
+
+  {id:26,name:"S.K.H. St. Michael's Primary School",cn:"聖公會聖米迦勒小學",type:"aided",gender:"coed",moi:"chinese",religion:"protestantism",founded:1919,location:"Fortress Hill/North Point",classes:24,masters:39,sped:73,exp10:74,ptaFee:30,charges:450,schoolFee:0,playgrounds:1,p1E:3,p1T:0,p26E:3,p26T:0,streaming:"P3-6 by score",feeder:"",nominated:"",throughtrain:"",windingDown:false,
+  tags:["Founded 1919","Eco Lab","Hydroponic Farming","74% 10+ Yrs Exp","Wing Chun"],
+  pros:["Oldest school in Eastern District (founded 1919)","74% teachers with 10+ years exp","73% SpEd trained","Eco Lab + Hydroponic Farming programme (unique)","Wing Chun martial arts"],
+  cons:["3 exams in P1 (most pressure in district)","Only 1 playground","Streaming from P3"],
+  verdict:"Oldest school in Eastern District. Deep experience (74% teachers 10+ years). Unique Eco Lab and hydroponic farming. P1 has 3 exams — highest academic pressure from day one."},
+
+  {id:39,name:"Taikoo Primary School",cn:"太古小學",type:"aided",gender:"coed",moi:"chinese",religion:"none",founded:1923,location:"Quarry Bay/Tai Koo",classes:30,masters:44,sped:77,exp10:0,ptaFee:30,charges:400,schoolFee:0,playgrounds:2,p1E:0,p1T:0,p26E:3,p26T:0,streaming:"Putonghua track",feeder:"",nominated:"",throughtrain:"",windingDown:false,
+  tags:["Largest Campus (10,870m²)","Chinese Opera","Orchestra","English Musical","Cambridge Courses","Swire Backed"],
+  pros:["Largest campus in Eastern District (~10,870 sq.m.)","Best arts: Chinese Opera, Orchestra, English Musical","Cambridge courses available","77% SpEd trained","Swire Pacific corporate backing (well-resourced)","No tests/exams in P1"],
+  cons:["No direct secondary school pathway","Putonghua streaming may divide cohorts","44% masters (mid-range)"],
+  verdict:"Eastern District's premium arts school. Largest campus, richest performing arts programme (opera, orchestra, musical). Excellent all-rounder backed by Swire Pacific."},
+
+  {id:40,name:"Aldrich Bay Government Primary School",cn:"愛秩序灣官立小學",type:"government",gender:"coed",moi:"chinese",religion:"none",founded:2000,location:"Shau Kei Wan",classes:30,masters:22,sped:54,exp10:0,ptaFee:40,charges:250,schoolFee:0,playgrounds:3,p1E:0,p1T:0,p26E:3,p26T:0,streaming:"Mixed",feeder:"",nominated:"Queen's College, SKWGSS, Clementi SS",throughtrain:"",windingDown:false,
+  tags:["★ Queen's College Nomination","Government","3 Playgrounds","Multiple Intelligences","Gifted Program","2 NETs"],
+  pros:["Only Eastern school nominating to Queen's College (elite secondary)","3 playgrounds — most in a government school","Multiple Intelligences Programme (structured)","Gifted student training","Very low fees (~$290/yr)","2 Native English Teachers"],
+  cons:["Lowest masters/PhD in district (22%)","Newest school (est. 2000)","Further east — less accessible from North Point"],
+  verdict:"THE standout for secondary school pathway — only Eastern District school nominating to Queen's College. Free, 3 playgrounds, gifted programme. Critical for academically driven boys."},
+
+  {id:41,name:"C.C.C. Kei Wan Primary School",cn:"中華基督教會基灣小學",type:"aided",gender:"coed",moi:"chinese",religion:"protestantism",founded:1970,location:"Shau Kei Wan",classes:24,masters:36,sped:53,exp10:81,ptaFee:60,charges:500,schoolFee:0,playgrounds:2,p1E:2,p1T:0,p26E:3,p26T:1,streaming:"P4-6",feeder:"",nominated:"",throughtrain:"",windingDown:false,
+  tags:["Protestant","81% 10+Yrs Exp","Shau Kei Wan"],
+  pros:["81% teachers with 10+ years experience (highest in district)","24 classes, Protestant ethos","Gifted development programme"],
+  cons:["Highest charges ($500/yr + $500 approved)","36% masters/PhD","P1+P2-6 has both tests and exams"],
+  verdict:"Best teacher experience in the district (81% with 10+ years). Protestant values, 24 classes. The high charges are a notable downside."},
+
+  {id:25,name:"C.C.C. Kei Wan PS (Aldrich Bay)",cn:"中華基督教會基灣小學（愛蝶灣）",type:"aided",gender:"coed",moi:"bilingual",religion:"protestantism",founded:1970,location:"Shau Kei Wan",classes:24,masters:54,sped:20,exp10:72,ptaFee:60,charges:1350,schoolFee:0,playgrounds:3,p1E:2,p1T:0,p26E:3,p26T:0,streaming:"By performance",feeder:"",nominated:"",throughtrain:"",windingDown:false,
+  tags:["Bilingual","54% Masters","AI Lab","Immersive VR Room","International Exchanges (20+ countries)","Highest Charges in District"],
+  pros:["Bilingual (Chinese + English)","54% masters/PhD (highest among aided schools in district)","AI Lab, Immersive VR Room, Ballet Room","International exchanges with 20+ countries","3 playgrounds, 2 halls"],
+  cons:["Highest annual charges in district (~$1,410/yr for NETs)","Only 20% SpEd trained — very low","Protestant ethos"],
+  verdict:"Most internationally-connected school in Eastern District (exchanges with 20+ countries). Bilingual, advanced tech (AI Lab, VR). Very high charges for NET teachers. Low SEN support."},
+
+  {id:43,name:"Meng Tak Catholic School",cn:"天主教明德學校",type:"aided",gender:"coed",moi:"chinese",religion:"catholicism",founded:1952,location:"Chai Wan",classes:24,masters:34,sped:67,exp10:66,ptaFee:50,charges:310,schoolFee:0,playgrounds:2,p1E:1,p1T:1,p26E:2,p26T:1,streaming:"P4-6 elite classes",feeder:"",nominated:"",throughtrain:"",windingDown:false,
+  tags:["Catholic","BYOD from P4","Elite Classes P4-6","Brass Band","Filming Agents"],
+  pros:["BYOD from P4 (fully digital learning)","Elite classes from P4 (good for high achievers)","67% SpEd trained","Brass Band, Filming Agents gifted program","Good value (~$360/yr)"],
+  cons:["34% masters/PhD","Elite class streaming can be stressful"],
+  verdict:"Catholic school in Chai Wan with digital-first approach (BYOD from P4). Elite classes from P4 reward high achievers. Brass Band and Filming Agents are distinctive programs."},
+
+  {id:44,name:"Pui Kiu Primary School",cn:"培僑小學",type:"aided",gender:"coed",moi:"chinese",religion:"none",founded:2000,location:"Siu Sai Wan/Chai Wan",classes:30,masters:43,sped:74,exp10:73,ptaFee:30,charges:200,schoolFee:0,playgrounds:3,p1E:2,p1T:0,p26E:2,p26T:0,streaming:"None",feeder:"",nominated:"",throughtrain:"",windingDown:false,
+  tags:["No Streaming","74% SpEd","73% 10+Yrs Exp","43 ECAs","Low Fees","3 Playgrounds"],
+  pros:["No streaming at all (truly mixed ability)","74% SpEd trained","73% 10+ years exp","43 extracurricular activities","Very low fees (~$230/yr)","3 playgrounds","9 Chief Executive's Awards for Teaching Excellence"],
+  cons:["Newer school (est. 2000)","Siu Sai Wan location (less central)"],
+  verdict:"Exceptional all-rounder — no streaming, strong SEN, experienced teachers, 43 ECAs, low fees, 3 playgrounds. Has won 9 CE Awards for Teaching Excellence. Hard to find a fault."},
+
+  {id:24,name:"Salesian School",cn:"慈幼學校",type:"aided",gender:"coed",moi:"bilingual",religion:"catholicism",founded:1951,location:"Shau Kei Wan",classes:9,masters:43,sped:76,exp10:58,ptaFee:50,charges:300,schoolFee:0,playgrounds:4,p1E:0,p1T:0,p26E:2,p26T:0,streaming:"Subject grouping, upper primary",feeder:"Salesian English School",nominated:"",throughtrain:"",windingDown:false,
+  tags:["Bilingual","4 Playgrounds (Most in District!)","Catholic","Feeder → Salesian English School","Very Small"],
+  pros:["4 playgrounds — most in the entire district","Bilingual (Chinese + English)","Feeder to Salesian English School","76% SpEd trained","43% masters/PhD","Small (9 classes) — very individual attention"],
+  cons:["Very small school (9 classes)","Catholic ethos","Limited peer group"],
+  verdict:"An extraordinary 4 playgrounds for just 9 classes. Bilingual, small, feeder to Salesian English School. Best outdoor space-per-student ratio in Eastern District."},
+
+  {id:46,name:"Shau Kei Wan Government Primary School",cn:"筲箕灣官立小學",type:"government",gender:"coed",moi:"chinese",religion:"none",founded:1958,location:"Shau Kei Wan",classes:16,masters:39,sped:90,exp10:79,ptaFee:70,charges:0,schoolFee:0,playgrounds:1,p1E:1,p1T:0,p26E:2,p26T:2,streaming:"P4 partial",feeder:"",nominated:"SKWGSS, Clementi SS",throughtrain:"",windingDown:false,
+  tags:["Government","90% SpEd Trained","79% 10+Yrs Exp","Nominated Secondaries","Mindful Cafe","AI Fitness Room"],
+  pros:["90% SpEd trained — highest in district","79% teachers with 10+ years exp","Government school (free)","Nominated to SKWGSS and Clementi SS","Mindful Cafe, AI Fitness Room (unique wellness facilities)"],
+  cons:["Only 16 classes and shrinking","Only 1 playground","Shau Kei Wan location (less central)"],
+  verdict:"Government school with the best SEN training (90%) and teacher experience (79%) in Eastern District. Unique wellness facilities. Smaller but very experienced team."},
+
+  {id:47,name:"Shaukiwan Tsung Tsin School",cn:"筲箕灣崇真學校",type:"aided",gender:"coed",moi:"chinese",religion:"protestantism",founded:1948,location:"Shau Kei Wan",classes:24,masters:43,sped:47,exp10:46,ptaFee:40,charges:310,schoolFee:0,playgrounds:2,p1E:2,p1T:0,p26E:3,p26T:0,streaming:"P4-6",feeder:"",nominated:"",throughtrain:"",windingDown:false,
+  tags:["Protestant","80+ Activities","Cinema","Flight Simulator","Hydroponic Workshop","Climbing Wall"],
+  pros:["80+ extracurricular activities","Cinema, flight simulator, hydroponic workshop (unique)","Climbing wall","Roof garden, gallery, art gallery","Low fees ($40 PTA + $310)"],
+  cons:["47% SpEd trained (below average)","46% 10+ years exp (below average)","Streaming from P4"],
+  verdict:"Best extracurricular breadth in Eastern (80+ activities). Unique facilities: cinema, flight simulator, hydroponic workshop. Great value. Lower staff experience is a trade-off."},
+
+  {id:45,name:"S.K.H. Chai Wan St. Michael's PS",cn:"聖公會柴灣聖米迦勒小學",type:"aided",gender:"coed",moi:"chinese",religion:"protestantism",founded:1919,location:"Chai Wan",classes:24,masters:35,sped:73,exp10:57,ptaFee:50,charges:450,schoolFee:0,playgrounds:4,p1E:2,p1T:0,p26E:3,p26T:0,streaming:"By ability (Eng/Maths)",feeder:"",nominated:"",throughtrain:"",windingDown:false,
+  tags:["Founded 1919","4 Playgrounds","Protestant","73% SpEd","STEAM Lab","Drone Photography"],
+  pros:["4 playgrounds (tied for most in district)","Co-founded 1919 — over 100 years history","73% SpEd trained","Drone Photography course","STEAM Lab"],
+  cons:["Chai Wan location (less central)","35% masters/PhD","Ability streaming in English and Maths"],
+  verdict:"Historic school (1919) with 4 playgrounds. Strong SEN support. Drone Photography and STEAM Lab. Good for Chai Wan families seeking a traditional Protestant school."},
+
+  {id:42,name:"ELCHK Faith Love Lutheran School",cn:"基督教香港信義會信愛學校",type:"aided",gender:"coed",moi:"chinese",religion:"protestantism",founded:1961,location:"Chai Wan",classes:8,masters:36,sped:54,exp10:24,ptaFee:30,charges:300,schoolFee:0,playgrounds:2,p1E:2,p1T:0,p26E:3,p26T:0,streaming:"Mixed",feeder:"",nominated:"",throughtrain:"",windingDown:false,
+  tags:["Very Small (8 classes)","360° VR Classroom","STREAM","Lutheran","Low Fees"],
+  pros:["360° VR Teaching Classroom (cutting-edge)","Small (8 classes) — individual attention","Low fees (~$330/yr)","Lutheran ethos"],
+  cons:["Very small school (8 classes, shrinking to 7)","Only 24% teachers with 10+ years exp","Limited peer network"],
+  verdict:"Smallest functioning school in the district with a cutting-edge 360° VR classroom. Good for families wanting a small Protestant community with innovative tech."},
+
+  {id:32,name:"Endeavourers LLSY Memorial PS",cn:"勵志會梁李秀娛紀念小學",type:"aided",gender:"coed",moi:"bilingual",religion:"none",founded:1994,location:"Shau Kei Wan",classes:24,masters:51,sped:72,exp10:69,ptaFee:30,charges:0,schoolFee:0,playgrounds:3,p1E:0,p1T:0,p26E:3,p26T:0,streaming:"P3+ ability groups",feeder:"",nominated:"",throughtrain:"",windingDown:false,
+  tags:["Bilingual","Lowest Fees (~$30)","51% Masters","Organic Farm","Butterfly Farmyard","Koi Pond","Running Track"],
+  pros:["Bilingual (Chinese + English)","Lowest fees in district (~$30/yr)","51% masters/PhD","72% SpEd trained","69% 10+ years exp","Butterfly/Organic Farmyard, Koi Pond, Running Track","No tests or exams in P1"],
+  cons:["Ability grouping from P3","Shau Kei Wan location"],
+  verdict:"Best value bilingual school in Eastern District ($30/yr). Strong teacher qualifications (51% masters). Unique grounds: organic farm, koi pond, running track. Rare combination of low cost + high quality."},
+
+  {id:49,name:"HKCWC Hioe Tjo Yoeng PS",cn:"香港中國婦女會丘佐榮學校",type:"aided",gender:"coed",moi:"chinese",religion:"none",founded:1965,location:"Shau Kei Wan",classes:30,masters:40,sped:64,exp10:84,ptaFee:80,charges:310,schoolFee:0,playgrounds:3,p1E:3,p1T:0,p26E:3,p26T:0,streaming:"By average abilities",feeder:"",nominated:"",throughtrain:"",windingDown:false,
+  tags:["30 Classes","84% 10+Yrs Exp","3 Playgrounds","2 School Halls"],
+  pros:["84% teachers with 10+ years experience (highest in district)","30 classes — strong peer network","3 playgrounds, 2 school halls","Gifted + remedial both catered for"],
+  cons:["3 exams in P1 (one of the most)","80 PTA fee + charges (~$390/yr)","No notable secondary pathway"],
+  verdict:"Best teacher experience (84%) in the district. Large school (30 classes), 2 halls, 3 playgrounds. Good for families valuing experienced, stable teaching staff."},
+
+  {id:50,name:"Salvation Army Ann Wyllie Memorial School",cn:"救世軍韋理夫人紀念學校",type:"aided",gender:"coed",moi:"chinese",religion:"protestantism",founded:1987,location:"Heng Fa Chuen",classes:18,masters:20,sped:50,exp10:57,ptaFee:50,charges:150,schoolFee:0,playgrounds:3,p1E:1,p1T:0,p26E:3,p26T:0,streaming:"P4-6",feeder:"",nominated:"",throughtrain:"",windingDown:false,
+  tags:["Protestant","Very Low Charges ($150)","3 Playgrounds","Heng Fa Chuen","Small Class Teaching"],
+  pros:["Very low fees ($50 PTA + $150 = ~$200/yr)","3 playgrounds","Small class teaching throughout","Heng Fa Chuen — quieter residential location"],
+  cons:["20% masters/PhD (lowest in district)","50% SpEd trained (below average)","Shrinking (18→16 classes)"],
+  verdict:"Very affordable Protestant school in Heng Fa Chuen residential area. 3 playgrounds. Small class teaching. Low teacher qualifications is the main drawback."},
+
+  {id:54,name:"SA Centaline Charity Fund School",cn:"救世軍中原慈善基金學校",type:"aided",gender:"coed",moi:"chinese",religion:"protestantism",founded:2008,location:"Chai Wan",classes:6,masters:24,sped:76,exp10:62,ptaFee:0,charges:250,schoolFee:0,playgrounds:1,p1E:0,p1T:0,p26E:3,p26T:0,streaming:"From P6",feeder:"",nominated:"",throughtrain:"",windingDown:true,
+  tags:["WINDING DOWN","P6 Only 2025/26","Protestant"],
+  pros:["76% SpEd trained","English Activity Room, STEM Room"],
+  cons:["WINDING DOWN — P6 only in 2025/26","Not accepting new students","Only 2 classes remain"],
+  verdict:"Winding down — only P6 classes in 2025/26. Do not apply for P1 admission."},
+
+  {id:51,name:"HKUGA Primary School",cn:"港大同學會小學",type:"dss",gender:"coed",moi:"bilingual",religion:"none",founded:2002,location:"Chai Wan",classes:24,masters:61,sped:34,exp10:74,ptaFee:100,charges:0,schoolFee:37880,playgrounds:2,p1E:0,p1T:0,p26E:2,p26T:0,streaming:"Mixed",feeder:"",nominated:"",throughtrain:"HKUGA College",windingDown:false,
+  tags:["DSS","Through-train → HKUGA College","61% Masters","Bilingual","Rooftop Garden","Running Track","$37,880/yr"],
+  pros:["Through-train to HKUGA College (seamless P1→S6)","61% masters/PhD — highest in district","Bilingual (Chinese + English)","Only 2 exams/yr (gentlest in district)","Rooftop Garden, Running Track","74% 10+ years exp"],
+  cons:["$37,880/yr tuition","34% SpEd trained (low)","Chai Wan location"],
+  verdict:"Best teacher qualifications in Eastern District (61% masters). Through-train to HKUGA College. Bilingual, gentle assessment (only 2 exams/yr). Premium DSS option."},
+
+  {id:55,name:"Hon Wah College (Primary Section)",cn:"漢華中學（小學部）",type:"dss",gender:"coed",moi:"bilingual",religion:"none",founded:1945,location:"Siu Sai Wan",classes:18,masters:37,sped:58,exp10:40,ptaFee:60,charges:0,schoolFee:17640,playgrounds:3,p1E:0,p1T:0,p26E:2,p26T:0,streaming:"No elite class",feeder:"",nominated:"",throughtrain:"Hon Wah College",windingDown:false,
+  tags:["DSS","Through-train → Hon Wah College","Bilingual","Rock Climbing Walls","Lecture Theatre","$17,640/yr"],
+  pros:["Through-train to Hon Wah College (seamless)","Most affordable DSS (~$17,640/yr)","Bilingual (Chinese + English)","Rock-climbing walls, lecture theatre, campus TV studio","3 playgrounds","No elite streaming (ability groups only)"],
+  cons:["40% 10+ years experience (below average)","Siu Sai Wan (remote eastern end)","37% masters"],
+  verdict:"Most affordable through-train DSS in Eastern District. Bilingual, rock-climbing walls, 3 playgrounds. Good for families wanting a DSS secondary pipeline at a lower price point."},
+
+  {id:53,name:"Kiangsu & Chekiang Primary School",cn:"蘇浙小學校",type:"private",gender:"coed",moi:"bilingual",religion:"none",founded:1953,location:"North Point",classes:31,masters:27,sped:0,exp10:49,ptaFee:20,charges:0,schoolFee:54000,playgrounds:3,p1E:3,p1T:3,p26E:3,p26T:3,streaming:"Mixed",feeder:"",nominated:"",throughtrain:"",windingDown:false,
+  tags:["Private","Bilingual","31 Classes (Largest Private)","North Point","$54,000/yr","Traditional Assessment"],
+  pros:["Largest private school in Eastern District (31 classes)","North Point location — accessible","Bilingual (Chinese + English)","Large campus ~8,500 sq.m., 3 playgrounds"],
+  cons:["$54,000/yr tuition","0% SpEd trained","27% masters/PhD","Most tests+exams (3+3 from P1 — most pressure in district)"],
+  verdict:"Largest private school in Eastern District. North Point location is convenient. High tuition, traditional assessment approach (most tests in district). For families wanting a private bilingual school in North Point."}
+];
+
+function typeLabel(t){return{government:"Government",aided:"Aided",private:"Private",dss:"DSS"}[t]||t}
+function genderLabel(g){return{coed:"Co-ed",boys:"Boys",girls:"Girls"}[g]||g}
+function moiLabel(m){return{english:"EMI",bilingual:"Bilingual",chinese:"CMI"}[m]||m}
+function typeBadge(t){return{government:"b-gov",aided:"b-aided",private:"b-private",dss:"b-dss"}[t]||"b-aided"}
+function genderBadge(g){return{coed:"b-coed",boys:"b-boys",girls:"b-girls"}[g]||"b-coed"}
+function moiBadge(m){return{english:"b-emi",bilingual:"b-bili",chinese:"b-cmi"}[m]||"b-cmi"}
+function annualCost(s){if(s.schoolFee>0)return"$"+s.schoolFee.toLocaleString()+"/yr";return"~$"+(s.ptaFee+s.charges)}
+
+let filtered=[...SCHOOLS];
+function applyFilters(){
+  const q=document.getElementById('searchBox').value.toLowerCase();
+  const ft=document.getElementById('fType').value;
+  const fg=document.getElementById('fGender').value;
+  const fm=document.getElementById('fMoi').value;
+  const fa=document.getElementById('fArea').value;
+  filtered=SCHOOLS.filter(s=>{
+    if(q&&!s.name.toLowerCase().includes(q)&&!s.cn.includes(q))return false;
+    if(ft&&s.type!==ft)return false;
+    if(fg&&s.gender!==fg)return false;
+    if(fm&&s.moi!==fm)return false;
+    if(fa&&!s.location.includes(fa))return false;
+    return true;
+  });
+  renderCards();renderTable();renderPathways();
+}
+function resetFilters(){
+  ['searchBox','fType','fGender','fMoi','fArea'].forEach(id=>document.getElementById(id).value='');
+  filtered=[...SCHOOLS];applyFilters();
+}
+function renderCards(){
+  document.getElementById('countBar').textContent=`Showing ${filtered.length} of ${SCHOOLS.length} schools`;
+  document.getElementById('cardGrid').innerHTML=filtered.map(s=>`
+    <div class="card${s.windingDown?' winding':''}">
+      <div class="card-top">
+        <div><div class="card-title">${s.name}</div><div class="card-cn">${s.cn}</div></div>
+        <div class="badges">
+          <span class="badge ${typeBadge(s.type)}">${typeLabel(s.type)}</span>
+          <span class="badge ${genderBadge(s.gender)}">${genderLabel(s.gender)}</span>
+          <span class="badge ${moiBadge(s.moi)}">${moiLabel(s.moi)}</span>
+        </div>
+      </div>
+      ${s.windingDown?'<div class="badge b-warn" style="margin-bottom:8px;display:inline-block">⚠ WINDING DOWN</div>':''}
+      <div class="stats">
+        <div class="stat"><label>Location</label><span>${s.location}</span></div>
+        <div class="stat"><label>Founded</label><span>${s.founded}</span></div>
+        <div class="stat"><label>Classes</label><span>${s.classes}</span></div>
+        <div class="stat"><label>Annual Cost</label><span>${annualCost(s)}</span></div>
+        <div class="stat"><label>Masters/PhD</label><span>${s.masters}%</span></div>
+        <div class="stat"><label>SpEd Trained</label><span>${s.sped}%</span></div>
+      </div>
+      <div class="tags">${s.tags.map(t=>`<span class="tag${t.startsWith('★')?'gold':t.includes('WIND')?'red':''}">${t}</span>`).join('')}</div>
+      ${(s.feeder||s.nominated||s.throughtrain)?`<div style="margin-top:8px;font-size:11px;color:var(--muted)">→ ${s.throughtrain||s.feeder||s.nominated}</div>`:''}
+    </div>`).join('');
+}
+function renderTable(){
+  document.getElementById('tableBody').innerHTML=filtered.map(s=>`<tr${s.windingDown?' style="opacity:.6"':''}>
+    <td><strong>${s.name}</strong><div class="nt">${s.cn}</div></td>
+    <td><span class="badge ${typeBadge(s.type)}">${typeLabel(s.type)}</span></td>
+    <td><span class="badge ${genderBadge(s.gender)}">${genderLabel(s.gender)}</span></td>
+    <td><span class="badge ${moiBadge(s.moi)}">${moiLabel(s.moi)}</span></td>
+    <td>${s.founded}</td>
+    <td>${s.windingDown?'<span style="color:var(--red)">⚠'+s.classes+'</span>':s.classes}</td>
+    <td>${s.masters>=50?'<span class="best">'+s.masters+'%</span>':s.masters+'%'}</td>
+    <td>${s.sped>=75?'<span class="best">'+s.sped+'%</span>':s.sped+'%'}</td>
+    <td>${s.exp10>=75?'<span class="best">'+s.exp10+'%</span>':s.exp10+(s.exp10?'%':'—')}</td>
+    <td>${annualCost(s)}</td><td>${s.playgrounds}</td>
+    <td>${s.p1T}T+${s.p1E}E</td><td>${s.p26T}T+${s.p26E}E</td>
+    <td style="font-size:11px">${s.streaming}</td>
+    <td style="font-size:11px">${s.throughtrain?'<strong>Through-train: '+s.throughtrain+'</strong>':''}${s.feeder?'<strong>Feeder: '+s.feeder+'</strong>':''}${s.nominated?'<div class="nt">'+s.nominated+'</div>':''}</td>
+  </tr>`).join('');
+}
+function renderPathways(){
+  const schools=filtered.filter(s=>s.feeder||s.nominated||s.throughtrain);
+  document.getElementById('pathGrid').innerHTML=schools.map(s=>{
+    const paths=[];
+    if(s.throughtrain)paths.push({to:s.throughtrain,type:"Through-train",top:true});
+    if(s.feeder)paths.push({to:s.feeder,type:"Feeder",top:s.feeder.includes("Wah Yan")});
+    if(s.nominated)s.nominated.split(', ').forEach(n=>paths.push({to:n,type:"Nominated",top:n.includes("Queen's")}));
+    return`<div class="path-card">
+      <h3>${s.name}</h3><div class="sub">${genderLabel(s.gender)} · ${typeLabel(s.type)} · ${moiLabel(s.moi)}</div>
+      ${paths.map(p=>`<div class="path-arrow">
+        <div class="pa-from">${p.type}</div><div class="pa-arr">→</div>
+        <div class="pa-to${p.top?' top':''}">${p.to}</div>
+      </div>`).join('')}
+    </div>`;
+  }).join('')||'<p style="color:var(--muted);font-size:13px">No schools with secondary pathways match current filters.</p>';
+}
+function renderVerdict(){
+  const ids=[40,39,51,44,30,416,38,53,25,55];
+  document.getElementById('verdictGrid').innerHTML=ids.map(id=>{
+    const s=SCHOOLS.find(x=>x.id===id);if(!s)return'';
+    return`<div class="v-card">
+      <h3>${s.name}</h3><div class="v-sub">${s.location} · ${typeLabel(s.type)} · ${moiLabel(s.moi)}</div>
+      <h4>Strengths</h4><ul class="pros">${s.pros.map(p=>`<li>${p}</li>`).join('')}</ul>
+      <h4>Weaknesses</h4><ul class="cons">${s.cons.map(p=>`<li>${p}</li>`).join('')}</ul>
+      <div class="bf"><label>BEST FOR</label><p>${s.verdict}</p></div>
+    </div>`;
+  }).join('');
+}
+function showTab(name,el){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById(name).classList.add('active');el.classList.add('active');
+}
+applyFilters();renderVerdict();
+</script>
+</body>
+</html>

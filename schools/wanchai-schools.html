@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wan Chai District Primary Schools 2025/26</title>
+<style>
+:root{--bg:#f8f9fa;--card:#fff;--border:#e2e8f0;--accent:#2563eb;--accent-light:#eff6ff;--text:#1e293b;--muted:#64748b;--green:#16a34a;--amber:#d97706;--red:#dc2626;--purple:#7c3aed}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.5}
+header{background:var(--accent);color:#fff;padding:22px 32px}
+header h1{font-size:21px;font-weight:700}
+header p{opacity:.85;font-size:12px;margin-top:3px}
+.container{max-width:1400px;margin:0 auto;padding:20px}
+.toolbar{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px;align-items:center}
+.search{padding:7px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;flex:1;min-width:160px}
+select{padding:7px 10px;border:1px solid var(--border);border-radius:8px;font-size:12px;background:#fff;cursor:pointer}
+.tabs{display:flex;gap:4px;margin-bottom:20px;flex-wrap:wrap}
+.tab{padding:7px 16px;border-radius:8px;border:1px solid var(--border);background:var(--card);cursor:pointer;font-size:13px;font-weight:500;color:var(--muted);transition:all .15s}
+.tab:hover{border-color:var(--accent);color:var(--accent)}
+.tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.view{display:none}.view.active{display:block}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;transition:box-shadow .15s;position:relative}
+.card:hover{box-shadow:0 4px 16px rgba(0,0,0,.08)}
+.card.winding{opacity:.65;border-style:dashed}
+.card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;gap:8px}
+.card-title{font-size:14px;font-weight:700;line-height:1.3}
+.card-cn{font-size:11px;color:var(--muted);margin-top:2px}
+.badges{display:flex;flex-direction:column;gap:3px;flex-shrink:0}
+.badge{display:inline-block;padding:2px 7px;border-radius:12px;font-size:10px;font-weight:700;white-space:nowrap}
+.b-gov{background:#dbeafe;color:#1d4ed8}
+.b-aided{background:#dcfce7;color:#166534}
+.b-private{background:#fef9c3;color:#854d0e}
+.b-dss{background:#f3e8ff;color:#6b21a8}
+.b-boys{background:#e0f2fe;color:#0369a1}
+.b-girls{background:#fce7f3;color:#9d174d}
+.b-coed{background:#f1f5f9;color:#475569}
+.b-emi{background:#d1fae5;color:#065f46}
+.b-bili{background:#fef3c7;color:#92400e}
+.b-warn{background:#fee2e2;color:#991b1b}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:10px 0}
+.stat label{font-size:10px;color:var(--muted);display:block}
+.stat span{font-size:13px;font-weight:500}
+.tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px}
+.tag{background:var(--accent-light);color:var(--accent);padding:2px 7px;border-radius:4px;font-size:10px}
+.tag.gold{background:#fef3c7;color:#92400e}
+.tag.red{background:#fee2e2;color:#991b1b}
+.tag.green{background:#dcfce7;color:#166534}
+.hidden{display:none!important}
+.count-bar{font-size:12px;color:var(--muted);margin-bottom:12px}
+/* Table */
+.tbl-wrap{overflow-x:auto;border-radius:10px;border:1px solid var(--border)}
+table{width:100%;border-collapse:collapse;background:var(--card);min-width:900px}
+thead tr{background:var(--accent);color:#fff}
+th{padding:10px 12px;text-align:left;font-size:11px;font-weight:600;white-space:nowrap}
+td{padding:9px 12px;border-bottom:1px solid var(--border);font-size:12px;vertical-align:top}
+tr:last-child td{border-bottom:none}
+tr:nth-child(even){background:#fafafa}
+.rh{font-weight:600;color:var(--muted);font-size:10px;background:#f8fafc!important;text-transform:uppercase}
+.best{color:var(--green);font-weight:700}
+.nt{font-size:10px;color:var(--muted);margin-top:2px}
+/* Pathways */
+.path-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px}
+.path-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px}
+.path-card h3{font-size:13px;font-weight:700;margin-bottom:4px}
+.path-card .sub{font-size:11px;color:var(--muted);margin-bottom:10px}
+.path-arrow{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #f1f5f9}
+.path-arrow:last-child{border-bottom:none}
+.pa-from{font-size:12px;flex:1}
+.pa-arr{color:var(--muted)}
+.pa-to{font-size:12px;font-weight:600;color:var(--accent);flex:1;text-align:right}
+.pa-to.top{color:var(--green)}
+/* Verdict */
+.verdict-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px}
+.v-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px}
+.v-card h3{font-size:14px;font-weight:700;margin-bottom:3px}
+.v-sub{font-size:11px;color:var(--muted);margin-bottom:10px}
+.pros li::before{content:'✓ ';color:var(--green)}
+.cons li::before{content:'✗ ';color:var(--red)}
+ul{list-style:none;font-size:12px}
+li{padding:2px 0}
+h4{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin:8px 0 4px}
+.bf{background:var(--accent-light);border-radius:6px;padding:8px 10px;margin-top:8px}
+.bf label{font-size:10px;font-weight:700;color:var(--accent);display:block;margin-bottom:2px}
+.bf p{font-size:12px}
+.dg-table{width:100%;border-collapse:collapse;background:var(--card);border-radius:10px;overflow:hidden;border:1px solid var(--border)}
+.dg-table th{background:#f8fafc;padding:8px 12px;text-align:left;font-size:12px}
+.dg-table td{padding:8px 12px;border-bottom:1px solid var(--border);font-size:12px}
+.dg-table tr:last-child td{border-bottom:none}
+.dg-table tr:nth-child(even){background:#fafafa}
+.sec-title{font-size:16px;font-weight:700;margin-bottom:6px}
+.sec-sub{font-size:12px;color:var(--muted);margin-bottom:16px}
+</style>
+</head>
+<body>
+<header>
+  <h1>Wan Chai District Primary Schools — 2025/26</h1>
+  <p>18 schools · District 5 · Data sourced from CHSC PSP 2025 · Open offline, no internet needed</p>
+</header>
+<div class="container">
+  <div class="toolbar">
+    <input class="search" type="text" id="searchBox" placeholder="Search school name…" oninput="applyFilters()">
+    <select id="fType" onchange="applyFilters()">
+      <option value="">All Types</option>
+      <option value="government">Government</option>
+      <option value="aided">Aided</option>
+      <option value="private">Private</option>
+    </select>
+    <select id="fGender" onchange="applyFilters()">
+      <option value="">All Genders</option>
+      <option value="coed">Co-ed</option>
+      <option value="boys">Boys</option>
+      <option value="girls">Girls</option>
+    </select>
+    <select id="fMoi" onchange="applyFilters()">
+      <option value="">All Languages</option>
+      <option value="english">EMI (English)</option>
+      <option value="bilingual">Bilingual</option>
+      <option value="chinese">CMI (Chinese)</option>
+    </select>
+    <select id="fReligion" onchange="applyFilters()">
+      <option value="">All Religions</option>
+      <option value="none">Secular</option>
+      <option value="catholicism">Catholic</option>
+      <option value="protestantism">Protestant</option>
+      <option value="buddhism">Buddhist</option>
+    </select>
+    <button onclick="resetFilters()" style="padding:7px 12px;border-radius:8px;border:1px solid var(--border);background:#fff;cursor:pointer;font-size:12px">Reset</button>
+  </div>
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('cards',this)">All Schools</button>
+    <button class="tab" onclick="showTab('table',this)">Compare Table</button>
+    <button class="tab" onclick="showTab('pathways',this)">Secondary Pathways</button>
+    <button class="tab" onclick="showTab('verdict',this)">Recommendations</button>
+  </div>
+
+  <div id="cards" class="view active">
+    <div class="count-bar" id="countBar"></div>
+    <div class="grid" id="cardGrid"></div>
+  </div>
+
+  <div id="table" class="view">
+    <div class="sec-title">Side-by-Side Comparison</div>
+    <div class="sec-sub">Showing filtered schools. Use filters above to narrow down.</div>
+    <div class="tbl-wrap"><table id="mainTable">
+      <thead><tr>
+        <th>School</th><th>Type</th><th>Gender</th><th>MOI</th><th>Founded</th><th>Classes</th>
+        <th>Masters%</th><th>SpEd%</th><th>10+yr%</th><th>Annual Cost</th><th>Playgrounds</th>
+        <th>P1 Exams</th><th>P2-6 Exams</th><th>Streaming</th><th>Feeder / Nominated</th>
+      </tr></thead>
+      <tbody id="tableBody"></tbody>
+    </table></div>
+  </div>
+
+  <div id="pathways" class="view">
+    <div class="sec-title">Secondary School Pathways</div>
+    <div class="sec-sub">Wan Chai is one of HK's strongest districts for secondary placement — two government schools nominate to <strong>both Queen's College and Belilios Public School</strong>.</div>
+    <div class="path-grid" id="pathGrid"></div>
+  </div>
+
+  <div id="verdict" class="view">
+    <div class="sec-title">Recommendations by Priority</div>
+    <div class="sec-sub">Choose based on what matters most to your family.</div>
+    <div class="verdict-grid" id="verdictGrid"></div>
+    <div style="margin-top:20px">
+      <div class="sec-title" style="font-size:14px;margin-bottom:10px">Quick Decision Guide</div>
+      <table class="dg-table">
+        <tr><th>If your top priority is…</th><th>Best choice</th></tr>
+        <tr><td>Secondary pathway to Queen's College + Belilios (boys)</td><td style="font-weight:700;color:var(--accent)">Hennessy Road GPS (either campus)</td></tr>
+        <tr><td>EMI government school (free, English-medium)</td><td style="font-weight:700;color:var(--accent)">Sir Ellis Kadoorie (Sookunpo) PS</td></tr>
+        <tr><td>Boys school → St. Joseph's College (elite secondary)</td><td style="font-weight:700;color:var(--accent)">St. Joseph's Primary School</td></tr>
+        <tr><td>Girls school → SPCS secondary (top girls)</td><td style="font-weight:700;color:var(--accent)">St. Paul's Convent School (PS)</td></tr>
+        <tr><td>EMI girls school (aided, free tuition)</td><td style="font-weight:700;color:var(--accent)">Marymount Primary School</td></tr>
+        <tr><td>Highest teacher qualifications (aided)</td><td style="font-weight:700;color:var(--accent)">Precious Blood PS (59% masters)</td></tr>
+        <tr><td>Catholic co-ed with indoor swimming pool + archery</td><td style="font-weight:700;color:var(--accent)">True Light School</td></tr>
+        <tr><td>Large campus, strong SEN support, co-ed Protestant</td><td style="font-weight:700;color:var(--accent)">SKH St. James' PS</td></tr>
+        <tr><td>Lowest cost, co-ed, through-train secondary</td><td style="font-weight:700;color:var(--accent)">Buddhist Wong Cheuk Um PS</td></tr>
+        <tr><td>Catholic co-ed prestigious private → Raimondi College</td><td style="font-weight:700;color:var(--accent)">Raimondi College Primary Section</td></tr>
+      </table>
+    </div>
+    <div style="margin-top:12px;font-size:11px;color:var(--muted);text-align:center">Data from CHSC PSP 2025. North Point GPS (Cloud View Road) sch_id=37 is winding down — P6 only in 2025/26.</div>
+  </div>
+</div>
+
+<script>
+const SCHOOLS = [
+  {id:406,name:"Buddhist Wong Cheuk Um PS",cn:"佛教黃焯菴小學",type:"aided",gender:"coed",moi:"chinese",religion:"buddhism",founded:1959,location:"Causeway Bay",address:"11 Eastern Hospital Road",classes:8,masters:29,sped:29,exp10:67,ptaFee:50,charges:380,schoolFee:0,playgrounds:1,classrooms:12,p1E:1,p1T:0,p26E:3,p26T:0,streaming:"By needs",feeder:"Buddhist Wong Fung Ling College",nominated:"",windingDown:false,
+  tags:["Through-train","Astronomy Room","Digital Planetarium","AI Robots","Rooftop Garden"],
+  verdict:"Buddhist ethos, through-train to secondary, unique astronomy facilities. Small size allows individual attention.",
+  pros:["Through-train secondary school",,"Buddhist ethos, astronomy room","AI robots, digital planetarium","Affordable (~$430/yr)"],
+  cons:["Very small (8 classes, shrinking)","Low SpEd training %","Single playground"]},
+
+  {id:421,name:"Hennessy Road GPS",cn:"軒尼詩道官立小學",type:"government",gender:"coed",moi:"chinese",religion:"none",founded:1949,location:"Wan Chai",address:"169 Thomson Road",classes:30,masters:43,sped:76,exp10:77,ptaFee:0,charges:200,schoolFee:0,playgrounds:1,classrooms:30,p1E:1,p1T:0,p26E:3,p26T:0,streaming:"Mixed",feeder:"",nominated:"Queen's College, Belilios PS, Clementi SS, Tang Siu Kin Victoria GPS, Hotung SS",windingDown:false,
+  tags:["★ Queen's College","★ Belilios PS","Government","Free","5 Nominated Secondaries"],
+  verdict:"Best secondary pathway school in Wan Chai — nominates to BOTH Queen's College and Belilios Public School. Free, 30 classes, experienced teachers.",
+  pros:["Nominates to Queen's College AND Belilios PS","Completely free (~$200 charges only)","76% SpEd trained, 77% with 10+ years exp","30 large classes","Inno Space, 3 music rooms"],
+  cons:["Only 1 playground","Chinese medium only","High competition for admission"]},
+
+  {id:422,name:"Hennessy Road GPS (Causeway Bay)",cn:"軒尼詩道官立小學（銅鑼灣）",type:"government",gender:"coed",moi:"chinese",religion:"none",founded:1949,location:"Causeway Bay",address:"3 Eastern Hospital Road",classes:30,masters:42,sped:58,exp10:69,ptaFee:0,charges:0,schoolFee:0,playgrounds:1,classrooms:30,p1E:1,p1T:1,p26E:2,p26T:2,streaming:"P3-P6: one advanced class",feeder:"",nominated:"Queen's College, Belilios PS, Clementi SS, Hotung SS, Tang Shiu Kin Victoria GPS",windingDown:false,
+  tags:["★ Queen's College","★ Belilios PS","Government","Completely Free","Advanced Class P3+"],
+  verdict:"Sister campus to Hennessy GPS — same elite secondary nominations. Completely free (no charges). Has one advanced class from P3.",
+  pros:["Nominates to Queen's College AND Belilios PS","100% free — zero fees","E-orchestra, Lion/Dragon Dance","One advanced class for high achievers"],
+  cons:["Only 1 playground","Lower SpEd% vs Thomson Rd campus","Has tests in P1 and P2-6"]},
+
+  {id:413,name:"Li Sing Tai Hang School",cn:"李陞大坑學校",type:"aided",gender:"coed",moi:"bilingual",religion:"none",founded:1958,location:"Tai Hang",address:"73 Wun Sha Street",classes:11,masters:36,sped:18,exp10:50,ptaFee:100,charges:450,schoolFee:0,playgrounds:1,classrooms:12,p1E:0,p1T:2,p26E:0,p26T:4,streaming:"Mixed",feeder:"",nominated:"",windingDown:false,
+  tags:["Bilingual","Lacrosse","IoT","Drone Coding","Lightsaber","AI Advanced"],
+  verdict:"Tiny but distinctive — bilingual, tests-instead-of-exams approach, and the most unusual extracurricular list (lacrosse, lightsaber, IoT, AI). Low SpEd training is a concern.",
+  pros:["Bilingual (Chinese + English)","Unique activities: lacrosse, lightsaber, IoT","Assessment by tests only (no exams)","Small class = individual attention"],
+  cons:["Only 11 classes — limited peer network","Very low SpEd training (18%)","Only 1 playground, smallest campus (~1,000 sq.m.)","Higher fees (~$550/yr)"]},
+
+  {id:407,name:"Marymount Primary School",cn:"瑪利曼小學",type:"aided",gender:"girls",moi:"english",religion:"catholicism",founded:1927,location:"Tai Hang",address:"336 Tai Hang Road",classes:24,masters:51,sped:80,exp10:65,ptaFee:100,charges:700,schoolFee:0,playgrounds:2,classrooms:24,p1E:0,p1T:0,p26E:3,p26T:0,streaming:"Mixed",feeder:"Marymount Secondary School",nominated:"",windingDown:false,
+  tags:["EMI","Girls","Catholic","Feeder","Large Campus 11,204m²","Gentle Assessment"],
+  verdict:"Premier EMI aided school for girls. Largest campus in Wan Chai (~11,204 sq.m.). No tests or exams in P1 at all. Highest specific purpose charge ($700) but school fee is free.",
+  pros:["EMI — English as teaching language","No tests or exams in P1","Feeder to Marymount Secondary","Large campus (11,204 sq.m.), 51% masters","80% SpEd trained"],
+  cons:["Girls only","Highest annual charges ($700 specific purpose)","Catholic requirement may not suit all families"]},
+
+  {id:415,name:"PLK Gold & Silver Pershing Tsang",cn:"保良局金銀業貿易場張凝文學校",type:"aided",gender:"coed",moi:"bilingual",religion:"none",founded:1946,location:"Causeway Bay",address:"12 Link Road",classes:11,masters:43,sped:64,exp10:52,ptaFee:30,charges:400,schoolFee:0,playgrounds:3,classrooms:16,p1E:0,p1T:0,p26E:2,p26T:0,streaming:"Mixed",feeder:"",nominated:"",windingDown:false,
+  tags:["Bilingual","Po Leung Kuk","3 Playgrounds","Skateboard","Roller Skating","Fencing"],
+  verdict:"Small Po Leung Kuk school with 3 playgrounds (unusually high for size), bilingual curriculum, and fun extracurriculars (skateboard, roller skating, fencing, K-pop).",
+  pros:["3 playgrounds for an 11-class school","Bilingual (Chinese + English)","Very gentle assessment (only 2 exams/yr P2-6)","Low fees ($30 PTA + $400)"],
+  cons:["Small (11 classes)","No strong secondary pathway"]},
+
+  {id:414,name:"Po Kok Primary School",cn:"寶覺小學",type:"aided",gender:"coed",moi:"bilingual",religion:"buddhism",founded:1931,location:"Happy Valley",address:"11-15 Shan Kwong Road",classes:16,masters:41,sped:78,exp10:33,ptaFee:60,charges:0,schoolFee:0,playgrounds:1,classrooms:19,p1E:1,p1T:0,p26E:2,p26T:2,streaming:"By Chinese ability",feeder:"",nominated:"",windingDown:false,
+  tags:["Buddhist","Bilingual","Rock Climbing Wall","Multi-sensory Learning Centre","Lowest Fees"],
+  verdict:"Buddhist Co-ed with bilingual curriculum. Very low fees (~$60/yr total). Rock climbing wall and multi-sensory room. Streaming by Chinese language ability.",
+  pros:["Lowest annual cost (~$60 PTA only)","Bilingual curriculum","78% SpEd trained","Rock climbing wall","Buddhist ethos"],
+  cons:["Low 10+ years experience (33%)","Only 1 playground","Streaming by Chinese ability from early on"]},
+
+  {id:423,name:"Precious Blood Primary School",cn:"寶血小學",type:"aided",gender:"coed",moi:"chinese",religion:"catholicism",founded:1945,location:"Happy Valley",address:"72 Sing Woo Road",classes:16,masters:59,sped:81,exp10:66,ptaFee:50,charges:300,schoolFee:0,playgrounds:1,classrooms:18,p1E:2,p1T:0,p26E:3,p26T:0,streaming:"P4-P6",feeder:"",nominated:"",windingDown:false,
+  tags:["Catholic","Highest Masters% (59%)","Strong SEN (81%)","STEAM","Gentle (no tests)"],
+  verdict:"Best teacher qualification profile among aided schools. 59% hold masters/PhD. 81% SpEd trained. Two class teachers per class. No formal tests — only exams.",
+  pros:["Highest Masters/PhD % in district (59%)","81% SpEd trained — excellent inclusion","Two class teachers per class","No tests — exams only","Good value (~$350/yr)"],
+  cons:["Only 1 playground, small campus (~1,220 sq.m.)","16 classes only","Streaming begins P4"]},
+
+  {id:410,name:"Sir Ellis Kadoorie (Sookunpo) PS",cn:"官立嘉道理爵士小學",type:"government",gender:"coed",moi:"english",religion:"none",founded:1891,location:"Sookunpo/Causeway Bay",address:"9 Eastern Hospital Road",classes:18,masters:26,sped:82,exp10:82,ptaFee:65,charges:0,schoolFee:0,playgrounds:2,classrooms:23,p1E:1,p1T:0,p26E:2,p26T:0,streaming:"P5-P6 by scores",feeder:"",nominated:"Sir Ellis Kadoorie Secondary (WK)",windingDown:false,
+  tags:["EMI","Government","Founded 1891","Oldest in Wan Chai","82% SpEd","82% 10+yrs Exp"],
+  verdict:"The only EMI government primary school in Wan Chai — extremely rare. Founded 1891. 82% of teachers have 10+ years experience. Very experienced, very stable.",
+  pros:["Only EMI government school in Wan Chai","Founded 1891 — most experienced institution","82% SpEd trained, 82% with 10+ years exp","Very low cost (~$65/yr)","NET co-teaching in lower primary"],
+  cons:["26% masters/PhD (lower postgrad rate)","Nominated secondary in West Kowloon (not HK Island)","Only 18 classes (not the largest)"]},
+
+  {id:417,name:"S.K.H. St. James' Primary School",cn:"聖公會聖雅各小學",type:"aided",gender:"coed",moi:"chinese",religion:"protestantism",founded:1961,location:"Wan Chai",address:"110 Kennedy Road",classes:30,masters:35,sped:61,exp10:74,ptaFee:30,charges:450,schoolFee:0,playgrounds:3,classrooms:30,p1E:1,p1T:0,p26E:2,p26T:0,streaming:"P5-P6",feeder:"",nominated:"",windingDown:false,
+  tags:["Protestant","30 Classes","3 Playgrounds","Large Campus 11,106m²","Sky Garden","Balcony Garden"],
+  verdict:"Large Protestant school with one of the biggest campuses (11,106 sq.m.) and 3 playgrounds. 30 classes. Gentle assessment. Good all-rounder for co-ed families.",
+  pros:["Large campus (11,106 sq.m.), 3 playgrounds","30 classes — strong peer network","Sky Garden + Balcony Garden (unique)","Low PTA fee ($30)","Good teacher experience (74%)"],
+  cons:["No notable secondary school pathway","Lower SpEd training (61%)","Christian ethos"]},
+
+  {id:411,name:"St. Francis' Canossian School",cn:"嘉諾撒聖方濟各學校",type:"aided",gender:"girls",moi:"chinese",religion:"catholicism",founded:1869,location:"Wan Chai",address:"42-44 St. Francis Street",classes:24,masters:39,sped:69,exp10:66,ptaFee:100,charges:450,schoolFee:0,playgrounds:2,classrooms:24,p1E:2,p1T:0,p26E:3,p26T:0,streaming:"None",feeder:"St. Francis' Canossian College",nominated:"",windingDown:false,
+  tags:["Catholic","Girls","Oldest in Wan Chai (1869)","Feeder to St. Francis' Canossian College"],
+  verdict:"Oldest school in Wan Chai (founded 1869). Girls Catholic school with direct feeder to St. Francis' Canossian College. No streaming — all mixed ability.",
+  pros:["Oldest school in Wan Chai (est. 1869)","Feeder to St. Francis' Canossian College","No streaming (mixed ability throughout)","Stable experienced staff (66% 10+ yrs)"],
+  cons:["Girls only","Higher fees (~$550/yr)","CMI only"]},
+
+  {id:424,name:"St. Joseph's Primary School",cn:"聖若瑟小學",type:"aided",gender:"boys",moi:"english",religion:"catholicism",founded:1968,location:"Wan Chai",address:"48 Wood Road",classes:30,masters:44,sped:55,exp10:55,ptaFee:160,charges:470,schoolFee:0,playgrounds:1,classrooms:30,p1E:1,p1T:2,p26E:1,p26T:2,streaming:"None",feeder:"St. Joseph's College",nominated:"",windingDown:false,
+  tags:["EMI","Boys","Catholic","Feeder → St. Joseph's College","STEM Gifted Programme","Highest PTA Fee"],
+  verdict:"EMI boys school with the most prestigious boys' secondary feeder in HK — St. Joseph's College. 30 classes. Active STEM Gifted Programme.",
+  pros:["EMI — English medium throughout","Feeder to St. Joseph's College (elite)","30 classes (largest boys school)","STEM Gifted Programme","44% masters/PhD"],
+  cons:["Boys only","Highest fees of aided schools (~$630/yr)","Only 1 playground for 30 classes","More tests than peers (2 tests + 1 exam per term)"]},
+
+  {id:412,name:"St. Paul's Primary Catholic School",cn:"聖保祿天主教小學",type:"aided",gender:"girls",moi:"chinese",religion:"catholicism",founded:1960,location:"Happy Valley",address:"81A Wong Nai Chung Road",classes:24,masters:27,sped:57,exp10:54,ptaFee:100,charges:450,schoolFee:0,playgrounds:2,classrooms:24,p1E:2,p1T:0,p26E:3,p26T:0,streaming:"None",feeder:"St. Paul's Secondary School",nominated:"",windingDown:false,
+  tags:["Catholic","Girls","Feeder to St. Paul's Secondary","Happy Valley"],
+  verdict:"Catholic girls school in Happy Valley with direct feeder to St. Paul's Secondary School. No streaming. Standard assessment approach.",
+  pros:["Feeder to St. Paul's Secondary School","No streaming (mixed ability)","Happy Valley location"],
+  cons:["Girls only","Lower teacher postgrad rate (27%)","No standout facilities"]},
+
+  {id:418,name:"TWGHs Li Chi Ho PS",cn:"東華三院李賜豪小學",type:"aided",gender:"coed",moi:"chinese",religion:"none",founded:1958,location:"Wan Chai",address:"280 Queen's Road East",classes:17,masters:28,sped:61,exp10:64,ptaFee:20,charges:310,schoolFee:0,playgrounds:1,classrooms:18,p1E:2,p1T:0,p26E:3,p26T:0,streaming:"Cantonese/PTH split",feeder:"",nominated:"",windingDown:false,
+  tags:["TWGH","Low Fees","2 NETs","Distance Learning Room","Small Class (max 26)"],
+  verdict:"Tung Wah Group of Hospitals school with low fees (~$330/yr), 2 native English teachers, real-time distance learning room. Max 26 students per class.",
+  pros:["Very low fees (~$330/yr)","2 native English teachers","Max 26 students per class","Distance learning technology"],
+  cons:["Only 1 playground, small campus (~2,000 sq.m.)","Smaller school (17 classes)","Low masters% (28%)"]},
+
+  {id:37,name:"NP GPS (Cloud View Road)",cn:"北角官立小學（雲景道）",type:"government",gender:"coed",moi:"chinese",religion:"none",founded:1954,location:"North Point",address:"22 Cloud View Road",classes:4,masters:50,sped:75,exp10:92,ptaFee:0,charges:0,schoolFee:0,playgrounds:2,classrooms:24,p1E:0,p1T:0,p26E:2,p26T:2,streaming:"P5-P6",feeder:"",nominated:"SKWGSS, Clementi SS",windingDown:true,
+  tags:["WINDING DOWN","Government","Free","P6 Only in 2025/26"],
+  verdict:"Winding down — only P6 classes remain in 2025/26. Not accepting new students. Do not consider for P1 admission.",
+  pros:["Completely free","92% teachers with 10+ years experience"],
+  cons:["WINDING DOWN — P6 only in 2025/26, NOT accepting new P1 students","Very limited extracurriculars with so few classes"]},
+
+  {id:409,name:"Raimondi College Primary Section",cn:"高主教書院小學部",type:"private",gender:"coed",moi:"bilingual",religion:"catholicism",founded:1958,location:"Stubbs Road",address:"1E Shiu Fai Terrace",classes:26,masters:23,sped:0,exp10:46,ptaFee:100,charges:0,schoolFee:58800,playgrounds:2,classrooms:27,p1E:0,p1T:0,p26E:2,p26T:2,streaming:"Random",feeder:"Raimondi College",nominated:"",windingDown:false,
+  tags:["Private","Catholic","Bilingual","Feeder → Raimondi College","Grotto","Prayer Room","Fencing"],
+  verdict:"Prestigious private Catholic school on Stubbs Road. Feeder to Raimondi College. Bilingual, gentle P1 assessment. $58,800/yr tuition.",
+  pros:["Feeder to Raimondi College","Bilingual (Chinese + English)","No tests or exams in P1","Gifted Education Learning Centre","Campus with Grotto (unique)"],
+  cons:["$58,800/yr tuition","0% SpEd trained — poor inclusion support","Low masters% (23%)","High % of new teachers (41% have <5 years exp)"]},
+
+  {id:425,name:"St. Paul's Convent School (PS)",cn:"聖保祿學校（小學部）",type:"private",gender:"girls",moi:"english",religion:"catholicism",founded:1864,location:"Causeway Bay",address:"140 Leighton Road",classes:30,masters:41,sped:14,exp10:71,ptaFee:0,charges:0,schoolFee:55000,playgrounds:2,classrooms:30,p1E:2,p1T:2,p26E:2,p26T:2,streaming:"Mixed",feeder:"St. Paul's Convent School",nominated:"",windingDown:false,
+  tags:["EMI","Girls","Founded 1864","Feeder → SPCS","Top Private","Chapel","Badminton Court"],
+  verdict:"One of HK's most prestigious girls' schools. EMI since 1864. Feeder to SPCS secondary. $55,000/yr. Full 30 classes. Very experienced staff (71% with 10+ years).",
+  pros:["Feeder to SPCS — one of HK's top schools","EMI (English throughout)","Founded 1864 — deep tradition","71% teachers with 10+ years exp","30 classes (full school)"],
+  cons:["Girls only","$55,000/yr tuition","Very low SpEd training (14%)","Assessment-heavy from P1 (2 tests + 2 exams)"]},
+
+  {id:420,name:"The True Light School (Primary)",cn:"香港真光中學附屬小學暨幼稚園",type:"private",gender:"coed",moi:"bilingual",religion:"protestantism",founded:1872,location:"Tai Hang",address:"50 Tai Hang Road",classes:22,masters:35,sped:0,exp10:46,ptaFee:70,charges:0,schoolFee:63650,playgrounds:1,classrooms:28,p1E:2,p1T:2,p26E:2,p26T:2,streaming:"Mixed",feeder:"True Light School",nominated:"",windingDown:false,
+  tags:["Private","Protestant","Bilingual","Indoor Swimming Pool","Archery","Rock Climbing","Organic Farm"],
+  verdict:"Most expensive school in Wan Chai ($63,650/yr) but has the most unique facilities: indoor swimming pool, archery venue, rock-climbing walls, organic farming. Feeder to True Light secondary.",
+  pros:["Indoor swimming pool (extremely rare at primary level)","Archery venue + rock-climbing walls","Organic farming and fishery garden","Bilingual curriculum","Feeder to True Light School"],
+  cons:["Most expensive in district ($63,650/yr)","0% SpEd trained","Only 1 playground","Protestant requirement"]}
+];
+
+function typeLabel(t){return{government:"Government",aided:"Aided",private:"Private",dss:"DSS"}[t]||t}
+function genderLabel(g){return{coed:"Co-ed",boys:"Boys",girls:"Girls"}[g]||g}
+function moiLabel(m){return{english:"EMI",bilingual:"Bilingual",chinese:"CMI"}[m]||m}
+function typeBadge(t){return{government:"b-gov",aided:"b-aided",private:"b-private",dss:"b-dss"}[t]||"b-aided"}
+function genderBadge(g){return{coed:"b-coed",boys:"b-boys",girls:"b-girls"}[g]||"b-coed"}
+function moiBadge(m){return{english:"b-emi",bilingual:"b-bili",chinese:"b-coed"}[m]||"b-coed"}
+function annualCost(s){if(s.schoolFee>0)return"$"+s.schoolFee.toLocaleString()+"/yr";return"~$"+(s.ptaFee+s.charges)}
+
+let filtered = [...SCHOOLS];
+
+function applyFilters(){
+  const q=document.getElementById('searchBox').value.toLowerCase();
+  const ft=document.getElementById('fType').value;
+  const fg=document.getElementById('fGender').value;
+  const fm=document.getElementById('fMoi').value;
+  const fr=document.getElementById('fReligion').value;
+  filtered=SCHOOLS.filter(s=>{
+    if(q&&!s.name.toLowerCase().includes(q)&&!s.cn.includes(q))return false;
+    if(ft&&s.type!==ft)return false;
+    if(fg&&s.gender!==fg)return false;
+    if(fm&&s.moi!==fm)return false;
+    if(fr&&s.religion!==fr)return false;
+    return true;
+  });
+  renderCards();renderTable();renderPathways();
+}
+
+function resetFilters(){
+  document.getElementById('searchBox').value='';
+  document.getElementById('fType').value='';
+  document.getElementById('fGender').value='';
+  document.getElementById('fMoi').value='';
+  document.getElementById('fReligion').value='';
+  filtered=[...SCHOOLS];
+  renderCards();renderTable();renderPathways();
+}
+
+function renderCards(){
+  const g=document.getElementById('cardGrid');
+  const cb=document.getElementById('countBar');
+  cb.textContent=`Showing ${filtered.length} of ${SCHOOLS.length} schools`;
+  g.innerHTML=filtered.map(s=>`
+    <div class="card${s.windingDown?' winding':''}">
+      <div class="card-top">
+        <div><div class="card-title">${s.name}${s.windingDown?' ⚠️':''}</div><div class="card-cn">${s.cn}</div></div>
+        <div class="badges">
+          <span class="badge ${typeBadge(s.type)}">${typeLabel(s.type)}</span>
+          <span class="badge ${genderBadge(s.gender)}">${genderLabel(s.gender)}</span>
+          <span class="badge ${moiBadge(s.moi)}">${moiLabel(s.moi)}</span>
+        </div>
+      </div>
+      ${s.windingDown?'<div class="badge b-warn" style="margin-bottom:8px;display:inline-block">⚠ WINDING DOWN — Not accepting P1</div>':''}
+      <div class="stats">
+        <div class="stat"><label>Location</label><span>${s.location}</span></div>
+        <div class="stat"><label>Founded</label><span>${s.founded}</span></div>
+        <div class="stat"><label>Classes</label><span>${s.classes}</span></div>
+        <div class="stat"><label>Annual Cost</label><span>${annualCost(s)}</span></div>
+        <div class="stat"><label>Masters/PhD</label><span>${s.masters}%</span></div>
+        <div class="stat"><label>SpEd Trained</label><span>${s.sped}%</span></div>
+      </div>
+      <div class="tags">
+        ${s.tags.map(t=>`<span class="tag${t.startsWith('★')?'gold':t.includes('WIND')?'red':''}">${t}</span>`).join('')}
+      </div>
+      ${(s.feeder||s.nominated)?`<div style="margin-top:8px;font-size:11px;color:var(--muted)">→ ${s.feeder||s.nominated}</div>`:''}
+    </div>`).join('');
+}
+
+function renderTable(){
+  const b=document.getElementById('tableBody');
+  b.innerHTML=filtered.map(s=>`<tr${s.windingDown?' style="opacity:.6"':''}>
+    <td><strong>${s.name}</strong><div class="nt">${s.cn}</div></td>
+    <td><span class="badge ${typeBadge(s.type)}">${typeLabel(s.type)}</span></td>
+    <td><span class="badge ${genderBadge(s.gender)}">${genderLabel(s.gender)}</span></td>
+    <td><span class="badge ${moiBadge(s.moi)}">${moiLabel(s.moi)}</span></td>
+    <td>${s.founded}</td>
+    <td>${s.windingDown?'<span style="color:var(--red)">⚠ '+s.classes+'</span>':s.classes}</td>
+    <td>${s.masters>=45?'<span class="best">'+s.masters+'%</span>':s.masters+'%'}</td>
+    <td>${s.sped>=75?'<span class="best">'+s.sped+'%</span>':s.sped+'%'}</td>
+    <td>${s.exp10>=75?'<span class="best">'+s.exp10+'%</span>':s.exp10+'%'}</td>
+    <td>${annualCost(s)}</td>
+    <td>${s.playgrounds}</td>
+    <td>${s.p1T}T + ${s.p1E}E</td>
+    <td>${s.p26T}T + ${s.p26E}E</td>
+    <td>${s.streaming}</td>
+    <td style="font-size:11px">${s.feeder?'<strong>'+s.feeder+'</strong>':''}${s.nominated?'<div class="nt">'+s.nominated+'</div>':''}</td>
+  </tr>`).join('');
+}
+
+function renderPathways(){
+  const schools=filtered.filter(s=>s.feeder||s.nominated);
+  const g=document.getElementById('pathGrid');
+  g.innerHTML=schools.map(s=>{
+    const paths=[];
+    if(s.feeder)paths.push({from:s.name,to:s.feeder,top:s.feeder.includes("Joseph")||s.feeder.includes("Paul's Convent")||s.feeder.includes("St. Francis")});
+    if(s.nominated){
+      s.nominated.split(', ').forEach(n=>paths.push({from:s.name,to:n,top:n.includes("Queen's")||n.includes("Belilios")}));
+    }
+    return `<div class="path-card">
+      <h3>${s.name}</h3>
+      <div class="sub">${genderLabel(s.gender)} · ${typeLabel(s.type)} · ${moiLabel(s.moi)}</div>
+      ${paths.map(p=>`<div class="path-arrow">
+        <div class="pa-from">${p.from.replace(/ Primary School| PS/,'')}</div>
+        <div class="pa-arr">→</div>
+        <div class="pa-to${p.top?' top':''}">${p.to}</div>
+      </div>`).join('')}
+    </div>`;
+  }).join('');
+  if(!schools.length)g.innerHTML='<p style="color:var(--muted);font-size:13px">No schools with secondary pathways match your current filters.</p>';
+}
+
+function renderVerdict(){
+  const cards=[
+    {id:421,sub:"Wan Chai · Government · Co-ed · CMI"},
+    {id:422,sub:"Causeway Bay · Government · Co-ed · CMI"},
+    {id:410,sub:"Sookunpo · Government · Co-ed · EMI"},
+    {id:424,sub:"Wan Chai · Aided · Boys · EMI"},
+    {id:407,sub:"Tai Hang · Aided · Girls · EMI"},
+    {id:425,sub:"Causeway Bay · Private · Girls · EMI"},
+    {id:423,sub:"Happy Valley · Aided · Co-ed · CMI"},
+    {id:417,sub:"Kennedy Road · Aided · Co-ed · CMI"},
+    {id:406,sub:"Causeway Bay · Aided · Co-ed · CMI"},
+    {id:409,sub:"Stubbs Road · Private · Co-ed · Bilingual"},
+    {id:420,sub:"Tai Hang · Private · Co-ed · Bilingual"},
+    {id:411,sub:"Wan Chai · Aided · Girls · CMI"},
+  ];
+  const g=document.getElementById('verdictGrid');
+  g.innerHTML=cards.map(c=>{
+    const s=SCHOOLS.find(x=>x.id===c.id);
+    if(!s)return'';
+    return`<div class="v-card">
+      <h3>${s.name}</h3>
+      <div class="v-sub">${c.sub}</div>
+      <h4>Strengths</h4>
+      <ul class="pros">${s.pros.filter(Boolean).map(p=>`<li>${p}</li>`).join('')}</ul>
+      <h4>Weaknesses</h4>
+      <ul class="cons">${s.cons.map(p=>`<li>${p}</li>`).join('')}</ul>
+      <div class="bf"><label>BEST FOR</label><p>${s.verdict}</p></div>
+    </div>`;
+  }).join('');
+}
+
+function showTab(name,el){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById(name).classList.add('active');
+  el.classList.add('active');
+}
+
+// Init
+applyFilters();
+renderVerdict();
+</script>
+</body>
+</html>

@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HK Island Primary Schools 2025/26</title>
+<style>
+:root{--bg:#f8f9fa;--card:#fff;--border:#e2e8f0;--accent:#2563eb;--accent-light:#eff6ff;--text:#1e293b;--muted:#64748b;--green:#16a34a;--amber:#d97706;--red:#dc2626;--purple:#7c3aed}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.5}
+header{background:var(--accent);color:#fff;padding:22px 32px}
+header h1{font-size:21px;font-weight:700}
+header p{opacity:.85;font-size:12px;margin-top:3px}
+.container{max-width:1400px;margin:0 auto;padding:20px}
+.toolbar{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px;align-items:center}
+.search{padding:7px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;flex:1;min-width:160px}
+select{padding:7px 10px;border:1px solid var(--border);border-radius:8px;font-size:12px;background:#fff;cursor:pointer}
+.tabs{display:flex;gap:4px;margin-bottom:20px;flex-wrap:wrap}
+.tab{padding:7px 16px;border-radius:8px;border:1px solid var(--border);background:var(--card);cursor:pointer;font-size:13px;font-weight:500;color:var(--muted);transition:all .15s}
+.tab:hover{border-color:var(--accent);color:var(--accent)}
+.tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.view{display:none}.view.active{display:block}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;transition:box-shadow .15s;position:relative}
+.card:hover{box-shadow:0 4px 16px rgba(0,0,0,.08)}
+.card.winding{opacity:.65;border-style:dashed}
+.card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;gap:8px}
+.card-title{font-size:14px;font-weight:700;line-height:1.3}
+.card-cn{font-size:11px;color:var(--muted);margin-top:2px}
+.badges{display:flex;flex-direction:column;gap:3px;flex-shrink:0}
+.badge{display:inline-block;padding:2px 7px;border-radius:12px;font-size:10px;font-weight:700;white-space:nowrap}
+.b-gov{background:#dbeafe;color:#1d4ed8}
+.b-aided{background:#dcfce7;color:#166534}
+.b-private{background:#fef9c3;color:#854d0e}
+.b-dss{background:#f3e8ff;color:#6b21a8}
+.b-boys{background:#e0f2fe;color:#0369a1}
+.b-girls{background:#fce7f3;color:#9d174d}
+.b-coed{background:#f1f5f9;color:#475569}
+.b-emi{background:#d1fae5;color:#065f46}
+.b-bili{background:#fef3c7;color:#92400e}
+.b-cmi{background:#f1f5f9;color:#475569}
+.b-warn{background:#fee2e2;color:#991b1b}
+/* District badges */
+.b-cw{background:#e0e7ff;color:#4338ca}
+.b-wc{background:#dbeafe;color:#1d4ed8}
+.b-ea{background:#cffafe;color:#0e7490}
+.b-so{background:#dcfce7;color:#166534}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:10px 0}
+.stat label{font-size:10px;color:var(--muted);display:block}
+.stat span{font-size:13px;font-weight:500}
+.tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px}
+.tag{background:var(--accent-light);color:var(--accent);padding:2px 7px;border-radius:4px;font-size:10px}
+.tag.gold{background:#fef3c7;color:#92400e}
+.tag.red{background:#fee2e2;color:#991b1b}
+.tag.green{background:#dcfce7;color:#166534}
+.hidden{display:none!important}
+.count-bar{font-size:12px;color:var(--muted);margin-bottom:12px}
+/* Table */
+.tbl-wrap{overflow-x:auto;border-radius:10px;border:1px solid var(--border)}
+table{width:100%;border-collapse:collapse;background:var(--card);min-width:900px}
+thead tr{background:var(--accent);color:#fff}
+th{padding:10px 12px;text-align:left;font-size:11px;font-weight:600;white-space:nowrap}
+td{padding:9px 12px;border-bottom:1px solid var(--border);font-size:12px;vertical-align:top}
+tr:last-child td{border-bottom:none}
+tr:nth-child(even){background:#fafafa}
+.rh{font-weight:600;color:var(--muted);font-size:10px;background:#f8fafc!important;text-transform:uppercase}
+.best{color:var(--green);font-weight:700}
+.nt{font-size:10px;color:var(--muted);margin-top:2px}
+/* Pathways */
+.path-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px}
+.path-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px}
+.path-card h3{font-size:13px;font-weight:700;margin-bottom:4px}
+.path-card .sub{font-size:11px;color:var(--muted);margin-bottom:10px}
+.path-arrow{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #f1f5f9}
+.path-arrow:last-child{border-bottom:none}
+.pa-from{font-size:12px;flex:1}
+.pa-arr{color:var(--muted)}
+.pa-to{font-size:12px;font-weight:600;color:var(--accent);flex:1;text-align:right}
+.pa-to.top{color:var(--green)}
+/* Verdict */
+.verdict-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px}
+.v-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px}
+.v-card h3{font-size:14px;font-weight:700;margin-bottom:3px}
+.v-sub{font-size:11px;color:var(--muted);margin-bottom:10px}
+.pros li::before{content:'✓ ';color:var(--green)}
+.cons li::before{content:'✗ ';color:var(--red)}
+ul{list-style:none;font-size:12px}
+li{padding:2px 0}
+h4{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin:8px 0 4px}
+.bf{background:var(--accent-light);border-radius:6px;padding:8px 10px;margin-top:8px}
+.bf label{font-size:10px;font-weight:700;color:var(--accent);display:block;margin-bottom:2px}
+.bf p{font-size:12px}
+.dg-table{width:100%;border-collapse:collapse;background:var(--card);border-radius:10px;overflow:hidden;border:1px solid var(--border)}
+.dg-table th{background:#f8fafc;padding:8px 12px;text-align:left;font-size:12px}
+.dg-table td{padding:8px 12px;border-bottom:1px solid var(--border);font-size:12px}
+.dg-table tr:last-child td{border-bottom:none}
+.dg-table tr:nth-child(even){background:#fafafa}
+.sec-title{font-size:16px;font-weight:700;margin-bottom:6px}
+.sec-sub{font-size:12px;color:var(--muted);margin-bottom:16px}
+/* Dataset selector */
+.ds-btn{padding:7px 18px;border-radius:20px;border:2px solid rgba(255,255,255,.5);background:rgba(255,255,255,.15);color:#fff;cursor:pointer;font-size:13px;font-weight:600;transition:all .15s}
+.ds-btn.active{background:#fff;color:var(--accent);border-color:#fff}
+.ds-btn:hover:not(.active){background:rgba(255,255,255,.25)}
+</style>
+</head>
+<body>
+<header>
+  <h1>HK Island Primary Schools — 2025/26</h1>
+  <p id="headerSub">18 schools · District 5 · CHSC PSP 2025</p>
+  <div style="display:flex;gap:6px;margin-top:12px;flex-wrap:wrap">
+    <button class="ds-btn active" onclick="switchDataset('wanchai',this)">Wan Chai District</button>
+    <button class="ds-btn" onclick="switchDataset('eastern',this)">Eastern District</button>
+    <button class="ds-btn" onclick="switchDataset('emi',this)">HK Island EMI / Bilingual</button>
+  </div>
+</header>
+<div class="container">
+  <div class="toolbar">
+    <input class="search" type="text" id="searchBox" placeholder="Search school name…" oninput="applyFilters()">
+    <select id="fType" onchange="applyFilters()">
+      <option value="">All Types</option>
+      <option value="government">Government</option>
+      <option value="aided">Aided</option>
+      <option value="dss">DSS</option>
+      <option value="private">Private</option>
+    </select>
+    <select id="fGender" onchange="applyFilters()">
+      <option value="">All Genders</option>
+      <option value="coed">Co-ed</option>
+      <option value="boys">Boys</option>
+      <option value="girls">Girls</option>
+    </select>
+    <select id="fMoi" onchange="applyFilters()">
+      <option value="">All Languages</option>
+      <option value="english">EMI (English)</option>
+      <option value="bilingual">Bilingual</option>
+      <option value="chinese">CMI (Chinese)</option>
+    </select>
+    <div id="fExtraWrap">
+      <select id="fExtra" onchange="applyFilters()"><option value="">All Religions</option><option value="none">Secular</option><option value="catholicism">Catholic</option><option value="protestantism">Protestant</option><option value="buddhism">Buddhist</option></select>
+    </div>
+    <button onclick="resetFilters()" style="padding:7px 12px;border-radius:8px;border:1px solid var(--border);background:#fff;cursor:pointer;font-size:12px">Reset</button>
+  </div>
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('cards',this)">All Schools</button>
+    <button class="tab" onclick="showTab('table',this)">Compare Table</button>
+    <button class="tab" onclick="showTab('pathways',this)">Secondary Pathways</button>
+    <button class="tab" onclick="showTab('verdict',this)">Recommendations</button>
+  </div>
+
+  <div id="cards" class="view active">
+    <div class="count-bar" id="countBar"></div>
+    <div class="grid" id="cardGrid"></div>
+  </div>
+
+  <div id="table" class="view">
+    <div class="sec-title">Side-by-Side Comparison</div>
+    <div class="sec-sub">Showing filtered schools. Use filters above to narrow down.</div>
+    <div class="tbl-wrap"><table id="mainTable">
+      <thead><tr>
+        <th>School</th><th>Type</th><th>Gender</th><th>MOI</th><th>Founded</th><th>Classes</th>
+        <th>Masters%</th><th>SpEd%</th><th>10+yr%</th><th>Annual Cost</th><th>Playgrounds</th>
+        <th>P1 Exams</th><th>P2-6 Exams</th><th>Streaming</th><th>Feeder / Nominated</th>
+      </tr></thead>
+      <tbody id="tableBody"></tbody>
+    </table></div>
+  </div>
+
+  <div id="pathways" class="view">
+    <div class="sec-title">Secondary School Pathways</div>
+    <div class="sec-sub" id="pathDesc">Wan Chai is one of HK's strongest districts for secondary placement — two government schools nominate to <strong>both Queen's College and Belilios Public School</strong>.</div>
+    <div class="path-grid" id="pathGrid"></div>
+  </div>
+
+  <div id="verdict" class="view">
+    <div class="sec-title">Recommendations by Priority</div>
+    <div class="sec-sub" id="verdDesc">Key standouts across Wan Chai's 18 schools.</div>
+    <div class="verdict-grid" id="verdictGrid"></div>
+    <div style="margin-top:20px">
+      <div class="sec-title" style="font-size:14px;margin-bottom:10px">Quick Decision Guide</div>
+      <div id="decisionGuide"></div>
+    </div>
+    <div style="margin-top:12px;font-size:11px;color:var(--muted);text-align:center">Data from CHSC PSP 2025.</div>
+  </div>
+</div>
+
+<script>
+/* ── Wan Chai dataset (18 schools) ── */
+const SCHOOLS_WC = [
+  {id:406,name:"Buddhist Wong Cheuk Um PS",cn:"佛教黃焯菴小學",district:"wanchai",type:"aided",gender:"coed",moi:"chinese",religion:"buddhism",founded:1959,location:"Causeway Bay",classes:8,masters:29,sped:29,exp10:67,ptaFee:50,charges:380,schoolFee:0,playgrounds:1,p1E:1,p1T:0,p26E:3,p26T:0,streaming:"By needs",feeder:"Buddhist Wong Fung Ling College",nominated:"",throughtrain:"",windingDown:false,
+  tags:["Through-train","Astronomy Room","Digital Planetarium","AI Robots","Rooftop Garden"],
+  verdict:"Buddhist ethos, through-train to secondary, unique astronomy facilities. Small size allows individual attention.",
+  pros:["Through-train secondary school","Buddhist ethos, astronomy room","AI robots, digital planetarium","Affordable (~$430/yr)"],
+  cons:["Very small (8 classes, shrinking)","Low SpEd training %","Single playground"]},
+
+  {id:421,name:"Hennessy Road GPS",cn:"軒尼詩道官立小學",district:"wanchai",type:"government",gender:"coed",moi:"chinese",religion:"none",founded:1949,location:"Wan Chai",classes:30,masters:43,sped:76,exp10:77,ptaFee:0,charges:200,schoolFee:0,playgrounds:1,p1E:1,p1T:0,p26E:3,p26T:0,streaming:"Mixed",feeder:"",nominated:"Queen's College, Belilios PS, Clementi SS, Tang Siu Kin Victoria GPS, Hotung SS",throughtrain:"",windingDown:false,
+  tags:["★ Queen's College","★ Belilios PS","Government","Free","5 Nominated Secondaries"],
+  verdict:"Best secondary pathway school in Wan Chai — nominates to BOTH Queen's College and Belilios Public School. Free, 30 classes, experienced teachers.",
+  pros:["Nominates to Queen's College AND Belilios PS","Completely free (~$200 charges only)","76% SpEd trained, 77% with 10+ years exp","30 large classes","Inno Space, 3 music rooms"],
+  cons:["Only 1 playground","Chinese medium only","High competition for admission"]},
+
+  {id:422,name:"Hennessy Road GPS (Causeway Bay)",cn:"軒尼詩道官立小學（銅鑼灣）",district:"wanchai",type:"government",gender:"coed",moi:"chinese",religion:"none",founded:1949,location:"Causeway Bay",classes:30,masters:42,sped:58,exp10:69,ptaFee:0,charges:0,schoolFee:0,playgrounds:1,p1E:1,p1T:1,p26E:2,p26T:2,streaming:"P3-P6: one advanced class",feeder:"",nominated:"Queen's College, Belilios PS, Clementi SS, Hotung SS, Tang Shiu Kin Victoria GPS",throughtrain:"",windingDown:false,
+  tags:["★ Queen's College","★ Belilios PS","Government","Completely Free","Advanced Class P3+"],
+  verdict:"Sister campus to Hennessy GPS — same elite secondary nominations. Completely free (no charges). Has one advanced class from P3.",
+  pros:["Nominates to Queen's College AND Belilios PS","100% free — zero fees","E-orchestra, Lion/Dragon Dance","One advanced class for high achievers"],
+  cons:["Only 1 playground","Lower SpEd% vs Thomson Rd campus","Has tests in P1 and P2-6"]},
+
+  {id:413,name:"Li Sing Tai Hang School",cn:"李陞大坑學校",district:"wanchai",type:"aided",gender:"coed",moi:"bilingual",religion:"none",founded:1958,location:"Tai Hang",classes:11,masters:36,sped:18,exp10:50,ptaFee:100,charges:450,schoolFee:0,playgrounds:1,p1E:0,p1T:2,p26E:0,p26T:4,streaming:"Mixed",feeder:"",nominated:"",throughtrain:"",windingDown:false,
+  tags:["Bilingual","Lacrosse","IoT","Drone Coding","Lightsaber","AI Advanced"],
+  verdict:"Tiny but distinctive — bilingual, tests-instead-of-exams approach, and the most unusual extracurricular list (lacrosse, lightsaber, IoT, AI). Low SpEd training is a concern.",
+  pros:["Bilingual (Chinese + English)","Unique activities: lacrosse, lightsaber, IoT","Assessment by tests only (no exams)","Small class = individual attention"],
+  cons:["Only 11 classes — limited peer network","Very low SpEd training (18%)","Only 1 playground, smallest campus (~1,000 sq.m.)","Higher fees (~$550/yr)"]},
+
+  {id:407,name:"Marymount Primary School",cn:"瑪利曼小學",district:"wanchai",type:"aided",gender:"girls",moi:"english",religion:"catholicism",founded:1927,location:"Tai Hang",classes:24,masters:51,sped:80,exp10:65,ptaFee:100,charges:700,schoolFee:0,playgrounds:2,p1E:0,p1T:0,p26E:3,p26T:0,streaming:"Mixed",feeder:"Marymount Secondary School",nominated:"",throughtrain:"",windingDown:false,
+  tags:["EMI","Girls","Catholic","Feeder","Large Campus 11,204m²","Gentle Assessment"],
+  verdict:"Premier EMI aided school for girls. Largest campus in Wan Chai (~11,204 sq.m.). No tests or exams in P1 at all. Highest specific purpose charge ($700) but school fee is free.",
+  pros:["EMI — English as teaching language","No tests or exams in P1","Feeder to Marymount Secondary","Large campus (11,204 sq.m.), 51% masters","80% SpEd trained"],
+  cons:["Girls only","Highest annual charges ($700 specific purpose)","Catholic requirement may not suit all families"]},
+
+  {id:415,name:"PLK Gold & Silver Pershing Tsang",cn:"保良局金銀業貿易場張凝文學校",district:"wanchai",type:"aided",gender:"coed",moi:"bilingual",religion:"none",founded:1946,location:"Causeway Bay",classes:11,masters:43,sped:64,exp10:52,ptaFee:30,charges:400,schoolFee:0,playgrounds:3,p1E:0,p1T:0,p26E:2,p26T:0,streaming:"Mixed",feeder:"",nominated:"",throughtrain:"",windingDown:false,
+  tags:["Bilingual","Po Leung Kuk","3 Playgrounds","Skateboard","Roller Skating","Fencing"],
+  verdict:"Small Po Leung Kuk school with 3 playgrounds (unusually high for size), bilingual curriculum, and fun extracurriculars (skateboard, roller skating, fencing, K-pop).",
+  pros:["3 playgrounds for an 11-class school","Bilingual (Chinese + English)","Very gentle assessment (only 2 exams/yr P2-6)","Low fees ($30 PTA + $400)"],
+  cons:["Small (11 classes)","No strong secondary pathway"]},
+
+  {id:414,name:"Po Kok Primary School",cn:"寶覺小學",district:"wanchai",type:"aided",gender:"coed",moi:"bilingual",religion:"buddhism",founded:1931,location:"Happy Valley",classes:16,masters:41,sped:78,exp10:33,ptaFee:60,charges:0,schoolFee:0,playgrounds:1,p1E:1,p1T:0,p26E:2,p26T:2,streaming:"By Chinese ability",feeder:"",nominated:"",throughtrain:"",windingDown:false,
+  tags:["Buddhist","Bilingual","Rock Climbing Wall","Multi-sensory Learning Centre","Lowest Fees"],
+  verdict:"Buddhist Co-ed with bilingual curriculum. Very low fees (~$60/yr total). Rock climbing wall and multi-sensory room. Streaming by Chinese language ability.",
+  pros:["Lowest annual cost (~$60 PTA only)","Bilingual curriculum","78% SpEd trained","Rock climbing wall","Buddhist ethos"],
+  cons:["Low 10+ years experience (33%)","Only 1 playground","Streaming by Chinese ability from early on"]},
+
+  {id:423,name:"Precious Blood Primary School",cn:"寶血小學",district:"wanchai",type:"aided",gender:"coed",moi:"chinese",religion:"catholicism",founded:1945,location:"Happy Valley",classes:16,masters:59,sped:81,exp10:66,ptaFee:50,charges:300,schoolFee:0,playgrounds:1,p1E:2,p1T:0,p26E:3,p26T:0,streaming:"P4-P6",feeder:"",nominated:"",throughtrain:"",windingDown:false,
+  tags:["Catholic","Highest Masters% (59%)","Strong SEN (81%)","STEAM","Gentle (no tests)"],
+  verdict:"Best teacher qualification profile among aided schools. 59% hold masters/PhD. 81% SpEd trained. Two class teachers per class. No formal tests — only exams.",
+  pros:["Highest Masters/PhD % in district (59%)","81% SpEd trained — excellent inclusion","Two class teachers per class","No tests — exams only","Good value (~$350/yr)"],
+  cons:["Only 1 playground, small campus (~1,220 sq.m.)","16 classes only","Streaming begins P4"]},
+
+  {id:410,name:"Sir Ellis Kadoorie (Sookunpo) PS",cn:"官立嘉道理爵士小學",district:"wanchai",type:"government",gender:"coed",moi:"english",religion:"none",founded:1891,location:"Sookunpo",classes:18,masters:26,sped:82,exp10:82,ptaFee:65,charges:0,schoolFee:0,playgrounds:2,p1E:1,p1T:0,p26E:2,p26T:0,streaming:"P5-P6 by scores",feeder:"",nominated:"Sir Ellis Kadoorie Secondary (WK)",throughtrain:"",windingDown:false,
+  tags:["EMI","Government","Founded 1891","Oldest in Wan Chai","82% SpEd","82% 10+yrs Exp"],
+  verdict:"The only EMI government primary school in Wan Chai — extremely rare. Founded 1891. 82% of teachers have 10+ years experience. Very experienced, very stable.",
+  pros:["Only EMI government school in Wan Chai","Founded 1891 — most experienced institution","82% SpEd trained, 82% with 10+ years exp","Very low cost (~$65/yr)","NET co-teaching in lower primary"],
+  cons:["26% masters/PhD (lower postgrad rate)","Nominated secondary in West Kowloon (not HK Island)","Only 18 classes (not the largest)"]},
+
+  {id:417,name:"S.K.H. St. James' Primary School",cn:"聖公會聖雅各小學",district:"wanchai",type:"aided",gender:"coed",moi:"chinese",religion:"protestantism",founded:1961,location:"Wan Chai",classes:30,masters:35,sped:61,exp10:74,ptaFee:30,charges:450,schoolFee:0,playgrounds:3,p1E:1,p1T:0,p26E:2,p26T:0,streaming:"P5-P6",feeder:"",nominated:"",throughtrain:"",windingDown:false,
+  tags:["Protestant","30 Classes","3 Playgrounds","Large Campus 11,106m²","Sky Garden","Balcony Garden"],
+  verdict:"Large Protestant school with one of the biggest campuses (11,106 sq.m.) and 3 playgrounds. 30 classes. Gentle assessment. Good all-rounder for co-ed families.",
+  pros:["Large campus (11,106 sq.m.), 3 playgrounds","30 classes — strong peer network","Sky Garden + Balcony Garden (unique)","Low PTA fee ($30)","Good teacher experience (74%)"],
+  cons:["No notable secondary school pathway","Lower SpEd training (61%)","Christian ethos"]},
+
+  {id:411,name:"St. Francis' Canossian School",cn:"嘉諾撒聖方濟各學校",district:"wanchai",type:"aided",gender:"girls",moi:"chinese",religion:"catholicism",founded:1869,location:"Wan Chai",classes:24,masters:39,sped:69,exp10:66,ptaFee:100,charges:450,schoolFee:0,playgrounds:2,p1E:2,p1T:0,p26E:3,p26T:0,streaming:"None",feeder:"St. Francis' Canossian College",nominated:"",throughtrain:"",windingDown:false,
+  tags:["Catholic","Girls","Oldest in Wan Chai (1869)","Feeder to St. Francis' Canossian College"],
+  verdict:"Oldest school in Wan Chai (founded 1869). Girls Catholic school with direct feeder to St. Francis' Canossian College. No streaming — all mixed ability.",
+  pros:["Oldest school in Wan Chai (est. 1869)","Feeder to St. Francis' Canossian College","No streaming (mixed ability throughout)","Stable experienced staff (66% 10+ yrs)"],
+  cons:["Girls only","Higher fees (~$550/yr)","CMI only"]},
+
+  {id:424,name:"St. Joseph's Primary School",cn:"聖若瑟小學",district:"wanchai",type:"aided",gender:"boys",moi:"english",religion:"catholicism",founded:1968,location:"Wan Chai",classes:30,masters:44,sped:55,exp10:55,ptaFee:160,charges:470,schoolFee:0,playgrounds:1,p1E:1,p1T:2,p26E:1,p26T:2,streaming:"None",feeder:"St. Joseph's College",nominated:"",throughtrain:"",windingDown:false,
+  tags:["EMI","Boys","Catholic","Feeder → St. Joseph's College","STEM Gifted Programme","Highest PTA Fee"],
+  verdict:"EMI boys school with the most prestigious boys' secondary feeder in HK — St. Joseph's College. 30 classes. Active STEM Gifted Programme.",
+  pros:["EMI — English medium throughout","Feeder to St. Joseph's College (elite)","30 classes (largest boys school)","STEM Gifted Programme","44% masters/PhD"],
+  cons:["Boys only","Highest fees of aided schools (~$630/yr)","Only 1 playground for 30 classes","More tests than peers (2 tests + 1 exam per term)"]},
+
+  {id:412,name:"St. Paul's Primary Catholic School",cn:"聖保祿天主教小學",district:"wanchai",type:"aided",gender:"girls",moi:"chinese",religion:"catholicism",founded:1960,location:"Happy Valley",classes:24,masters:27,sped:57,exp10:54,ptaFee:100,charges:450,schoolFee:0,playgrounds:2,p1E:2,p1T:0,p26E:3,p26T:0,streaming:"None",feeder:"St. Paul's Secondary School",nominated:"",throughtrain:"",windingDown:false,
+  tags:["Catholic","Girls","Feeder to St. Paul's Secondary","Happy Valley"],
+  verdict:"Catholic girls school in Happy Valley with direct feeder to St. Paul's Secondary School. No streaming. Standard assessment approach.",
+  pros:["Feeder to St. Paul's Secondary School","No streaming (mixed ability)","Happy Valley location"],
+  cons:["Girls only","Lower teacher postgrad rate (27%)","No standout facilities"]},
+
+  {id:418,name:"TWGHs Li Chi Ho PS",cn:"東華三院李賜豪小學",district:"wanchai",type:"aided",gender:"coed",moi:"chinese",religion:"none",founded:1958,location:"Wan Chai",classes:17,masters:28,sped:61,exp10:64,ptaFee:20,charges:310,schoolFee:0,playgrounds:1,p1E:2,p1T:0,p26E:3,p26T:0,streaming:"Cantonese/PTH split",feeder:"",nominated:"",throughtrain:"",windingDown:false,
+  tags:["TWGH","Low Fees","2 NETs","Distance Learning Room","Small Class (max 26)"],
+  verdict:"Tung Wah Group of Hospitals school with low fees (~$330/yr), 2 native English teachers, real-time distance learning room. Max 26 students per class.",
+  pros:["Very low fees (~$330/yr)","2 native English teachers","Max 26 students per class","Distance learning technology"],
+  cons:["Only 1 playground, small campus (~2,000 sq.m.)","Smaller school (17 classes)","Low masters% (28%)"]},
+
+  {id:37,name:"NP GPS (Cloud View Road)",cn:"北角官立小學（雲景道）",district:"wanchai",type:"government",gender:"coed",moi:"chinese",religion:"none",founded:1954,location:"North Point",classes:4,masters:50,sped:75,exp10:92,ptaFee:0,charges:0,schoolFee:0,playgrounds:2,p1E:0,p1T:0,p26E:2,p26T:2,streaming:"P5-P6",feeder:"",nominated:"SKWGSS, Clementi SS",throughtrain:"",windingDown:true,
+  tags:["WINDING DOWN","Government","Free","P6 Only in 2025/26"],
+  verdict:"Winding down — only P6 classes remain in 2025/26. Not accepting new students. Do not consider for P1 admission.",
+  pros:["Completely free","92% teachers with 10+ years experience"],
+  cons:["WINDING DOWN — P6 only in 2025/26, NOT accepting new P1 students","Very limited extracurriculars with so few classes"]},
+
+  {id:409,name:"Raimondi College Primary Section",cn:"高主教書院小學部",district:"wanchai",type:"private",gender:"coed",moi:"bilingual",religion:"catholicism",founded:1958,location:"Stubbs Road",classes:26,masters:23,sped:0,exp10:46,ptaFee:100,charges:0,schoolFee:58800,playgrounds:2,p1E:0,p1T:0,p26E:2,p26T:2,streaming:"Random",feeder:"Raimondi College",nominated:"",throughtrain:"",windingDown:false,
+  tags:["Private","Catholic","Bilingual","Feeder → Raimondi College","Grotto","Prayer Room","Fencing"],
+  verdict:"Prestigious private Catholic school on Stubbs Road. Feeder to Raimondi College. Bilingual, gentle P1 assessment. $58,800/yr tuition.",
+  pros:["Feeder to Raimondi College","Bilingual (Chinese + English)","No tests or exams in P1","Gifted Education Learning Centre","Campus with Grotto (unique)"],
+  cons:["$58,800/yr tuition","0% SpEd trained — poor inclusion support","Low masters% (23%)","High % of new teachers (41% have <5 years exp)"]},
+
+  {id:425,name:"St. Paul's Convent School (PS)",cn:"聖保祿學校（小學部）",district:"wanchai",type:"private",gender:"girls",moi:"english",religion:"catholicism",founded:1864,location:"Causeway Bay",classes:30,masters:41,sped:14,exp10:71,ptaFee:0,charges:0,schoolFee:55000,playgrounds:2,p1E:2,p1T:2,p26E:2,p26T:2,streaming:"Mixed",feeder:"St. Paul's Convent School",nominated:"",throughtrain:"",windingDown:false,
+  tags:["EMI","Girls","Founded 1864","Feeder → SPCS","Top Private","Chapel","Badminton Court"],
+  verdict:"One of HK's most prestigious girls' schools. EMI since 1864. Feeder to SPCS secondary. $55,000/yr. Full 30 classes. Very experienced staff (71% with 10+ years).",
+  pros:["Feeder to SPCS — one of HK's top schools","EMI (English throughout)","Founded 1864 — deep tradition","71% teachers with 10+ years exp","30 classes (full school)"],
+  cons:["Girls only","$55,000/yr tuition","Very low SpEd training (14%)","Assessment-heavy from P1 (2 tests + 2 exams)"]},
+
+  {id:420,name:"The True Light School (Primary)",cn:"香港真光中學附屬小學暨幼稚園",district:"wanchai",type:"private",gender:"coed",moi:"bilingual",religion:"protestantism",founded:1872,location:"Tai Hang",classes:22,masters:35,sped:0,exp10:46,ptaFee:70,charges:0,schoolFee:63650,playgrounds:1,p1E:2,p1T:2,p26E:2,p26T:2,streaming:"Mixed",feeder:"True Light School",nominated:"",throughtrain:"",windingDown:false,
+  tags:["Private","Protestant","Bilingual","Indoor Swimming Pool","Archery","Rock Climbing","Organic Farm"],
+  verdict:"Most expensive school in Wan Chai ($63,650/yr) but has the most unique facilities: indoor swimming pool, archery venue, rock-climbing walls, organic farming. Feeder to True Light secondary.",
+  pros:["Indoor swimming pool (extremely rare at primary level)","Archery venue + rock-climbing walls","Organic farming and fishery garden","Bilingual curriculum","Feeder to True Light School"],
+  cons:["Most expensive in district ($63,650/yr)","0% SpEd trained","Only 1 playground","Protestant requirement"]}
+];
+
+/* ── Eastern dataset (28 schools) ── */
+const SCHOOLS_EASTERN = [
+  {id:30,name:"Buddhist Chung Wah Kornhill PS",cn:"佛教中華康山學校",district:"eastern",type:"aided",gender:"coed",moi:"chinese",religion:"buddhism",founded:1945,location:"Quarry Bay",classes:20,masters:46,sped:82,exp10:74,ptaFee:30,charges:450,schoolFee:0,playgrounds:3,p1E:0,p1T:0,p26E:0,p26T:0,streaming:"Remedial + elite tracks",feeder:"",nominated:"",throughtrain:"",windingDown:false,
+  tags:["Buddhist","82% SpEd Trained","Robotics + Drones","20+ Activities","Meditation Room","Happy Wednesday"],
+  pros:["82% SpEd trained — best inclusion support in district","Diverse extracurriculars (20+ activities)","Robotics and drone courses","'Happy Wednesday' — no homework","Buddhist ethos, mindfulness focus"],
+  cons:["No direct secondary pathway","Buddhist ethos may not suit all","High charges (~$480/yr)"],
+  verdict:"Best SEN support in Eastern District. Buddhist ethos with progressive wellbeing (Happy Wednesday, English Monday). Robotics and drones are rare at primary level."},
+
+  {id:33,name:"Canossa School (Hong Kong)",cn:"香港嘉諾撒學校",district:"eastern",type:"aided",gender:"coed",moi:"chinese",religion:"catholicism",founded:1951,location:"Quarry Bay",classes:36,masters:57,sped:42,exp10:49,ptaFee:100,charges:260,schoolFee:0,playgrounds:3,p1E:2,p1T:0,p26E:3,p26T:0,streaming:"None",feeder:"",nominated:"Canossa College",throughtrain:"",windingDown:false,
+  tags:["Largest in District (36 classes)","Catholic","Nominated: Canossa College","57% Masters"],
+  pros:["Largest school in Eastern District (36 classes, 6/grade)","57% masters/PhD — highest in district","No streaming at all","3 playgrounds","STEM lab, 3 computer rooms, 2 music rooms"],
+  cons:["42% SpEd trained (below average)","Higher PTA fee ($100)","No through-train secondary"],
+  verdict:"Eastern District's largest school — 36 classes (6 per grade). Highest postgrad teacher rate (57%). No streaming. Catholic co-ed. Nominated to Canossa College."},
+
+  {id:35,name:"Chan's Creative School (HK Island)",cn:"啟基學校（港島）",district:"eastern",type:"aided",gender:"coed",moi:"chinese",religion:"none",founded:1967,location:"North Point",classes:10,masters:30,sped:46,exp10:0,ptaFee:80,charges:0,schoolFee:0,playgrounds:1,p1E:2,p1T:2,p26E:2,p26T:2,streaming:"Mixed",feeder:"",nominated:"",throughtrain:"",windingDown:false,
+  tags:["Smallest School","AR Immersive Room","Fencing","Aerodynamics","Lowest Fees (~$80)"],
+  pros:["Most individual attention (smallest school)","Unique programs: fencing, aerodynamics (Star Program)","AR Immersive Interactive Room","Lowest cost (~$80/yr)"],
+  cons:["Smallest school (10 classes)","Most tests from P1 (2T+2E)","Lowest teacher qualifications","46% SpEd trained — lowest in district"],
+  verdict:"The most intimate school in the district. Uniquely low fees. Rare activities: fencing, aerodynamics. Best for children who thrive with individual attention."},
+
+  {id:29,name:"Chinese Methodist School (North Point)",cn:"北角循道學校",district:"eastern",type:"aided",gender:"coed",moi:"chinese",religion:"protestantism",founded:1964,location:"North Point",classes:24,masters:48,sped:89,exp10:48,ptaFee:50,charges:450,schoolFee:0,playgrounds:2,p1E:1,p1T:1,p26E:2,p26T:2,streaming:"P4-P6: Class A = top",feeder:"",nominated:"",throughtrain:"",windingDown:false,
+  tags:["Protestant","89% SpEd Trained","STREAM Lab","AI Writing","Skipping Team"],
+  pros:["89% SpEd trained — 2nd best in district","48% masters/PhD","STREAM Lab, Life Education Centre","Caring School Award (10 consecutive years)","AI Writing Programme"],
+  cons:["Streaming from P4 can be pressuring","P1 has both tests AND exams","Higher charges (~$500/yr)"],
+  verdict:"Strong Protestant school with exceptional SEN support (89% trained). Impressive 10-year Caring School Award streak. AI Writing Programme is forward-looking."},
+
+  {id:34,name:"Chinese Methodist School, Tanner Hill",cn:"丹拿山循道學校",district:"eastern",type:"aided",gender:"coed",moi:"chinese",religion:"protestantism",founded:2010,location:"North Point",classes:21,masters:45,sped:74,exp10:0,ptaFee:30,charges:450,schoolFee:0,playgrounds:2,p1E:2,p1T:0,p26E:3,p26T:0,streaming:"Mixed P1-3, ability P4-6",feeder:"",nominated:"",throughtrain:"",windingDown:false,
+  tags:["Protestant","Drama Education","Brass Band","Roof Garden","Life Education P1-6"],
+  pros:["45% masters/PhD","74% SpEd trained","Drama education (unusual at primary level)","Brass Band, Choir, Dance","Roof Garden — unique outdoor space"],
+  cons:["Ability streaming from P4","Youngest school (est. 2010)","No secondary pathway"],
+  verdict:"Strongest performing arts programme in North Point. Drama education, Brass Band, and Choir make it distinct. Good teacher qualifications. Christian ethos."},
+
+  {id:36,name:"North Point Government Primary School",cn:"北角官立小學",district:"eastern",type:"government",gender:"coed",moi:"chinese",religion:"none",founded:1954,location:"North Point",classes:30,masters:37,sped:59,exp10:0,ptaFee:100,charges:300,schoolFee:0,playgrounds:1,p1E:0,p1T:0,p26E:0,p26T:0,streaming:"",feeder:"",nominated:"Clementi SS, SKWGSS",throughtrain:"",windingDown:false,
+  tags:["Government","30 Classes","Nominated Secondaries","Chinese Culture Room","STEAM Room"],
+  pros:["Government school (free, EDB oversight)","Nominated to Clementi SS and SKWGSS","30 classes — strong peer network","Established 1954 — long track record"],
+  cons:["Only 1 playground","37% masters (lowest among large schools)","Nomination only to CMI secondaries"],
+  verdict:"Reliable government school in central North Point. 30 classes, two nominated secondaries. Best for families wanting a stable, affordable CMI school in North Point."},
+
+  {id:27,name:"North Point Methodist Primary School",cn:"北角衞理小學",district:"eastern",type:"aided",gender:"coed",moi:"chinese",religion:"protestantism",founded:1959,location:"North Point",classes:24,masters:49,sped:58,exp10:57,ptaFee:100,charges:300,schoolFee:0,playgrounds:2,p1E:2,p1T:0,p26E:3,p26T:0,streaming:"P4-6 differentiation",feeder:"",nominated:"",throughtrain:"",windingDown:false,
+  tags:["Protestant","49% Masters","Chapel","Climbing Wall","AI Team (Geneva Silver Award)"],
+  pros:["49% masters/PhD","AI Team won Silver Award at Geneva International Exhibition of Inventions 2025","Chapel, Climbing Wall","57% teachers with 10+ years exp","Strong parent community (150+ active parents)"],
+  cons:["100 PTA fee (higher)","Protestant ethos","No direct secondary pathway"],
+  verdict:"Well-rounded Protestant school with a strong parent community and impressive AI team (Geneva award winner). Good teacher qualifications. Good for North Point families."},
+
+  {id:416,name:"Pun U Association Wah Yan Primary School",cn:"番禺會所華仁小學",district:"eastern",type:"aided",gender:"boys",moi:"chinese",religion:"catholicism",founded:1971,location:"North Point",classes:24,masters:35,sped:46,exp10:65,ptaFee:100,charges:450,schoolFee:0,playgrounds:2,p1E:0,p1T:0,p26E:2,p26T:1,streaming:"Mixed",feeder:"Wah Yan College, Hong Kong",nominated:"",throughtrain:"",windingDown:false,
+  tags:["Boys Only","Catholic","Feeder → Wah Yan College HK","Flight Simulation Cabin","VR/AR Room"],
+  pros:["Direct feeder to Wah Yan College HK (elite boys secondary)","Boys school — focused environment","Flight simulation cabin (extremely rare)","VR/AR room","65% teachers with 10+ years exp"],
+  cons:["Boys only","Catholic ethos","35% masters/PhD (lower)","46% SpEd trained (lowest in North Point)"],
+  verdict:"The best choice for Catholic boys families targeting Wah Yan College HK. Flight simulation cabin is unique. Boys-only environment with strong faith values."},
+
+  {id:38,name:"Shanghai Alumni Primary School",cn:"滬江小學",district:"eastern",type:"aided",gender:"coed",moi:"chinese",religion:"none",founded:1987,location:"Kornhill/Quarry Bay",classes:24,masters:34,sped:67,exp10:60,ptaFee:80,charges:0,schoolFee:0,playgrounds:2,p1E:2,p1T:0,p26E:4,p26T:0,streaming:"P3+ 1 top class",feeder:"",nominated:"Victoria Shanghai Academy",throughtrain:"",windingDown:false,
+  tags:["Nominated: Victoria Shanghai Academy","MakerSpace","MetaSpace","InnoLab","180+ ECA items"],
+  pros:["Nominated to Victoria Shanghai Academy (highly regarded DSS)","MakerSpace, MetaSpace, InnoLab facilities","180+ extracurricular items","Free (no approved charges)","Multiple award-winning robot/wushu teams"],
+  cons:["4 exams/yr for P2-6 (most in district)","34% masters/PhD","P3 ability streaming"],
+  verdict:"Most extracurricular diversity (180+ items). Nominated to Victoria Shanghai Academy. Unique innovation facilities. High exam frequency is a trade-off."},
+
+  {id:26,name:"S.K.H. St. Michael's Primary School",cn:"聖公會聖米迦勒小學",district:"eastern",type:"aided",gender:"coed",moi:"chinese",religion:"protestantism",founded:1919,location:"Fortress Hill/North Point",classes:24,masters:39,sped:73,exp10:74,ptaFee:30,charges:450,schoolFee:0,playgrounds:1,p1E:3,p1T:0,p26E:3,p26T:0,streaming:"P3-6 by score",feeder:"",nominated:"",throughtrain:"",windingDown:false,
+  tags:["Founded 1919","Eco Lab","Hydroponic Farming","74% 10+ Yrs Exp","Wing Chun"],
+  pros:["Oldest school in Eastern District (founded 1919)","74% teachers with 10+ years exp","73% SpEd trained","Eco Lab + Hydroponic Farming programme (unique)","Wing Chun martial arts"],
+  cons:["3 exams in P1 (most pressure in district)","Only 1 playground","Streaming from P3"],
+  verdict:"Oldest school in Eastern District. Deep experience (74% teachers 10+ years). Unique Eco Lab and hydroponic farming. P1 has 3 exams — highest academic pressure from day one."},
+
+  {id:39,name:"Taikoo Primary School",cn:"太古小學",district:"eastern",type:"aided",gender:"coed",moi:"chinese",religion:"none",founded:1923,location:"Quarry Bay/Tai Koo",classes:30,masters:44,sped:77,exp10:0,ptaFee:30,charges:400,schoolFee:0,playgrounds:2,p1E:0,p1T:0,p26E:3,p26T:0,streaming:"Putonghua track",feeder:"",nominated:"",throughtrain:"",windingDown:false,
+  tags:["Largest Campus (10,870m²)","Chinese Opera","Orchestra","English Musical","Cambridge Courses","Swire Backed"],
+  pros:["Largest campus in Eastern District (~10,870 sq.m.)","Best arts: Chinese Opera, Orchestra, English Musical","Cambridge courses available","77% SpEd trained","Swire Pacific corporate backing (well-resourced)","No tests/exams in P1"],
+  cons:["No direct secondary school pathway","Putonghua streaming may divide cohorts","44% masters (mid-range)"],
+  verdict:"Eastern District's premium arts school. Largest campus, richest performing arts programme (opera, orchestra, musical). Excellent all-rounder backed by Swire Pacific."},
+
+  {id:40,name:"Aldrich Bay Government Primary School",cn:"愛秩序灣官立小學",district:"eastern",type:"government",gender:"coed",moi:"chinese",religion:"none",founded:2000,location:"Shau Kei Wan",classes:30,masters:22,sped:54,exp10:0,ptaFee:40,charges:250,schoolFee:0,playgrounds:3,p1E:0,p1T:0,p26E:3,p26T:0,streaming:"Mixed",feeder:"",nominated:"Queen's College, SKWGSS, Clementi SS",throughtrain:"",windingDown:false,
+  tags:["★ Queen's College Nomination","Government","3 Playgrounds","Multiple Intelligences","Gifted Program","2 NETs"],
+  pros:["Only Eastern school nominating to Queen's College (elite secondary)","3 playgrounds — most in a government school","Multiple Intelligences Programme (structured)","Gifted student training","Very low fees (~$290/yr)","2 Native English Teachers"],
+  cons:["Lowest masters/PhD in district (22%)","Newest school (est. 2000)","Further east — less accessible from North Point"],
+  verdict:"THE standout for secondary school pathway — only Eastern District school nominating to Queen's College. Free, 3 playgrounds, gifted programme. Critical for academically driven boys."},
+
+  {id:41,name:"C.C.C. Kei Wan Primary School",cn:"中華基督教會基灣小學",district:"eastern",type:"aided",gender:"coed",moi:"chinese",religion:"protestantism",founded:1970,location:"Shau Kei Wan",classes:24,masters:36,sped:53,exp10:81,ptaFee:60,charges:500,schoolFee:0,playgrounds:2,p1E:2,p1T:0,p26E:3,p26T:1,streaming:"P4-6",feeder:"",nominated:"",throughtrain:"",windingDown:false,
+  tags:["Protestant","81% 10+Yrs Exp","Shau Kei Wan"],
+  pros:["81% teachers with 10+ years experience (highest in district)","24 classes, Protestant ethos","Gifted development programme"],
+  cons:["Highest charges ($500/yr + $500 approved)","36% masters/PhD","P1+P2-6 has both tests and exams"],
+  verdict:"Best teacher experience in the district (81% with 10+ years). Protestant values, 24 classes. The high charges are a notable downside."},
+
+  {id:25,name:"C.C.C. Kei Wan PS (Aldrich Bay)",cn:"中華基督教會基灣小學（愛蝶灣）",district:"eastern",type:"aided",gender:"coed",moi:"bilingual",religion:"protestantism",founded:1970,location:"Shau Kei Wan",classes:24,masters:54,sped:20,exp10:72,ptaFee:60,charges:1350,schoolFee:0,playgrounds:3,p1E:2,p1T:0,p26E:3,p26T:0,streaming:"By performance",feeder:"",nominated:"",throughtrain:"",windingDown:false,
+  tags:["Bilingual","54% Masters","AI Lab","Immersive VR Room","International Exchanges (20+ countries)","Highest Charges in District"],
+  pros:["Bilingual (Chinese + English)","54% masters/PhD (highest among aided schools in district)","AI Lab, Immersive VR Room, Ballet Room","International exchanges with 20+ countries","3 playgrounds, 2 halls"],
+  cons:["Highest annual charges in district (~$1,410/yr for NETs)","Only 20% SpEd trained — very low","Protestant ethos"],
+  verdict:"Most internationally-connected school in Eastern District (exchanges with 20+ countries). Bilingual, advanced tech (AI Lab, VR). Very high charges for NET teachers. Low SEN support."},
+
+  {id:43,name:"Meng Tak Catholic School",cn:"天主教明德學校",district:"eastern",type:"aided",gender:"coed",moi:"chinese",religion:"catholicism",founded:1952,location:"Chai Wan",classes:24,masters:34,sped:67,exp10:66,ptaFee:50,charges:310,schoolFee:0,playgrounds:2,p1E:1,p1T:1,p26E:2,p26T:1,streaming:"P4-6 elite classes",feeder:"",nominated:"",throughtrain:"",windingDown:false,
+  tags:["Catholic","BYOD from P4","Elite Classes P4-6","Brass Band","Filming Agents"],
+  pros:["BYOD from P4 (fully digital learning)","Elite classes from P4 (good for high achievers)","67% SpEd trained","Brass Band, Filming Agents gifted program","Good value (~$360/yr)"],
+  cons:["34% masters/PhD","Elite class streaming can be stressful"],
+  verdict:"Catholic school in Chai Wan with digital-first approach (BYOD from P4). Elite classes from P4 reward high achievers. Brass Band and Filming Agents are distinctive programs."},
+
+  {id:44,name:"Pui Kiu Primary School",cn:"培僑小學",district:"eastern",type:"aided",gender:"coed",moi:"chinese",religion:"none",founded:2000,location:"Siu Sai Wan/Chai Wan",classes:30,masters:43,sped:74,exp10:73,ptaFee:30,charges:200,schoolFee:0,playgrounds:3,p1E:2,p1T:0,p26E:2,p26T:0,streaming:"None",feeder:"",nominated:"",throughtrain:"",windingDown:false,
+  tags:["No Streaming","74% SpEd","73% 10+Yrs Exp","43 ECAs","Low Fees","3 Playgrounds"],
+  pros:["No streaming at all (truly mixed ability)","74% SpEd trained","73% 10+ years exp","43 extracurricular activities","Very low fees (~$230/yr)","3 playgrounds","9 Chief Executive's Awards for Teaching Excellence"],
+  cons:["Newer school (est. 2000)","Siu Sai Wan location (less central)"],
+  verdict:"Exceptional all-rounder — no streaming, strong SEN, experienced teachers, 43 ECAs, low fees, 3 playgrounds. Has won 9 CE Awards for Teaching Excellence. Hard to find a fault."},
+
+  {id:24,name:"Salesian School",cn:"慈幼學校",district:"eastern",type:"aided",gender:"coed",moi:"bilingual",religion:"catholicism",founded:1951,location:"Shau Kei Wan",classes:9,masters:43,sped:76,exp10:58,ptaFee:50,charges:300,schoolFee:0,playgrounds:4,p1E:0,p1T:0,p26E:2,p26T:0,streaming:"Subject grouping, upper primary",feeder:"Salesian English School",nominated:"",throughtrain:"",windingDown:false,
+  tags:["Bilingual","4 Playgrounds (Most in District!)","Catholic","Feeder → Salesian English School","Very Small"],
+  pros:["4 playgrounds — most in the entire district","Bilingual (Chinese + English)","Feeder to Salesian English School","76% SpEd trained","43% masters/PhD","Small (9 classes) — very individual attention"],
+  cons:["Very small school (9 classes)","Catholic ethos","Limited peer group"],
+  verdict:"An extraordinary 4 playgrounds for just 9 classes. Bilingual, small, feeder to Salesian English School. Best outdoor space-per-student ratio in Eastern District."},
+
+  {id:46,name:"Shau Kei Wan Government Primary School",cn:"筲箕灣官立小學",district:"eastern",type:"government",gender:"coed",moi:"chinese",religion:"none",founded:1958,location:"Shau Kei Wan",classes:16,masters:39,sped:90,exp10:79,ptaFee:70,charges:0,schoolFee:0,playgrounds:1,p1E:1,p1T:0,p26E:2,p26T:2,streaming:"P4 partial",feeder:"",nominated:"SKWGSS, Clementi SS",throughtrain:"",windingDown:false,
+  tags:["Government","90% SpEd Trained","79% 10+Yrs Exp","Nominated Secondaries","Mindful Cafe","AI Fitness Room"],
+  pros:["90% SpEd trained — highest in district","79% teachers with 10+ years exp","Government school (free)","Nominated to SKWGSS and Clementi SS","Mindful Cafe, AI Fitness Room (unique wellness facilities)"],
+  cons:["Only 16 classes and shrinking","Only 1 playground","Shau Kei Wan location (less central)"],
+  verdict:"Government school with the best SEN training (90%) and teacher experience (79%) in Eastern District. Unique wellness facilities. Smaller but very experienced team."},
+
+  {id:47,name:"Shaukiwan Tsung Tsin School",cn:"筲箕灣崇真學校",district:"eastern",type:"aided",gender:"coed",moi:"chinese",religion:"protestantism",founded:1948,location:"Shau Kei Wan",classes:24,masters:43,sped:47,exp10:46,ptaFee:40,charges:310,schoolFee:0,playgrounds:2,p1E:2,p1T:0,p26E:3,p26T:0,streaming:"P4-6",feeder:"",nominated:"",throughtrain:"",windingDown:false,
+  tags:["Protestant","80+ Activities","Cinema","Flight Simulator","Hydroponic Workshop","Climbing Wall"],
+  pros:["80+ extracurricular activities","Cinema, flight simulator, hydroponic workshop (unique)","Climbing wall","Roof garden, gallery, art gallery","Low fees ($40 PTA + $310)"],
+  cons:["47% SpEd trained (below average)","46% 10+ years exp (below average)","Streaming from P4"],
+  verdict:"Best extracurricular breadth in Eastern (80+ activities). Unique facilities: cinema, flight simulator, hydroponic workshop. Great value. Lower staff experience is a trade-off."},
+
+  {id:45,name:"S.K.H. Chai Wan St. Michael's PS",cn:"聖公會柴灣聖米迦勒小學",district:"eastern",type:"aided",gender:"coed",moi:"chinese",religion:"protestantism",founded:1919,location:"Chai Wan",classes:24,masters:35,sped:73,exp10:57,ptaFee:50,charges:450,schoolFee:0,playgrounds:4,p1E:2,p1T:0,p26E:3,p26T:0,streaming:"By ability (Eng/Maths)",feeder:"",nominated:"",throughtrain:"",windingDown:false,
+  tags:["Founded 1919","4 Playgrounds","Protestant","73% SpEd","STEAM Lab","Drone Photography"],
+  pros:["4 playgrounds (tied for most in district)","Co-founded 1919 — over 100 years history","73% SpEd trained","Drone Photography course","STEAM Lab"],
+  cons:["Chai Wan location (less central)","35% masters/PhD","Ability streaming in English and Maths"],
+  verdict:"Historic school (1919) with 4 playgrounds. Strong SEN support. Drone Photography and STEAM Lab. Good for Chai Wan families seeking a traditional Protestant school."},
+
+  {id:42,name:"ELCHK Faith Love Lutheran School",cn:"基督教香港信義會信愛學校",district:"eastern",type:"aided",gender:"coed",moi:"chinese",religion:"protestantism",founded:1961,location:"Chai Wan",classes:8,masters:36,sped:54,exp10:24,ptaFee:30,charges:300,schoolFee:0,playgrounds:2,p1E:2,p1T:0,p26E:3,p26T:0,streaming:"Mixed",feeder:"",nominated:"",throughtrain:"",windingDown:false,
+  tags:["Very Small (8 classes)","360° VR Classroom","STREAM","Lutheran","Low Fees"],
+  pros:["360° VR Teaching Classroom (cutting-edge)","Small (8 classes) — individual attention","Low fees (~$330/yr)","Lutheran ethos"],
+  cons:["Very small school (8 classes, shrinking to 7)","Only 24% teachers with 10+ years exp","Limited peer network"],
+  verdict:"Smallest functioning school in the district with a cutting-edge 360° VR classroom. Good for families wanting a small Protestant community with innovative tech."},
+
+  {id:32,name:"Endeavourers LLSY Memorial PS",cn:"勵志會梁李秀娛紀念小學",district:"eastern",type:"aided",gender:"coed",moi:"bilingual",religion:"none",founded:1994,location:"Shau Kei Wan",classes:24,masters:51,sped:72,exp10:69,ptaFee:30,charges:0,schoolFee:0,playgrounds:3,p1E:0,p1T:0,p26E:3,p26T:0,streaming:"P3+ ability groups",feeder:"",nominated:"",throughtrain:"",windingDown:false,
+  tags:["Bilingual","Lowest Fees (~$30)","51% Masters","Organic Farm","Butterfly Farmyard","Koi Pond","Running Track"],
+  pros:["Bilingual (Chinese + English)","Lowest fees in district (~$30/yr)","51% masters/PhD","72% SpEd trained","69% 10+ years exp","Butterfly/Organic Farmyard, Koi Pond, Running Track","No tests or exams in P1"],
+  cons:["Ability grouping from P3","Shau Kei Wan location"],
+  verdict:"Best value bilingual school in Eastern District ($30/yr). Strong teacher qualifications (51% masters). Unique grounds: organic farm, koi pond, running track. Rare combination of low cost + high quality."},
+
+  {id:49,name:"HKCWC Hioe Tjo Yoeng PS",cn:"香港中國婦女會丘佐榮學校",district:"eastern",type:"aided",gender:"coed",moi:"chinese",religion:"none",founded:1965,location:"Shau Kei Wan",classes:30,masters:40,sped:64,exp10:84,ptaFee:80,charges:310,schoolFee:0,playgrounds:3,p1E:3,p1T:0,p26E:3,p26T:0,streaming:"By average abilities",feeder:"",nominated:"",throughtrain:"",windingDown:false,
+  tags:["30 Classes","84% 10+Yrs Exp","3 Playgrounds","2 School Halls"],
+  pros:["84% teachers with 10+ years experience (highest in district)","30 classes — strong peer network","3 playgrounds, 2 school halls","Gifted + remedial both catered for"],
+  cons:["3 exams in P1 (one of the most)","80 PTA fee + charges (~$390/yr)","No notable secondary pathway"],
+  verdict:"Best teacher experience (84%) in the district. Large school (30 classes), 2 halls, 3 playgrounds. Good for families valuing experienced, stable teaching staff."},
+
+  {id:50,name:"Salvation Army Ann Wyllie Memorial School",cn:"救世軍韋理夫人紀念學校",district:"eastern",type:"aided",gender:"coed",moi:"chinese",religion:"protestantism",founded:1987,location:"Heng Fa Chuen",classes:18,masters:20,sped:50,exp10:57,ptaFee:50,charges:150,schoolFee:0,playgrounds:3,p1E:1,p1T:0,p26E:3,p26T:0,streaming:"P4-6",feeder:"",nominated:"",throughtrain:"",windingDown:false,
+  tags:["Protestant","Very Low Charges ($150)","3 Playgrounds","Heng Fa Chuen","Small Class Teaching"],
+  pros:["Very low fees ($50 PTA + $150 = ~$200/yr)","3 playgrounds","Small class teaching throughout","Heng Fa Chuen — quieter residential location"],
+  cons:["20% masters/PhD (lowest in district)","50% SpEd trained (below average)","Shrinking (18→16 classes)"],
+  verdict:"Very affordable Protestant school in Heng Fa Chuen residential area. 3 playgrounds. Small class teaching. Low teacher qualifications is the main drawback."},
+
+  {id:54,name:"SA Centaline Charity Fund School",cn:"救世軍中原慈善基金學校",district:"eastern",type:"aided",gender:"coed",moi:"chinese",religion:"protestantism",founded:2008,location:"Chai Wan",classes:6,masters:24,sped:76,exp10:62,ptaFee:0,charges:250,schoolFee:0,playgrounds:1,p1E:0,p1T:0,p26E:3,p26T:0,streaming:"From P6",feeder:"",nominated:"",throughtrain:"",windingDown:true,
+  tags:["WINDING DOWN","P6 Only 2025/26","Protestant"],
+  pros:["76% SpEd trained","English Activity Room, STEM Room"],
+  cons:["WINDING DOWN — P6 only in 2025/26","Not accepting new students","Only 2 classes remain"],
+  verdict:"Winding down — only P6 classes in 2025/26. Do not apply for P1 admission."},
+
+  {id:51,name:"HKUGA Primary School",cn:"港大同學會小學",district:"eastern",type:"dss",gender:"coed",moi:"bilingual",religion:"none",founded:2002,location:"Chai Wan",classes:24,masters:61,sped:34,exp10:74,ptaFee:100,charges:0,schoolFee:37880,playgrounds:2,p1E:0,p1T:0,p26E:2,p26T:0,streaming:"Mixed",feeder:"",nominated:"",throughtrain:"HKUGA College",windingDown:false,
+  tags:["DSS","Through-train → HKUGA College","61% Masters","Bilingual","Rooftop Garden","Running Track","$37,880/yr"],
+  pros:["Through-train to HKUGA College (seamless P1→S6)","61% masters/PhD — highest in district","Bilingual (Chinese + English)","Only 2 exams/yr (gentlest in district)","Rooftop Garden, Running Track","74% 10+ years exp"],
+  cons:["$37,880/yr tuition","34% SpEd trained (low)","Chai Wan location"],
+  verdict:"Best teacher qualifications in Eastern District (61% masters). Through-train to HKUGA College. Bilingual, gentle assessment (only 2 exams/yr). Premium DSS option."},
+
+  {id:55,name:"Hon Wah College (Primary Section)",cn:"漢華中學（小學部）",district:"eastern",type:"dss",gender:"coed",moi:"bilingual",religion:"none",founded:1945,location:"Siu Sai Wan",classes:18,masters:37,sped:58,exp10:40,ptaFee:60,charges:0,schoolFee:17640,playgrounds:3,p1E:0,p1T:0,p26E:2,p26T:0,streaming:"No elite class",feeder:"",nominated:"",throughtrain:"Hon Wah College",windingDown:false,
+  tags:["DSS","Through-train → Hon Wah College","Bilingual","Rock Climbing Walls","Lecture Theatre","$17,640/yr"],
+  pros:["Through-train to Hon Wah College (seamless)","Most affordable DSS (~$17,640/yr)","Bilingual (Chinese + English)","Rock-climbing walls, lecture theatre, campus TV studio","3 playgrounds","No elite streaming (ability groups only)"],
+  cons:["40% 10+ years experience (below average)","Siu Sai Wan (remote eastern end)","37% masters"],
+  verdict:"Most affordable through-train DSS in Eastern District. Bilingual, rock-climbing walls, 3 playgrounds. Good for families wanting a DSS secondary pipeline at a lower price point."},
+
+  {id:53,name:"Kiangsu & Chekiang Primary School",cn:"蘇浙小學校",district:"eastern",type:"private",gender:"coed",moi:"bilingual",religion:"none",founded:1953,location:"North Point",classes:31,masters:27,sped:0,exp10:49,ptaFee:20,charges:0,schoolFee:54000,playgrounds:3,p1E:3,p1T:3,p26E:3,p26T:3,streaming:"Mixed",feeder:"",nominated:"",throughtrain:"",windingDown:false,
+  tags:["Private","Bilingual","31 Classes (Largest Private)","North Point","$54,000/yr","Traditional Assessment"],
+  pros:["Largest private school in Eastern District (31 classes)","North Point location — accessible","Bilingual (Chinese + English)","Large campus ~8,500 sq.m., 3 playgrounds"],
+  cons:["$54,000/yr tuition","0% SpEd trained","27% masters/PhD","Most tests+exams (3+3 from P1 — most pressure in district)"],
+  verdict:"Largest private school in Eastern District. North Point location is convenient. High tuition, traditional assessment approach (most tests in district). For families wanting a private bilingual school in North Point."}
+];
+
+/* ── EMI / Bilingual dataset (23 schools, all 4 HK Island districts) ── */
+const SCHOOLS_EMI = [
+  {id:4,name:"Catholic Mission School",cn:"天主教總堂區學校",district:"central-western",type:"aided",gender:"coed",moi:"english",religion:"catholicism",founded:1967,location:"Central",classes:21,masters:43,sped:25,exp10:34,ptaFee:50,charges:450,schoolFee:0,playgrounds:1,p1E:0,p1T:0,p26E:4,p26T:0,streaming:"Ability grouping for major subjects",feeder:"",nominated:"",throughtrain:"",windingDown:false,
+  tags:["EMI","Catholic","Central","No P1 Exams"],pros:["Full EMI from P1","Central location","No tests or exams in P1","Catholic values","21 classes"],cons:["Only 25% SpEd trained","34% exp10 (low)","No secondary pathway"],verdict:"Best for families prioritising full English immersion in a Catholic co-ed setting in central HK Island."},
+
+  {id:12,name:"Chiu Sheung School, Hong Kong",cn:"香港潮商學校",district:"central-western",type:"aided",gender:"coed",moi:"bilingual",religion:"none",founded:1923,location:"Pok Fu Lam",classes:22,masters:19,sped:60,exp10:33,ptaFee:30,charges:0,schoolFee:0,playgrounds:1,p1E:1,p1T:0,p26E:2,p26T:0,streaming:"P4-P6 by results",feeder:"",nominated:"",throughtrain:"",windingDown:false,
+  tags:["Bilingual","Est. 1923","Secular","Low Fees","60% SpEd"],pros:["Oldest in dataset (1923)","60% SpEd","Very low fees","Bilingual"],cons:["Only 19% masters","33% exp10","No secondary pathway"],verdict:"Budget bilingual option with strong SEN and rich heritage in Pok Fu Lam."},
+
+  {id:13,name:"King's College OBA Primary School",cn:"英皇書院同學會小學",district:"central-western",type:"aided",gender:"coed",moi:"bilingual",religion:"none",founded:1960,location:"Sheung Wan",classes:12,masters:41,sped:54,exp10:48,ptaFee:50,charges:450,schoolFee:0,playgrounds:1,p1E:2,p1T:0,p26E:3,p26T:0,streaming:"None",feeder:"",nominated:"",throughtrain:"",windingDown:false,
+  tags:["Bilingual","No Streaming","Small (12 classes)","King's College Affiliated"],pros:["No streaming at any level","Small school — individual attention","King's College alumni affiliation","41% masters"],cons:["Limited peer network","No secondary pathway"],verdict:"Best for families valuing an intimate no-streaming bilingual environment in Sheung Wan."},
+
+  {id:16,name:"S.K.H. Lui Ming Choi Memorial PS",cn:"聖公會呂明才紀念小學",district:"central-western",type:"aided",gender:"coed",moi:"bilingual",religion:"protestantism",founded:1960,location:"Kennedy Town",classes:22,masters:39,sped:60,exp10:64,ptaFee:50,charges:450,schoolFee:0,playgrounds:1,p1E:2,p1T:0,p26E:3,p26T:0,streaming:"Mixed P1-4; ability P5-6",feeder:"",nominated:"",throughtrain:"",windingDown:false,
+  tags:["Bilingual","Protestant","Kennedy Town","Late Streaming P5-6","64% Experienced"],pros:["64% exp10 — most experienced C&W bilingual school","60% SpEd","Late streaming P5-6 only","22 classes"],cons:["Kennedy Town location","No secondary pathway","$450 charges"],verdict:"Most experienced staff among C&W bilingual schools. Good SEN and late streaming."},
+
+  {id:20,name:"St. Anthony's School",cn:"聖安多尼學校",district:"central-western",type:"aided",gender:"coed",moi:"bilingual",religion:"catholicism",founded:1963,location:"Pok Fu Lam",classes:18,masters:47,sped:65,exp10:54,ptaFee:40,charges:300,schoolFee:0,playgrounds:2,p1E:3,p1T:0,p26E:3,p26T:0,streaming:"By academic results",feeder:"",nominated:"",throughtrain:"",windingDown:false,
+  tags:["Bilingual","Catholic","2 Playgrounds","47% Masters"],pros:["Highest masters among C&W bilingual (47%)","65% SpEd","2 playgrounds","$340/yr"],cons:["3 exams in P1","Early ability streaming","No secondary pathway"],verdict:"Best-staffed Catholic bilingual school in C&W. Two playgrounds. For academic-minded families in Pok Fu Lam."},
+
+  {id:15,name:"St. Charles School",cn:"聖嘉祿學校",district:"central-western",type:"aided",gender:"coed",moi:"bilingual",religion:"catholicism",founded:1954,location:"Kennedy Town",classes:8,masters:40,sped:56,exp10:57,ptaFee:60,charges:300,schoolFee:0,playgrounds:1,p1E:0,p1T:0,p26E:3,p26T:0,streaming:"P1-2 CMI/EMI grouping; P3 mixed; P4-6 by ability",feeder:"",nominated:"",throughtrain:"",windingDown:false,
+  tags:["Bilingual","Catholic","Very Small (8 classes)","No P1 Exams"],pros:["Smallest in C&W (8 classes)","No P1 exams","Unique CMI/EMI bilingual grouping P1-2","57% exp10"],cons:["Very small peer network","Kennedy Town location","No secondary pathway"],verdict:"Most intimate Catholic bilingual school in C&W with zero P1 assessment pressure."},
+
+  {id:18,name:"St. Louis School (Primary Section)",cn:"聖類斯中學（小學部）",district:"central-western",type:"private",gender:"boys",moi:"bilingual",religion:"catholicism",founded:1927,location:"Sai Ying Pun",classes:12,masters:52,sped:20,exp10:48,ptaFee:100,charges:2500,schoolFee:55000,playgrounds:1,p1E:3,p1T:0,p26E:3,p26T:0,streaming:"By performance",feeder:"",nominated:"",throughtrain:"St. Louis School",windingDown:false,
+  tags:["Bilingual","Boys","Private","Through-train → St. Louis School","52% Masters"],pros:["Through-train to St. Louis School (elite Catholic boys secondary)","52% masters","Heritage (1927)","STREAM + Drama rooms"],cons:["$55,000/yr + $2,500","20% SpEd","3 exams from P1","Boys only"],verdict:"Top choice for boys targeting a prestigious Catholic through-train to St. Louis School."},
+
+  {id:410,name:"Sir Ellis Kadoorie (Sookunpo) PS",cn:"官立嘉道理爵士小學",district:"wanchai",type:"government",gender:"coed",moi:"english",religion:"none",founded:1891,location:"Sookunpo",classes:18,masters:26,sped:82,exp10:82,ptaFee:65,charges:0,schoolFee:0,playgrounds:2,p1E:1,p1T:0,p26E:2,p26T:0,streaming:"P5-P6 by scores",feeder:"",nominated:"Sir Ellis Kadoorie Secondary (WK)",throughtrain:"",windingDown:false,
+  tags:["EMI","Government","Founded 1891","Only EMI Govt Primary in Wan Chai","82% SpEd","82% Experienced"],pros:["Only EMI government primary in Wan Chai","Founded 1891","82% SpEd + 82% exp10","~$65/yr","NET co-teaching"],cons:["26% masters","Nominated secondary in West Kowloon","Only 18 classes"],verdict:"Unique free EMI government school with exceptional staff stability."},
+
+  {id:424,name:"St. Joseph's Primary School",cn:"聖若瑟小學",district:"wanchai",type:"aided",gender:"boys",moi:"english",religion:"catholicism",founded:1968,location:"Wan Chai",classes:30,masters:44,sped:55,exp10:55,ptaFee:160,charges:470,schoolFee:0,playgrounds:1,p1E:1,p1T:2,p26E:1,p26T:2,streaming:"None",feeder:"St. Joseph's College",nominated:"",throughtrain:"",windingDown:false,
+  tags:["EMI","Boys","Catholic","Feeder → St. Joseph's College","STEM Gifted","30 Classes"],pros:["EMI throughout","Feeder to St. Joseph's College (elite boys secondary)","30 classes","STEM Gifted Programme"],cons:["Boys only","~$630/yr","1 playground for 30 classes","High assessment"],verdict:"EMI boys school with HK's most prestigious boys secondary feeder — St. Joseph's College."},
+
+  {id:413,name:"Li Sing Tai Hang School",cn:"李陞大坑學校",district:"wanchai",type:"aided",gender:"coed",moi:"bilingual",religion:"none",founded:1958,location:"Tai Hang",classes:11,masters:36,sped:18,exp10:50,ptaFee:100,charges:450,schoolFee:0,playgrounds:1,p1E:0,p1T:2,p26E:0,p26T:4,streaming:"Mixed",feeder:"",nominated:"",throughtrain:"",windingDown:false,
+  tags:["Bilingual","Lacrosse","IoT","Lightsaber","Tests Only (No Exams)"],pros:["Bilingual","Unique ECAs: lacrosse, lightsaber, IoT, drones","Tests only — no exams","Small class attention"],cons:["Very small (11 classes)","18% SpEd — lowest","1 playground","~$550/yr"],verdict:"Tiny bilingual school with the most unusual ECAs. No exams ever."},
+
+  {id:415,name:"PLK Gold & Silver Pershing Tsang",cn:"保良局金銀業貿易場張凝文學校",district:"wanchai",type:"aided",gender:"coed",moi:"bilingual",religion:"none",founded:1946,location:"Causeway Bay",classes:11,masters:43,sped:64,exp10:52,ptaFee:30,charges:400,schoolFee:0,playgrounds:3,p1E:0,p1T:0,p26E:2,p26T:0,streaming:"Mixed",feeder:"",nominated:"",throughtrain:"",windingDown:false,
+  tags:["Bilingual","3 Playgrounds","Skateboard","Fencing","Only 2 Exams/yr"],pros:["3 playgrounds for 11 classes","Bilingual","2 exams/yr only, no tests","$430/yr","Skateboard, fencing, K-pop"],cons:["Small (11 classes)","No secondary pathway"],verdict:"Best outdoor:class ratio (3 playgrounds, 11 classes). Bilingual, gentle assessment."},
+
+  {id:414,name:"Po Kok Primary School",cn:"寶覺小學",district:"wanchai",type:"aided",gender:"coed",moi:"bilingual",religion:"buddhism",founded:1931,location:"Happy Valley",classes:16,masters:41,sped:78,exp10:33,ptaFee:60,charges:0,schoolFee:0,playgrounds:1,p1E:1,p1T:0,p26E:2,p26T:2,streaming:"By Chinese ability",feeder:"",nominated:"",throughtrain:"",windingDown:false,
+  tags:["Buddhist","Bilingual","Rock Climbing Wall","Lowest Cost (~$60)"],pros:["Lowest annual cost in dataset (~$60/yr)","Bilingual","78% SpEd","Rock climbing wall","Buddhist ethos"],cons:["33% exp10","Chinese ability streaming","1 playground"],verdict:"Lowest-cost bilingual school across all 4 districts. Strong SEN, rock climbing wall."},
+
+  {id:409,name:"Raimondi College Primary Section",cn:"高主教書院小學部",district:"wanchai",type:"private",gender:"coed",moi:"bilingual",religion:"catholicism",founded:1958,location:"Stubbs Road",classes:26,masters:23,sped:0,exp10:46,ptaFee:100,charges:0,schoolFee:58800,playgrounds:2,p1E:0,p1T:0,p26E:2,p26T:2,streaming:"Random",feeder:"Raimondi College",nominated:"",throughtrain:"",windingDown:false,
+  tags:["Private","Catholic","Bilingual","Feeder → Raimondi College","$58,800/yr"],pros:["Feeder to Raimondi College","Bilingual","No P1 assessment","Gifted Education Centre"],cons:["$58,800/yr","0% SpEd","23% masters"],verdict:"Prestigious private Catholic bilingual school with feeder to Raimondi College."},
+
+  {id:420,name:"The True Light School (Primary)",cn:"香港真光中學附屬小學暨幼稚園",district:"wanchai",type:"private",gender:"coed",moi:"bilingual",religion:"protestantism",founded:1872,location:"Tai Hang",classes:22,masters:35,sped:0,exp10:46,ptaFee:70,charges:0,schoolFee:63650,playgrounds:1,p1E:2,p1T:2,p26E:2,p26T:2,streaming:"Mixed",feeder:"True Light School",nominated:"",throughtrain:"",windingDown:false,
+  tags:["Private","Bilingual","Indoor Pool","Archery","Rock Climbing","Organic Farm","$63,650/yr"],pros:["Indoor swimming pool (extremely rare)","Archery + rock-climbing","Organic farm","Bilingual","Feeder to True Light"],cons:["$63,650/yr","0% SpEd","1 playground"],verdict:"Most unique facilities: indoor pool, archery, rock climbing, organic farm."},
+
+  {id:25,name:"C.C.C. Kei Wan PS (Aldrich Bay)",cn:"中華基督教會基灣小學（愛蝶灣）",district:"eastern",type:"aided",gender:"coed",moi:"bilingual",religion:"protestantism",founded:1970,location:"Shau Kei Wan",classes:24,masters:54,sped:20,exp10:72,ptaFee:60,charges:1350,schoolFee:0,playgrounds:3,p1E:2,p1T:0,p26E:3,p26T:0,streaming:"By performance",feeder:"",nominated:"",throughtrain:"",windingDown:false,
+  tags:["Bilingual","54% Masters","AI Lab","VR Room","20+ International Exchanges","~$1,410/yr"],pros:["54% masters — highest aided bilingual","AI Lab, VR Room, Ballet Room","Exchanges with 20+ countries","3 playgrounds"],cons:["Highest charges in Eastern (~$1,410/yr)","20% SpEd — very low","Protestant ethos"],verdict:"Most internationally-connected school across all 4 districts. Advanced tech. High charges."},
+
+  {id:24,name:"Salesian School",cn:"慈幼學校",district:"eastern",type:"aided",gender:"coed",moi:"bilingual",religion:"catholicism",founded:1951,location:"Shau Kei Wan",classes:9,masters:43,sped:76,exp10:58,ptaFee:50,charges:300,schoolFee:0,playgrounds:4,p1E:0,p1T:0,p26E:2,p26T:0,streaming:"Subject grouping, upper primary",feeder:"Salesian English School",nominated:"",throughtrain:"",windingDown:false,
+  tags:["Bilingual","4 Playgrounds","Catholic","Feeder → Salesian English School","No P1 Assessment"],pros:["4 playgrounds — most in dataset","Bilingual","Feeder to Salesian English School","76% SpEd","No P1 assessment"],cons:["Very small (9 classes)","Catholic ethos"],verdict:"4 playgrounds for 9 classes — highest outdoor:class ratio. Bilingual, feeder, zero P1 pressure."},
+
+  {id:32,name:"Endeavourers LLSY Memorial PS",cn:"勵志會梁李秀娛紀念小學",district:"eastern",type:"aided",gender:"coed",moi:"bilingual",religion:"none",founded:1994,location:"Shau Kei Wan",classes:24,masters:51,sped:72,exp10:69,ptaFee:30,charges:0,schoolFee:0,playgrounds:3,p1E:0,p1T:0,p26E:3,p26T:0,streaming:"P3+ ability groups",feeder:"",nominated:"",throughtrain:"",windingDown:false,
+  tags:["Bilingual","~$30/yr","51% Masters","Organic Farm","Butterfly Farmyard","Koi Pond","No P1 Assessment"],pros:["~$30/yr — lowest aided bilingual","51% masters","72% SpEd","69% exp10","Organic farm, butterfly farmyard, koi pond, running track","No P1 assessment"],cons:["Ability grouping from P3","Shau Kei Wan location"],verdict:"Best value bilingual aided school — $30/yr with strong staff and unique grounds."},
+
+  {id:51,name:"HKUGA Primary School",cn:"港大同學會小學",district:"eastern",type:"dss",gender:"coed",moi:"bilingual",religion:"none",founded:2002,location:"Chai Wan",classes:24,masters:61,sped:34,exp10:74,ptaFee:100,charges:0,schoolFee:37880,playgrounds:2,p1E:0,p1T:0,p26E:2,p26T:0,streaming:"Mixed",feeder:"",nominated:"",throughtrain:"HKUGA College",windingDown:false,
+  tags:["DSS","Through-train → HKUGA College","61% Masters (Highest)","Bilingual","$37,880/yr"],pros:["Through-train to HKUGA College","61% masters — highest in dataset","Bilingual","2 exams/yr — gentlest","74% exp10"],cons:["$37,880/yr","34% SpEd","Chai Wan"],verdict:"Highest teacher qualifications across all 23 schools. Through-train to HKUGA. Gentlest assessment."},
+
+  {id:55,name:"Hon Wah College (Primary Section)",cn:"漢華中學（小學部）",district:"eastern",type:"dss",gender:"coed",moi:"bilingual",religion:"none",founded:1945,location:"Siu Sai Wan",classes:18,masters:37,sped:58,exp10:40,ptaFee:60,charges:0,schoolFee:17640,playgrounds:3,p1E:0,p1T:0,p26E:2,p26T:0,streaming:"No elite class",feeder:"",nominated:"",throughtrain:"Hon Wah College",windingDown:false,
+  tags:["DSS","Through-train → Hon Wah College","Bilingual","3 Playgrounds","$17,640/yr (Cheapest DSS)"],pros:["Cheapest through-train DSS ($17,640/yr)","Bilingual","Rock-climbing, lecture theatre, TV studio","3 playgrounds","No elite streaming"],cons:["40% exp10","Siu Sai Wan (remote)","37% masters"],verdict:"Most affordable through-train DSS. Bilingual with good facilities at the lowest DSS price."},
+
+  {id:53,name:"Kiangsu & Chekiang Primary School",cn:"蘇浙小學校",district:"eastern",type:"private",gender:"coed",moi:"bilingual",religion:"none",founded:1953,location:"North Point",classes:31,masters:27,sped:0,exp10:49,ptaFee:20,charges:0,schoolFee:54000,playgrounds:3,p1E:3,p1T:3,p26E:3,p26T:3,streaming:"Mixed",feeder:"",nominated:"",throughtrain:"",windingDown:false,
+  tags:["Private","Bilingual","31 Classes (Largest Private)","North Point","$54,000/yr"],pros:["Largest private school in dataset (31 classes)","North Point location","Bilingual","3 playgrounds"],cons:["$54,000/yr","0% SpEd","27% masters","Most tests+exams (3T+3E from P1)"],verdict:"Largest private bilingual school across all 4 districts. High fees, most assessment pressure."},
+
+  {id:251,name:"TWGHs Hok Shan School",cn:"東華三院鶴山學校",district:"southern",type:"aided",gender:"coed",moi:"bilingual",religion:"none",founded:2005,location:"Pok Fu Lam",classes:15,masters:29,sped:65,exp10:38,ptaFee:30,charges:300,schoolFee:0,playgrounds:2,p1E:0,p1T:0,p26E:3,p26T:0,streaming:"P1 English grouping; P4-6 inter-class grouping",feeder:"",nominated:"",throughtrain:"",windingDown:false,
+  tags:["Bilingual","TWGHs","Pok Fu Lam","English Group from P1","65% SpEd"],pros:["English grouping from P1","65% SpEd","TWGHs network","2 playgrounds","~$330/yr"],cons:["Declining enrolment","29% masters","38% exp10","No secondary pathway"],verdict:"Only bilingual aided school in Southern with English grouping from P1."},
+
+  {id:2,name:"St. Paul's College Primary School",cn:"聖保羅書院小學",district:"southern",type:"dss",gender:"boys",moi:"bilingual",religion:"protestantism",founded:1851,location:"Pok Fu Lam",classes:24,masters:56,sped:56,exp10:62,ptaFee:100,charges:0,schoolFee:32000,playgrounds:3,p1E:2,p1T:0,p26E:3,p26T:0,streaming:"P4-6 by ability in Chinese and Maths",feeder:"St. Paul's College",nominated:"",throughtrain:"",windingDown:false,
+  tags:["DSS","Boys","Bilingual","Feeder → St. Paul's College","Founded 1851","$32,000/yr"],pros:["Feeder to St. Paul's College (Band 1 boys secondary)","56% masters","Oldest in dataset (1851)","3 playgrounds","$32,000/yr DSS"],cons:["Boys only","$32,000/yr","Feeder selective","No through-train"],verdict:"Top DSS bilingual school for boys targeting St. Paul's College. Most historic school in dataset."},
+
+  {id:252,name:"St. Stephen's College Preparatory School",cn:"聖士提反書院附屬小學",district:"southern",type:"private",gender:"coed",moi:"english",religion:"protestantism",founded:1938,location:"Stanley",classes:24,masters:57,sped:0,exp10:46,ptaFee:200,charges:0,schoolFee:92500,playgrounds:4,p1E:2,p1T:0,p26E:2,p26T:0,streaming:"None — mixed ability",feeder:"St. Stephen's College",nominated:"",throughtrain:"",windingDown:false,
+  tags:["EMI","Private","Stanley","Only EMI in Southern","4 Playgrounds","Feeder → St. Stephen's College","$92,500/yr"],pros:["Only EMI primary in Southern District","57% masters","Largest campus (~20,000m²), 4 playgrounds","No streaming","Feeder to St. Stephen's College"],cons:["$92,500/yr — most expensive in dataset","0% SpEd","Stanley is remote"],verdict:"Only EMI primary in Southern District. Massive campus. Most expensive at $92,500/yr."}
+];
+
+/* ── State ── */
+let activeDataset = 'wanchai';
+let filtered = [];
+
+/* ── Helpers ── */
+function getActiveSchools(){
+  return activeDataset==='wanchai'?SCHOOLS_WC:activeDataset==='eastern'?SCHOOLS_EASTERN:SCHOOLS_EMI;
+}
+function typeLabel(t){return{government:"Government",aided:"Aided",private:"Private",dss:"DSS"}[t]||t}
+function genderLabel(g){return{coed:"Co-ed",boys:"Boys",girls:"Girls"}[g]||g}
+function moiLabel(m){return{english:"EMI",bilingual:"Bilingual",chinese:"CMI"}[m]||m}
+function typeBadge(t){return{government:"b-gov",aided:"b-aided",private:"b-private",dss:"b-dss"}[t]||"b-aided"}
+function genderBadge(g){return{coed:"b-coed",boys:"b-boys",girls:"b-girls"}[g]||"b-coed"}
+function moiBadge(m){return{english:"b-emi",bilingual:"b-bili",chinese:"b-cmi"}[m]||"b-cmi"}
+function annualCost(s){if(s.schoolFee>0)return"$"+s.schoolFee.toLocaleString()+"/yr";return"~$"+(s.ptaFee+s.charges)}
+function districtBadge(s){
+  if(!s.district||activeDataset!=='emi')return'';
+  const cls={["central-western"]:"b-cw",wanchai:"b-wc",eastern:"b-ea",southern:"b-so"}[s.district]||'';
+  const lbl={["central-western"]:"C&W",wanchai:"Wan Chai",eastern:"Eastern",southern:"Southern"}[s.district]||'';
+  return '<span class="badge '+cls+'">'+lbl+'</span>';
+}
+
+/* ── Dataset switcher ── */
+const ACCENT_MAP={wanchai:{color:'#2563eb',light:'#eff6ff'},eastern:{color:'#0891b2',light:'#ecfeff'},emi:{color:'#7c3aed',light:'#f5f3ff'}};
+function switchDataset(ds,el){
+  activeDataset=ds;
+  const{color,light}=ACCENT_MAP[ds];
+  document.documentElement.style.setProperty('--accent',color);
+  document.documentElement.style.setProperty('--accent-light',light);
+  document.querySelectorAll('.ds-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  // Update tab active states
+  document.querySelectorAll('.tab').forEach(t=>t.style.borderColor='');
+  // Update header subtitle
+  const subtitles={wanchai:'18 schools · District 5 · CHSC PSP 2025',eastern:'28 schools · District 2 · CHSC PSP 2025',emi:'23 schools across all 4 HK Island districts · EMI & Bilingual · Boys & co-ed only'};
+  document.getElementById('headerSub').textContent=subtitles[ds];
+  // Rebuild 4th filter
+  const extraEl=document.getElementById('fExtraWrap');
+  if(ds==='wanchai'){
+    extraEl.innerHTML='<select id="fExtra" onchange="applyFilters()"><option value="">All Religions</option><option value="none">Secular</option><option value="catholicism">Catholic</option><option value="protestantism">Protestant</option><option value="buddhism">Buddhist</option></select>';
+  } else if(ds==='eastern'){
+    extraEl.innerHTML='<select id="fExtra" onchange="applyFilters()"><option value="">All Areas</option><option value="North Point">North Point</option><option value="Quarry Bay">Quarry Bay</option><option value="Shau Kei Wan">Shau Kei Wan</option><option value="Chai Wan">Chai Wan</option></select>';
+  } else {
+    extraEl.innerHTML='<select id="fExtra" onchange="applyFilters()"><option value="">All Districts</option><option value="central-western">Central &amp; Western</option><option value="wanchai">Wan Chai</option><option value="eastern">Eastern</option><option value="southern">Southern</option></select>';
+  }
+  // Update secondary pathways description
+  const pathDescs={
+    wanchai:"Wan Chai is one of HK's strongest districts for secondary placement — two government schools nominate to <strong>both Queen's College and Belilios Public School</strong>.",
+    eastern:"Eastern District has notable pathways via through-train DSS schools and Catholic feeder links.",
+    emi:"These 23 schools span all 4 HK Island districts with pathways including DSS through-trains (HKUGA College, Hon Wah College, St. Louis School) and prestigious feeders (St. Joseph's College, St. Paul's College, Raimondi College)."
+  };
+  document.getElementById('pathDesc').innerHTML=pathDescs[ds];
+  // Update recommendations description
+  const verdDescs={wanchai:"Key standouts across Wan Chai's 18 schools.",eastern:"Key standouts across Eastern District's 28 schools.",emi:"Best choices by priority across all 4 HK Island districts — EMI and bilingual schools only."};
+  document.getElementById('verdDesc').textContent=verdDescs[ds];
+  // Reset filters
+  ['searchBox','fType','fGender','fMoi'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  applyFilters();
+  renderVerdict();
+}
+
+/* ── Filters ── */
+function applyFilters(){
+  const schools=getActiveSchools();
+  const q=document.getElementById('searchBox').value.toLowerCase();
+  const ft=document.getElementById('fType').value;
+  const fg=document.getElementById('fGender').value;
+  const fm=document.getElementById('fMoi').value;
+  const fx=document.getElementById('fExtra')?document.getElementById('fExtra').value:'';
+  filtered=schools.filter(s=>{
+    if(q&&!s.name.toLowerCase().includes(q)&&!s.cn.includes(q))return false;
+    if(ft&&s.type!==ft)return false;
+    if(fg&&s.gender!==fg)return false;
+    if(fm&&s.moi!==fm)return false;
+    if(fx){
+      if(activeDataset==='wanchai'&&s.religion!==fx)return false;
+      if(activeDataset==='eastern'&&!s.location.includes(fx))return false;
+      if(activeDataset==='emi'&&s.district!==fx)return false;
+    }
+    return true;
+  });
+  renderCards();renderTable();renderPathways();
+}
+
+function resetFilters(){
+  ['searchBox','fType','fGender','fMoi'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  const fx=document.getElementById('fExtra');if(fx)fx.value='';
+  applyFilters();
+}
+
+/* ── Render: Cards ── */
+function renderCards(){
+  const schools=getActiveSchools();
+  document.getElementById('countBar').textContent=`Showing ${filtered.length} of ${schools.length} schools`;
+  document.getElementById('cardGrid').innerHTML=filtered.map(s=>`
+    <div class="card${s.windingDown?' winding':''}">
+      <div class="card-top">
+        <div>
+          <div class="card-title">${s.name}${s.windingDown?' ⚠️':''}</div>
+          <div class="card-cn">${s.cn}</div>
+        </div>
+        <div class="badges">
+          <span class="badge ${typeBadge(s.type)}">${typeLabel(s.type)}</span>
+          <span class="badge ${genderBadge(s.gender)}">${genderLabel(s.gender)}</span>
+          <span class="badge ${moiBadge(s.moi)}">${moiLabel(s.moi)}</span>
+          ${districtBadge(s)}
+        </div>
+      </div>
+      ${s.windingDown?'<div class="badge b-warn" style="margin-bottom:8px;display:inline-block">⚠ WINDING DOWN — Not accepting P1</div>':''}
+      <div class="stats">
+        <div class="stat"><label>Location</label><span>${s.location}</span></div>
+        <div class="stat"><label>Founded</label><span>${s.founded}</span></div>
+        <div class="stat"><label>Classes</label><span>${s.classes}</span></div>
+        <div class="stat"><label>Annual Cost</label><span>${annualCost(s)}</span></div>
+        <div class="stat"><label>Masters/PhD</label><span>${s.masters}%</span></div>
+        <div class="stat"><label>SpEd Trained</label><span>${s.sped}%</span></div>
+      </div>
+      <div class="tags">
+        ${(s.tags||[]).map(t=>`<span class="tag${t.startsWith('★')?' gold':t.includes('WIND')?' red':''}">${t}</span>`).join('')}
+      </div>
+      ${(s.feeder||s.nominated||s.throughtrain)?`<div style="margin-top:8px;font-size:11px;color:var(--muted)">→ ${s.throughtrain||s.feeder||s.nominated}</div>`:''}
+    </div>`).join('');
+}
+
+/* ── Render: Table ── */
+function renderTable(){
+  document.getElementById('tableBody').innerHTML=filtered.map(s=>`<tr${s.windingDown?' style="opacity:.6"':''}>
+    <td><strong>${s.name}</strong><div class="nt">${s.cn}</div></td>
+    <td><span class="badge ${typeBadge(s.type)}">${typeLabel(s.type)}</span></td>
+    <td><span class="badge ${genderBadge(s.gender)}">${genderLabel(s.gender)}</span></td>
+    <td><span class="badge ${moiBadge(s.moi)}">${moiLabel(s.moi)}</span></td>
+    <td>${s.founded}</td>
+    <td>${s.windingDown?'<span style="color:var(--red)">⚠ '+s.classes+'</span>':s.classes}</td>
+    <td>${s.masters>=50?'<span class="best">'+s.masters+'%</span>':s.masters+'%'}</td>
+    <td>${s.sped>=75?'<span class="best">'+s.sped+'%</span>':s.sped+'%'}</td>
+    <td>${s.exp10>=75?'<span class="best">'+s.exp10+'%</span>':s.exp10+(s.exp10?'%':'—')}</td>
+    <td>${annualCost(s)}</td>
+    <td>${s.playgrounds}</td>
+    <td>${s.p1T}T + ${s.p1E}E</td>
+    <td>${s.p26T}T + ${s.p26E}E</td>
+    <td style="font-size:11px">${s.streaming||''}</td>
+    <td style="font-size:11px">${s.throughtrain?'<strong>Through-train: '+s.throughtrain+'</strong>':''}${s.feeder?'<strong>Feeder: '+s.feeder+'</strong>':''}${s.nominated?'<div class="nt">Nom: '+s.nominated+'</div>':''}</td>
+  </tr>`).join('');
+}
+
+/* ── Render: Pathways ── */
+function renderPathways(){
+  const schools=filtered.filter(s=>s.feeder||s.nominated||s.throughtrain);
+  document.getElementById('pathGrid').innerHTML=schools.map(s=>{
+    const paths=[];
+    if(s.throughtrain)paths.push({to:s.throughtrain,type:"Through-train",top:true});
+    if(s.feeder)paths.push({to:s.feeder,type:"Feeder",top:s.feeder.includes("Joseph")||s.feeder.includes("Paul's College")||s.feeder.includes("Louis")});
+    if(s.nominated)s.nominated.split(', ').forEach(n=>paths.push({to:n,type:"Nominated",top:n.includes("Queen's")||n.includes("Belilios")}));
+    return`<div class="path-card">
+      <h3>${s.name}</h3>
+      <div class="sub">${genderLabel(s.gender)} · ${typeLabel(s.type)} · ${moiLabel(s.moi)}${activeDataset==='emi'?' · '+({["central-western"]:"C&W",wanchai:"Wan Chai",eastern:"Eastern",southern:"Southern"}[s.district]||''):''}
+      </div>
+      ${paths.map(p=>`<div class="path-arrow">
+        <div class="pa-from">${p.type}</div>
+        <div class="pa-arr">→</div>
+        <div class="pa-to${p.top?' top':''}">${p.to}</div>
+      </div>`).join('')}
+    </div>`;
+  }).join('')||'<p style="color:var(--muted);font-size:13px">No schools with secondary pathways match your current filters.</p>';
+}
+
+/* ── Render: Verdict ── */
+const VERDICT_IDS={
+  wanchai:[421,422,410,424,407,425,423,417,406,409,420,411],
+  eastern:[40,39,51,44,30,416,38,53,25,55],
+  emi:[410,424,2,18,252,4,51,55,32,414,24]
+};
+function renderVerdict(){
+  const ids=VERDICT_IDS[activeDataset];
+  const schools=getActiveSchools();
+  document.getElementById('verdictGrid').innerHTML=ids.map(id=>{
+    const s=schools.find(x=>x.id===id);if(!s)return'';
+    return`<div class="v-card">
+      <h3>${s.name}</h3>
+      <div class="v-sub">${s.location} · ${typeLabel(s.type)} · ${moiLabel(s.moi)}</div>
+      <h4>Strengths</h4><ul class="pros">${(s.pros||[]).filter(Boolean).map(p=>`<li>${p}</li>`).join('')}</ul>
+      <h4>Weaknesses</h4><ul class="cons">${(s.cons||[]).map(p=>`<li>${p}</li>`).join('')}</ul>
+      <div class="bf"><label>BEST FOR</label><p>${s.verdict||''}</p></div>
+    </div>`;
+  }).join('');
+
+  // Render decision guide
+  const dg=document.getElementById('decisionGuide');
+  if(activeDataset==='wanchai'){
+    dg.innerHTML=`<table class="dg-table">
+      <tr><th>If your top priority is…</th><th>Best choice</th></tr>
+      <tr><td>Secondary pathway to Queen's College + Belilios (boys)</td><td style="font-weight:700;color:var(--accent)">Hennessy Road GPS (either campus)</td></tr>
+      <tr><td>EMI government school (free, English-medium)</td><td style="font-weight:700;color:var(--accent)">Sir Ellis Kadoorie (Sookunpo) PS</td></tr>
+      <tr><td>Boys school → St. Joseph's College (elite)</td><td style="font-weight:700;color:var(--accent)">St. Joseph's Primary School</td></tr>
+      <tr><td>Girls school → SPCS secondary</td><td style="font-weight:700;color:var(--accent)">St. Paul's Convent School (PS)</td></tr>
+      <tr><td>Highest teacher qualifications (aided)</td><td style="font-weight:700;color:var(--accent)">Precious Blood PS (59% masters)</td></tr>
+      <tr><td>Catholic co-ed with indoor swimming pool</td><td style="font-weight:700;color:var(--accent)">True Light School</td></tr>
+      <tr><td>Lowest cost, Buddhist, bilingual</td><td style="font-weight:700;color:var(--accent)">Buddhist Wong Cheuk Um PS</td></tr>
+    </table>`;
+  } else if(activeDataset==='eastern'){
+    dg.innerHTML=`<table class="dg-table">
+      <tr><th>If your top priority is…</th><th>Best choice</th></tr>
+      <tr><td>Secondary pathway to Queen's College</td><td style="font-weight:700;color:var(--accent)">Aldrich Bay GPS</td></tr>
+      <tr><td>Best arts / performing arts</td><td style="font-weight:700;color:var(--accent)">Taikoo Primary School</td></tr>
+      <tr><td>DSS through-train (bilingual)</td><td style="font-weight:700;color:var(--accent)">HKUGA PS or Hon Wah College PS</td></tr>
+      <tr><td>Best SEN support</td><td style="font-weight:700;color:var(--accent)">Shau Kei Wan GPS (90% SpEd)</td></tr>
+      <tr><td>Boys → Wah Yan College</td><td style="font-weight:700;color:var(--accent)">Pun U Association Wah Yan PS</td></tr>
+      <tr><td>No streaming, low fees, 3 playgrounds</td><td style="font-weight:700;color:var(--accent)">Pui Kiu Primary School</td></tr>
+      <tr><td>Lowest cost bilingual</td><td style="font-weight:700;color:var(--accent)">Endeavourers LLSY Memorial PS (~$30/yr)</td></tr>
+    </table>`;
+  } else {
+    dg.innerHTML=`<table class="dg-table">
+      <tr><th>If your top priority is…</th><th>Best choice</th></tr>
+      <tr><td>Free EMI government school</td><td style="font-weight:700;color:var(--accent)">Sir Ellis Kadoorie (Sookunpo) PS</td></tr>
+      <tr><td>Boys → St. Joseph's College (EMI)</td><td style="font-weight:700;color:var(--accent)">St. Joseph's PS (Wan Chai)</td></tr>
+      <tr><td>Boys → St. Paul's College (Bilingual DSS)</td><td style="font-weight:700;color:var(--accent)">St. Paul's College Primary</td></tr>
+      <tr><td>Boys → St. Louis School (Catholic through-train)</td><td style="font-weight:700;color:var(--accent)">St. Louis School Primary (C&amp;W)</td></tr>
+      <tr><td>Only EMI in Southern District</td><td style="font-weight:700;color:var(--accent)">St. Stephen's College Preparatory</td></tr>
+      <tr><td>Cheapest DSS through-train</td><td style="font-weight:700;color:var(--accent)">Hon Wah College Primary ($17,640)</td></tr>
+      <tr><td>Best teacher qualifications</td><td style="font-weight:700;color:var(--accent)">HKUGA PS (61% masters)</td></tr>
+      <tr><td>Lowest cost bilingual</td><td style="font-weight:700;color:var(--accent)">Po Kok PS (~$60) or Endeavourers LLSY (~$30)</td></tr>
+      <tr><td>4 playgrounds (best outdoor space)</td><td style="font-weight:700;color:var(--accent)">Salesian School or St. Stephen's Prep</td></tr>
+    </table>`;
+  }
+}
+
+/* ── Tab switching ── */
+function showTab(name,el){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById(name).classList.add('active');
+  el.classList.add('active');
+}
+
+/* ── Init ── */
+applyFilters();
+renderVerdict();
+</script>
+</body>
+</html>

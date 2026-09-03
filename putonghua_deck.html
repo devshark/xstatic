@@ -1,0 +1,1210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>普通话 Audio Deck</title>
+<style>
+  :root{
+    --paper:#F7F3EC;
+    --paper-dim:#EFE9DD;
+    --ink:#242017;
+    --ink-soft:#6B6455;
+    --seal:#AA3B2E;
+    --seal-soft:#C97B6C;
+    --bamboo:#5C7A5C;
+    --line:#DCD3C0;
+    --card:#FFFDF9;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+    min-height:100vh;
+  }
+  .app{max-width:760px;margin:0 auto;padding:18px 16px 60px;}
+
+  /* Header */
+  .head{padding:6px 2px 16px;border-bottom:1px solid var(--line);margin-bottom:14px;}
+  .head-top{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;}
+  .cjk-title{
+    font-family:"Songti SC","Noto Serif SC","STSong",serif;
+    font-size:28px;font-weight:700;letter-spacing:1px;color:var(--ink);
+  }
+  .head-sub{font-size:12.5px;color:var(--ink-soft);margin-top:4px;}
+  .head-sub b{color:var(--seal);font-weight:600;}
+
+  .controls{display:flex;align-items:center;gap:14px;margin-top:12px;flex-wrap:wrap;}
+  .ctrl-group{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--ink-soft);}
+  input[type=range]{accent-color:var(--seal);width:110px;}
+  .speed-val{font-variant-numeric:tabular-nums;color:var(--ink);font-weight:600;min-width:32px;display:inline-block;}
+  .toggle-btn{
+    border:1px solid var(--line);background:var(--card);color:var(--ink-soft);
+    padding:5px 10px;border-radius:5px;font-size:12px;cursor:pointer;
+  }
+  .toggle-btn.active{border-color:var(--seal);color:var(--seal);}
+  .filter-box{
+    flex:1;min-width:140px;border:1px solid var(--line);background:var(--card);
+    padding:6px 10px;border-radius:5px;font-size:13px;color:var(--ink);
+  }
+  .filter-box:focus{outline:none;border-color:var(--seal-soft);}
+  .voice-warning{font-size:12px;color:var(--seal);margin-top:8px;display:none;}
+
+  /* Lesson tabs */
+  .tabs{display:flex;overflow-x:auto;gap:6px;padding:2px 0 14px;-webkit-overflow-scrolling:touch;}
+  .tabs::-webkit-scrollbar{height:5px;}
+  .tab{
+    flex:0 0 auto;cursor:pointer;padding:8px 13px;border-radius:6px;
+    border:1px solid transparent;font-size:13px;color:var(--ink-soft);
+    display:flex;align-items:center;gap:7px;white-space:nowrap;
+  }
+  .tab .num{
+    font-size:11px;color:var(--paper);background:var(--ink-soft);
+    width:16px;height:16px;border-radius:50%;display:inline-flex;
+    align-items:center;justify-content:center;font-weight:600;
+  }
+  .tab.active{background:var(--card);border-color:var(--line);color:var(--ink);font-weight:600;}
+  .tab.active .num{background:var(--seal);}
+
+  /* Section */
+  .section{margin-bottom:26px;}
+  .section-head{
+    display:flex;align-items:center;justify-content:space-between;
+    padding-bottom:8px;margin-bottom:10px;border-bottom:1px solid var(--line);
+  }
+  .section-title{font-size:14.5px;font-weight:600;color:var(--ink);}
+  .section-count{font-size:11.5px;color:var(--ink-soft);font-weight:400;margin-left:6px;}
+  .play-section-btn{
+    display:flex;align-items:center;gap:6px;border:1px solid var(--seal);
+    background:var(--card);color:var(--seal);border-radius:20px;
+    padding:5px 13px;font-size:12px;cursor:pointer;font-weight:600;
+  }
+  .play-section-btn:hover{background:var(--seal);color:#fff;}
+  .play-section-btn.playing{background:var(--seal);color:#fff;}
+
+  /* Rows */
+  .row{
+    display:flex;align-items:center;gap:12px;padding:10px 8px;
+    border-radius:8px;cursor:pointer;transition:background .15s;
+  }
+  .row:hover{background:var(--paper-dim);}
+  .row.speaking{background:#F0E4DD;}
+  .row-play{
+    flex:0 0 34px;height:34px;border-radius:50%;border:1px solid var(--line);
+    background:var(--card);display:flex;align-items:center;justify-content:center;
+    color:var(--seal);font-size:13px;cursor:pointer;
+  }
+  .row-play:hover{border-color:var(--seal);}
+  .row-text{flex:1;min-width:0;}
+  .row-hanzi{
+    font-family:"Songti SC","Noto Serif SC","STSong",serif;
+    font-size:19px;color:var(--ink);line-height:1.35;
+  }
+  .row-pinyin{font-size:13px;color:var(--bamboo);margin-top:1px;font-style:italic;}
+  .row-en{font-size:12.5px;color:var(--ink-soft);margin-top:2px;}
+  .row-en.hidden{display:none;}
+  .row-note{font-size:11px;color:#9A9182;margin-top:2px;}
+
+  .empty{padding:30px 10px;text-align:center;color:var(--ink-soft);font-size:13px;}
+
+  footer.tip{margin-top:30px;font-size:11.5px;color:var(--ink-soft);text-align:center;line-height:1.6;}
+
+  @media (max-width:480px){
+    .cjk-title{font-size:23px;}
+    .row-hanzi{font-size:17px;}
+    .controls{gap:10px;}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <div class="head">
+    <div class="head-top">
+      <span class="cjk-title">普通话 學習</span>
+    </div>
+    <div class="head-sub">International Social Service · Pǔ Tōng Huà class — tap any line to hear it, or play a whole section</div>
+
+    <div class="controls">
+      <div class="ctrl-group">
+        <span>Speed</span>
+        <input type="range" id="speedSlider" min="0.5" max="1.3" step="0.05" value="0.85">
+        <span class="speed-val" id="speedVal">0.85x</span>
+      </div>
+      <button class="toggle-btn" id="hideEnBtn">Hide English</button>
+      <input class="filter-box" id="filterBox" type="text" placeholder="Search this lesson (hanzi / pinyin / english)…">
+    </div>
+    <div class="voice-warning" id="voiceWarning">No Mandarin voice was found in this browser — playback may fall back to a default voice or stay silent. Chrome on desktop usually has the best zh-CN voice support.</div>
+  </div>
+
+  <div class="tabs" id="tabs"></div>
+  <div id="content"></div>
+
+  <footer class="tip">Uses your browser's built-in text-to-speech (zh-CN). Quality and available voices depend on your device — Chrome tends to sound best.</footer>
+</div>
+
+<script>
+/* ================= DATA ================= */
+const LESSONS = [
+{
+  title:"Greetings & Self-Introduction",
+  sections:[
+    { name:"Tone practice", items:[
+      {h:"ā",p:"ā",e:"1st tone — flat and high"},
+      {h:"á",p:"á",e:"2nd tone — rising"},
+      {h:"ǎ",p:"ǎ",e:"3rd tone — dips then rises"},
+      {h:"à",p:"à",e:"4th tone — sharp fall"},
+      {h:"八",p:"bā",e:"eight (1st tone)"},
+      {h:"拔",p:"bá",e:"to pull (2nd tone)"},
+      {h:"把",p:"bǎ",e:"to hold (3rd tone)"},
+      {h:"爸",p:"bà",e:"dad (4th tone)"},
+    ]},
+    { name:"Hello, everyone", items:[
+      {h:"你好",p:"Nǐ hǎo",e:"Hello",n:"you + good"},
+      {h:"你",p:"Nǐ",e:"you"},
+      {h:"好",p:"hǎo",e:"good"},
+      {h:"老师好",p:"Lǎo shī hǎo",e:"Hello, teacher",n:"teacher + good"},
+      {h:"老",p:"Lǎo",e:"old / senior"},
+      {h:"老师",p:"Lǎo shī",e:"teacher"},
+      {h:"老板",p:"Lǎo bǎn",e:"boss"},
+      {h:"老公",p:"Lǎo gōng",e:"husband"},
+      {h:"老婆",p:"Lǎo pó",e:"wife"},
+      {h:"同学好",p:"Tóng xué hǎo",e:"Hello, classmate"},
+      {h:"学",p:"Xué",e:"to learn"},
+      {h:"学普通话",p:"Xué Pǔ Tōng Huà",e:"learn Mandarin"},
+      {h:"普通",p:"Pǔ Tōng",e:"ordinary"},
+      {h:"话",p:"Huà",e:"language / speech"},
+      {h:"大家好",p:"Dà jiā hǎo",e:"Hello, everybody"},
+      {h:"大",p:"Dà",e:"big"},
+      {h:"家",p:"Jiā",e:"family"},
+      {h:"很大",p:"Hěn dà",e:"very big"},
+      {h:"你好吗?",p:"Nǐ hǎo ma?",e:"How are you?",n:"question particle 吗 turns a statement into a question"},
+      {h:"我很好",p:"Wǒ hěn hǎo",e:"I am very good"},
+      {h:"我",p:"Wǒ",e:"I / me"},
+      {h:"你呢?",p:"Nǐ ne?",e:"What about you?"},
+      {h:"呢",p:"ne",e:"'what about…' particle"},
+      {h:"再见",p:"Zài jiàn",e:"Goodbye / see you again"},
+      {h:"再",p:"Zài",e:"again"},
+      {h:"见",p:"Jiàn",e:"to see"},
+      {h:"早上好",p:"Zǎo shàng hǎo",e:"Good morning"},
+      {h:"早上",p:"Zǎo shàng",e:"morning"},
+      {h:"晚上好",p:"Wǎn shàng hǎo",e:"Good evening"},
+      {h:"晚上",p:"Wǎn shàng",e:"night"},
+      {h:"上海",p:"Shàng Hǎi",e:"Shanghai",n:"up + ocean"},
+      {h:"上",p:"Shàng",e:"up"},
+      {h:"上环",p:"Shàng Huán",e:"Sheung Wan"},
+      {h:"有问题吗?",p:"Yǒu wèn tí ma?",e:"Any questions?"},
+      {h:"有沒有问题?",p:"Yǒu méi yǒu wèn tí?",e:"Do you have any questions or not?"},
+      {h:"有",p:"Yǒu",e:"to have"},
+      {h:"问题",p:"Wèn tí",e:"question / problem"},
+      {h:"沒有",p:"Méi yǒu",e:"do not have"},
+      {h:"你",p:"Nǐ",e:"you"},
+      {h:"他/她/它",p:"Tā",e:"he / she / it"},
+    ]},
+    { name:"Name & nationality", items:[
+      {h:"你好，你叫什么名字?",p:"Nǐ hǎo, nǐ jiào shén me míng zi?",e:"Hello, what is your name?"},
+      {h:"什么",p:"Shén me",e:"what"},
+      {h:"为什么",p:"Wèi shén me",e:"why"},
+      {h:"名字",p:"Míng zi",e:"name"},
+      {h:"我叫/是William。",p:"Wǒ jiào/shì William.",e:"I am William."},
+      {h:"是",p:"Shì",e:"is / am / are"},
+      {h:"叫",p:"Jiào",e:"to be called"},
+      {h:"你是哪国人?",p:"Nǐ shì nǎ guó rén?",e:"Which country are you from?"},
+      {h:"哪(个)",p:"Nǎ (gè)",e:"which"},
+      {h:"国(家)",p:"Guó (jiā)",e:"country"},
+      {h:"我们",p:"Wǒ men",e:"we"},
+      {h:"你们",p:"Nǐ men",e:"you (plural)"},
+      {h:"他们",p:"Tā men",e:"they"},
+      {h:"地球",p:"Dì qiú",e:"Earth"},
+      {h:"人",p:"Rén",e:"person / people"},
+      {h:"我是中国人。",p:"Wǒ shì Zhōng Guó rén.",e:"I am Chinese."},
+      {h:"中国",p:"Zhōng Guó",e:"China"},
+      {h:"美国",p:"Měi Guó",e:"USA"},
+      {h:"英国",p:"Yīng Guó",e:"UK"},
+      {h:"印度",p:"Yìn Dù",e:"India"},
+      {h:"尼泊尔",p:"Ní Bó Ěr",e:"Nepal"},
+      {h:"巴基斯坦",p:"Bā Jī Sī Tǎn",e:"Pakistan"},
+      {h:"菲律宾",p:"Fēi Lǜ Bīn",e:"Philippines"},
+      {h:"乌克兰",p:"Wū Kè Lán",e:"Ukraine"},
+      {h:"斯里兰卡",p:"Sī Lǐ Lán Kǎ",e:"Sri Lanka"},
+      {h:"马来西亚",p:"Mǎ Lái Xī Yà",e:"Malaysia"},
+    ]},
+    { name:"Age & time in Hong Kong", items:[
+      {h:"我三十岁。",p:"Wǒ sān shí suì.",e:"I am 30 years old."},
+      {h:"三",p:"Sān",e:"three"},
+      {h:"十",p:"Shí",e:"ten"},
+      {h:"岁",p:"Suì",e:"years old"},
+      {h:"水",p:"Shuǐ",e:"water"},
+      {h:"我来了香港五年。",p:"Wǒ lái le Xiāng Gǎng wǔ nián.",e:"I have been in Hong Kong for 5 years."},
+      {h:"了",p:"le",e:"past-tense / completed-action marker"},
+      {h:"我吃饭",p:"Wǒ chī fàn",e:"I eat rice"},
+      {h:"我吃了饭",p:"Wǒ chī le fàn",e:"I ate rice"},
+      {h:"我喝咖啡",p:"Wǒ hē kā fēi",e:"I drink coffee"},
+      {h:"我喝了咖啡",p:"Wǒ hē le kā fēi",e:"I drank coffee"},
+      {h:"来",p:"lái",e:"to come"},
+      {h:"香港",p:"Xiāng Gǎng",e:"Hong Kong"},
+      {h:"香",p:"Xiāng",e:"fragrant / smells good"},
+      {h:"五",p:"Wǔ",e:"five"},
+      {h:"年",p:"Nián",e:"year"},
+      {h:"我在香港出生",p:"Wǒ zài Xiāng Gǎng chū shēng",e:"I was born in Hong Kong"},
+      {h:"出生",p:"Chū shēng",e:"to be born"},
+    ]},
+  ]
+},
+{
+  title:"Polite Phrases & Everyday Life",
+  sections:[
+    { name:"Politeness", items:[
+      {h:"谢谢(你)",p:"Xiè xie (nǐ)",e:"Thank you"},
+      {h:"快乐",p:"Kuài lè",e:"happy"},
+      {h:"新年快樂",p:"Xīn nián kuài lè",e:"Happy New Year"},
+      {h:"快一点",p:"Kuài yī diǎn",e:"faster / hurry up"},
+      {h:"一点点",p:"Yī diǎn diǎn",e:"a little bit"},
+      {h:"不客气",p:"Bù kè qì",e:"Don't mention it / you're welcome"},
+      {h:"气",p:"Qì",e:"air / gas"},
+      {h:"客气",p:"Kè qì",e:"polite"},
+      {h:"天气",p:"Tiān qì",e:"weather",n:"sky + air"},
+      {h:"你很客气",p:"Nǐ hěn kè qì",e:"You are very polite"},
+      {h:"对不起",p:"Duì bù qǐ",e:"Sorry"},
+      {h:"对",p:"Duì",e:"correct"},
+      {h:"原谅",p:"Yuán liàng",e:"to forgive"},
+      {h:"但是",p:"Dàn shì",e:"but"},
+      {h:"没关系",p:"Méi guān xì",e:"It's OK / no problem"},
+      {h:"因为",p:"Yīn wèi",e:"because"},
+      {h:"我爱你",p:"Wǒ ài nǐ",e:"I love you"},
+      {h:"你爱我吗?",p:"Nǐ ài wǒ ma?",e:"Do you love me?"},
+      {h:"关系",p:"Guān xì",e:"relationship"},
+      {h:"请",p:"Qǐng",e:"please / to treat"},
+      {h:"我请吃饭",p:"Wǒ qǐng chī fàn",e:"I'll treat you to a meal"},
+    ]},
+    { name:"Where you live & work", items:[
+      {h:"你住在哪里啊?",p:"Nǐ zhù zài nǎ lǐ a?",e:"Where do you live?"},
+      {h:"住",p:"Zhù",e:"to live"},
+      {h:"哪里",p:"Nǎ lǐ",e:"where"},
+      {h:"在",p:"Zài",e:"at / in"},
+      {h:"我在吃饭",p:"Wǒ zài chī fàn",e:"I am eating (right now)"},
+      {h:"我在喝咖啡",p:"Wǒ zài hē kā fēi",e:"I am drinking coffee (right now)"},
+      {h:"米饭",p:"Mǐ fàn",e:"cooked rice"},
+      {h:"我住在铜锣湾。",p:"Wǒ zhù zài Tóng Luó Wān.",e:"I live in Causeway Bay."},
+      {h:"湾",p:"Wān",e:"bay"},
+      {h:"大湾区",p:"Dà wān qū",e:"Greater Bay Area"},
+      {h:"铜锣",p:"Tóng Luó",e:"cymbal (Causeway Bay's name)"},
+      {h:"你在哪里上班?",p:"Nǐ zài nǎ lǐ shàng bān?",e:"Where do you work?"},
+      {h:"上班",p:"Shàng bān",e:"to go to work"},
+      {h:"上课",p:"Shàng kè",e:"to attend a lesson"},
+      {h:"上车",p:"Shàng chē",e:"to get on a vehicle"},
+      {h:"下",p:"Xià",e:"down"},
+      {h:"地下",p:"Dì xià",e:"ground floor"},
+      {h:"我在铜锣湾上班。",p:"Wǒ zài Tóng Luó Wān shàng bān.",e:"I work in Causeway Bay."},
+    ]},
+    { name:"Likes & language ability", items:[
+      {h:"我很喜欢香港。",p:"Wǒ hěn xǐ huān Xiāng Gǎng.",e:"I like Hong Kong a lot."},
+      {h:"喜欢",p:"Xǐ huān",e:"to like"},
+      {h:"不喜欢",p:"Bù xǐ huān",e:"to dislike"},
+      {h:"我不喜欢你",p:"Wǒ bù xǐ huān nǐ",e:"I don't like you"},
+      {h:"我很喜欢学普通话。",p:"Wǒ hěn xǐ huān xué Pǔ Tōng Huà.",e:"I like learning Mandarin a lot."},
+      {h:"香港大学",p:"Xiāng Gǎng dà xué",e:"HKU"},
+      {h:"大学",p:"Dà xué",e:"university"},
+      {h:"我会说一点点普通话。",p:"Wǒ huì shuō yī diǎn diǎn Pǔ Tōng Huà.",e:"I know how to speak a little bit of Mandarin."},
+      {h:"会",p:"Huì",e:"know how to / will"},
+      {h:"吃饭",p:"Chī fàn",e:"to eat"},
+      {h:"喝咖啡",p:"Hē kā fēi",e:"to drink coffee"},
+      {h:"我会吃饭",p:"Wǒ huì chī fàn",e:"I will eat"},
+      {h:"我会喝咖啡",p:"Wǒ huì hē kā fēi",e:"I will drink coffee"},
+      {h:"说",p:"Shuō",e:"to speak"},
+      {h:"请说慢一点。",p:"Qǐng shuō màn yī diǎn.",e:"Please speak slower."},
+      {h:"我看电影",p:"Wǒ kàn diàn yǐng",e:"I watch a movie"},
+      {h:"我看了电影",p:"Wǒ kàn le diàn yǐng",e:"I watched a movie"},
+      {h:"我在看电影",p:"Wǒ zài kàn diàn yǐng",e:"I am watching a movie"},
+      {h:"我会看电影",p:"Wǒ huì kàn diàn yǐng",e:"I will watch a movie"},
+    ]},
+    { name:"Friends & farewells", items:[
+      {h:"你是最好的。",p:"Nǐ shì zuì hǎo de.",e:"You are the best."},
+      {h:"最好",p:"Zuì hǎo",e:"the best"},
+      {h:"朋友",p:"Péng yǒu",e:"friend"},
+      {h:"你是(我)最好的朋友",p:"Nǐ shì (wǒ) zuì hǎo de péng yǒu",e:"You are my best friend"},
+      {h:"的",p:"de",e:"possessive particle ('s)"},
+      {h:"我(的)",p:"Wǒ (de)",e:"my"},
+      {h:"好朋友，明天见。",p:"Hǎo péng yǒu, míng tiān jiàn.",e:"Good friend, see you tomorrow."},
+      {h:"下次见",p:"Xià cì jiàn",e:"see you next time"},
+      {h:"下个星期见",p:"Xià gè xīng qí jiàn",e:"see you next week"},
+      {h:"明天",p:"Míng tiān",e:"tomorrow"},
+      {h:"今天",p:"Jīn tiān",e:"today"},
+      {h:"昨天",p:"Zuó tiān",e:"yesterday"},
+      {h:"上个星期",p:"Shàng gè xīng qí",e:"last week"},
+      {h:"东北",p:"Dōng Běi",e:"northeast"},
+      {h:"拍照",p:"Pāi zhào",e:"to take a photo"},
+      {h:"一，二，三，茄子",p:"Yī, èr, sān, qié zi",e:"1, 2, 3, cheese!",n:"literally 'eggplant' — said like 'cheese' for photos"},
+    ]},
+  ]
+},
+{
+  title:"Numbers, Money, Time & Dates",
+  sections:[
+    { name:"Numbers 1–10", items:[
+      {h:"一",p:"Yī",e:"one"},
+      {h:"二/兩",p:"Èr / Liǎng",e:"two"},
+      {h:"三",p:"Sān",e:"three"},
+      {h:"四",p:"Sì",e:"four"},
+      {h:"死",p:"Sǐ",e:"death (sounds close to four — considered unlucky)"},
+      {h:"五",p:"Wǔ",e:"five"},
+      {h:"六",p:"Liù",e:"six"},
+      {h:"六六大顺",p:"Liù liù dà shùn",e:"wishing everything goes smoothly"},
+      {h:"七",p:"Qī",e:"seven"},
+      {h:"八",p:"Bā",e:"eight"},
+      {h:"恭喜发财",p:"Gōng xǐ fā cái",e:"congratulations, may you be prosperous",n:"said at Chinese New Year"},
+      {h:"九",p:"Jiǔ",e:"nine"},
+      {h:"长久",p:"Cháng jiǔ",e:"lasting a long time"},
+      {h:"好久不见",p:"Hǎo jiǔ bù jiàn",e:"long time no see"},
+      {h:"九龙",p:"Jiǔ Lóng",e:"Kowloon"},
+      {h:"啤酒",p:"Pí jiǔ",e:"beer"},
+      {h:"十",p:"Shí",e:"ten"},
+      {h:"厉害",p:"Lì hài",e:"impressive / skillful"},
+    ]},
+    { name:"Bigger numbers & lucky numbers", items:[
+      {h:"十一",p:"Shí yī",e:"eleven"},
+      {h:"十二",p:"Shí èr",e:"twelve"},
+      {h:"零",p:"Líng",e:"zero"},
+      {h:"五二零",p:"Wǔ èr líng",e:"520 — a numeric way to say 'I love you'"},
+      {h:"一百",p:"Yī bǎi",e:"one hundred"},
+      {h:"一六八",p:"Yī liù bā",e:"168"},
+      {h:"一路发",p:"Yī lù fā",e:"getting rich all the way (sounds like 168)"},
+      {h:"一千",p:"Yī qiān",e:"one thousand"},
+      {h:"一三一四",p:"Yī sān yī sì",e:"1314"},
+      {h:"一生一世",p:"Yī shēng yī shì",e:"for one's whole life (sounds like 1314)"},
+      {h:"一万",p:"Yī wàn",e:"ten thousand"},
+      {h:"一亿",p:"Yī yì",e:"one hundred million"},
+    ]},
+    { name:"Money & prices", items:[
+      {h:"这个多少钱?",p:"Zhè gè duō shǎo qián?",e:"How much is this?"},
+      {h:"多",p:"Duō",e:"more"},
+      {h:"少",p:"Shǎo",e:"less"},
+      {h:"钱",p:"Qián",e:"money"},
+      {h:"五百五十五块",p:"Wǔ bǎi wǔ shí wǔ kuài",e:"$555"},
+      {h:"十五块七毛",p:"Shí wǔ kuài qī máo",e:"$15.70"},
+      {h:"毛",p:"Máo",e:"10 cents (jiao)"},
+      {h:"八千八百八十块",p:"Bā qiān bā bǎi bā shí kuài",e:"$8,880"},
+    ]},
+    { name:"Telephone numbers", items:[
+      {h:"你(的)电话号码是多少?",p:"Nǐ (de) diàn huà hào mǎ shì duō shǎo?",e:"What is your telephone number?"},
+      {h:"电话",p:"Diàn huà",e:"telephone"},
+      {h:"号码",p:"Hào mǎ",e:"number"},
+      {h:"九七二一 零七九七",p:"Jiǔ qī èr yī, líng qī jiǔ qī",e:"9721-0797"},
+    ]},
+    { name:"Telling the time", items:[
+      {h:"现在几点了?",p:"Xiàn zài jǐ diǎn le?",e:"What time is it now?"},
+      {h:"现在",p:"Xiàn zài",e:"now"},
+      {h:"排队",p:"Pái duì",e:"to line up"},
+      {h:"回家",p:"Huí jiā",e:"to go home"},
+      {h:"七点",p:"Qī diǎn",e:"7:00"},
+      {h:"三点半",p:"Sān diǎn bàn",e:"3:30"},
+      {h:"半",p:"Bàn",e:"half"},
+      {h:"六点十五分/六点一刻",p:"Liù diǎn shí wǔ fēn / Liù diǎn yī kè",e:"6:15"},
+      {h:"一刻",p:"Yī kè",e:"a quarter (15 minutes)"},
+      {h:"七点三十五分",p:"Qī diǎn sān shí wǔ fēn",e:"7:35"},
+      {h:"八点零八分",p:"Bā diǎn líng bā fēn",e:"8:08"},
+      {h:"三个小时",p:"Sān gè xiǎo shí",e:"3 hours"},
+      {h:"时间",p:"Shí jiān",e:"time"},
+    ]},
+    { name:"Days of the week", items:[
+      {h:"星期",p:"Xīng qí",e:"week"},
+      {h:"星期一",p:"Xīng qí yī",e:"Monday"},
+      {h:"星期二",p:"Xīng qí èr",e:"Tuesday"},
+      {h:"星期三",p:"Xīng qí sān",e:"Wednesday"},
+      {h:"星期四",p:"Xīng qí sì",e:"Thursday"},
+      {h:"星期五",p:"Xīng qí wǔ",e:"Friday"},
+      {h:"星期六",p:"Xīng qí liù",e:"Saturday"},
+      {h:"星期天",p:"Xīng qí tiān",e:"Sunday"},
+      {h:"一个星期有七天",p:"Yī gè xīng qí yǒu qī tiān",e:"One week has 7 days"},
+      {h:"今天是星期六",p:"Jīn tiān shì xīng qí liù",e:"Today is Saturday"},
+    ]},
+    { name:"Months & year", items:[
+      {h:"月",p:"Yuè",e:"month"},
+      {h:"一月",p:"Yī yuè",e:"January"},
+      {h:"二月",p:"Èr yuè",e:"February"},
+      {h:"三月",p:"Sān yuè",e:"March"},
+      {h:"四月",p:"Sì yuè",e:"April"},
+      {h:"五月",p:"Wǔ yuè",e:"May"},
+      {h:"六月",p:"Liù yuè",e:"June"},
+      {h:"七月",p:"Qī yuè",e:"July"},
+      {h:"八月",p:"Bā yuè",e:"August"},
+      {h:"九月",p:"Jiǔ yuè",e:"September"},
+      {h:"十月",p:"Shí yuè",e:"October"},
+      {h:"十一月",p:"Shí yī yuè",e:"November"},
+      {h:"十二月",p:"Shí èr yuè",e:"December"},
+      {h:"一年",p:"Yī nián",e:"one year"},
+      {h:"十二个月",p:"Shí èr gè yuè",e:"twelve months"},
+      {h:"年",p:"Nián",e:"year"},
+    ]},
+    { name:"Relative time", items:[
+      {h:"昨天",p:"Zuó tiān",e:"yesterday"},
+      {h:"天",p:"Tiān",e:"sky / day"},
+      {h:"天气",p:"Tiān qì",e:"weather"},
+      {h:"今天天气很好",p:"Jīn tiān tiān qì hěn hǎo",e:"Today's weather is very good"},
+      {h:"今天",p:"Jīn tiān",e:"today"},
+      {h:"明天",p:"Míng tiān",e:"tomorrow"},
+      {h:"明天见",p:"Míng tiān jiàn",e:"see you tomorrow"},
+      {h:"星期四见",p:"Xīng qí sì jiàn",e:"see you Thursday"},
+      {h:"早上",p:"Zǎo shàng",e:"morning (6–9am)"},
+      {h:"昨天早上",p:"Zuó tiān zǎo shàng",e:"yesterday morning"},
+      {h:"今天早上",p:"Jīn tiān zǎo shàng",e:"this morning"},
+      {h:"明天早上",p:"Míng tiān zǎo shàng",e:"tomorrow morning"},
+      {h:"上午",p:"Shàng wǔ",e:"morning (9am–12pm)"},
+      {h:"我们先走了",p:"Wǒ men xiān zǒu le",e:"We'll head off first"},
+      {h:"不要担心",p:"Bù yào dān xīn",e:"don't worry"},
+      {h:"很困",p:"Hěn kùn",e:"very sleepy"},
+      {h:"睡觉",p:"Shuì jiào",e:"to sleep"},
+      {h:"休息",p:"Xiū xí",e:"to rest"},
+      {h:"什么时候",p:"Shén me shí hòu",e:"when"},
+      {h:"怎么回事?",p:"Zěn me huí shì?",e:"What happened?"},
+      {h:"中午",p:"Zhōng wǔ",e:"noon (12–1pm)"},
+      {h:"下午",p:"Xià wǔ",e:"afternoon (1–6pm)"},
+      {h:"晚上",p:"Wǎn shàng",e:"night"},
+    ]},
+    { name:"Dates — conversation", items:[
+      {h:"今天是几月几号?",p:"Jīn tiān shì jǐ yuè jǐ hào?",e:"What is today's date?"},
+      {h:"四月十三号",p:"Sì yuè shí sān hào",e:"April 13th"},
+      {h:"你来了香港几年?",p:"Nǐ lái le Xiāng Gǎng jǐ nián?",e:"How many years have you been in Hong Kong?"},
+      {h:"十年",p:"Shí nián",e:"10 years"},
+    ]},
+  ]
+},
+{
+  title:"Shopping",
+  sections:[
+    { name:"Asking the price", items:[
+      {h:"多少钱?",p:"Duō shǎo qián?",e:"How much is it?"},
+      {h:"多",p:"Duō",e:"more"},
+      {h:"少",p:"Shǎo",e:"less"},
+      {h:"钱",p:"Qián",e:"money"},
+      {h:"三块(钱)",p:"Sān kuài (qián)",e:"$3"},
+      {h:"很多钱",p:"Hěn duō qián",e:"a lot of money"},
+      {h:"老板",p:"Lǎo bǎn",e:"boss / shop owner"},
+      {h:"美女",p:"Měi nǚ",e:"beautiful girl (casual address)"},
+      {h:"帅哥",p:"Shuài gē",e:"handsome guy (casual address)"},
+      {h:"请问",p:"Qǐng wèn",e:"excuse me, may I ask"},
+    ]},
+    { name:"This, that, here, there", items:[
+      {h:"这个",p:"Zhè gè",e:"this"},
+      {h:"那个",p:"Nà gè",e:"that"},
+      {h:"这里",p:"Zhè lǐ",e:"here"},
+      {h:"那里",p:"Nà lǐ",e:"there"},
+      {h:"哪里",p:"Nǎ lǐ",e:"where"},
+      {h:"买东西/逛街",p:"Mǎi dōng xī / Guàng jiē",e:"to go shopping"},
+      {h:"买",p:"Mǎi",e:"to buy"},
+      {h:"东",p:"Dōng",e:"east"},
+      {h:"西",p:"Xī",e:"west"},
+      {h:"东西",p:"Dōng xī",e:"thing / stuff"},
+      {h:"南",p:"Nán",e:"south"},
+      {h:"北",p:"Běi",e:"north"},
+      {h:"街",p:"Jiē",e:"street"},
+    ]},
+    { name:"Bargaining", items:[
+      {h:"貴",p:"Guì",e:"expensive"},
+      {h:"太贵了",p:"Tài guì le",e:"too expensive"},
+      {h:"便宜",p:"Pián yí",e:"cheap"},
+      {h:"便宜一点",p:"Pián yí yī diǎn",e:"a bit cheaper"},
+      {h:"好的",p:"Hǎo de",e:"OK"},
+      {h:"走吧",p:"Zǒu ba",e:"let's go"},
+      {h:"厉害",p:"Lì hài",e:"impressive"},
+    ]},
+    { name:"Sizes & colours", items:[
+      {h:"大号",p:"Dà hào",e:"large size"},
+      {h:"慢一点",p:"Màn yī diǎn",e:"slower"},
+      {h:"中号",p:"Zhōng hào",e:"medium size"},
+      {h:"小号",p:"Xiǎo hào",e:"small size"},
+      {h:"大一点",p:"Dà yī diǎn",e:"a bit bigger"},
+      {h:"小一点",p:"Xiǎo yī diǎn",e:"a bit smaller"},
+      {h:"红色",p:"Hóng sè",e:"red"},
+      {h:"色",p:"Sè",e:"colour"},
+      {h:"橙色",p:"Chéng sè",e:"orange"},
+      {h:"橙汁",p:"Chéng zhī",e:"orange juice"},
+      {h:"黄色",p:"Huáng sè",e:"yellow"},
+      {h:"灰色",p:"Huī sè",e:"grey"},
+      {h:"绿色",p:"Lǜ sè",e:"green"},
+      {h:"送钟",p:"Sòng zhōng",e:"to give a clock as a gift (taboo — sounds like 'attend a funeral')"},
+      {h:"蓝色",p:"Lán sè",e:"blue"},
+      {h:"白色",p:"Bái sè",e:"white"},
+      {h:"黑色",p:"Hēi sè",e:"black"},
+      {h:"金色",p:"Jīn sè",e:"gold"},
+      {h:"银色",p:"Yín sè",e:"silver"},
+      {h:"银行",p:"Yín háng",e:"bank"},
+    ]},
+    { name:"Payment & places", items:[
+      {h:"商场",p:"Shāng chǎng",e:"shopping mall"},
+      {h:"商场在哪里啊?",p:"Shāng chǎng zài nǎ lǐ a?",e:"Where is the shopping mall?"},
+      {h:"地下",p:"Dì xià",e:"ground floor"},
+      {h:"地下很湿",p:"Dì xià hěn shī",e:"The floor is very wet"},
+      {h:"一楼",p:"Yī lóu",e:"level one"},
+      {h:"微信(支付)",p:"Wēi xìn (zhī fù)",e:"WeChat Pay"},
+      {h:"支付",p:"Zhī fù",e:"payment"},
+      {h:"支付宝",p:"Zhī fù bǎo",e:"Alipay"},
+      {h:"宝贝",p:"Bǎo bèi",e:"treasure / darling"},
+      {h:"现金",p:"Xiàn jīn",e:"cash"},
+      {h:"刷卡",p:"Shuā kǎ",e:"to swipe a card"},
+      {h:"欢迎光临",p:"Huān yíng guāng lín",e:"Welcome (said by shop staff)"},
+    ]},
+    { name:"Shopping — short sentences", items:[
+      {h:"老公,你有钱吗?我要去买东西。",p:"Lǎo gōng, nǐ yǒu qián ma? Wǒ yào qù mǎi dōng xī.",e:"Husband, do you have money? I want to go shopping."},
+      {h:"要",p:"Yào",e:"to want"},
+      {h:"打折吗?",p:"Dǎ zhé ma?",e:"Any discount?"},
+      {h:"打",p:"Dǎ",e:"to hit"},
+      {h:"打电话",p:"Dǎ diàn huà",e:"to make a phone call"},
+      {h:"我很喜欢买东西。",p:"Wǒ hěn xǐ huān mǎi dōng xī.",e:"I like shopping a lot."},
+      {h:"这个有红色,大号吗?",p:"Zhè gè yǒu hóng sè, dà hào ma?",e:"Does this come in red, in large?"},
+      {h:"(你)有大一点吗?",p:"(Nǐ) yǒu dà yī diǎn ma?",e:"Do you have a bigger one?"},
+      {h:"我喜欢黃色，不喜欢綠色。",p:"Wǒ xǐ huān huáng sè, bù xǐ huān lǜ sè.",e:"I like yellow, I don't like green."},
+      {h:"不",p:"Bù",e:"not"},
+      {h:"请问洗手间在哪里?",p:"Qǐng wèn xǐ shǒu jiān zài nǎ lǐ?",e:"Excuse me, where is the washroom?"},
+      {h:"洗手间",p:"Xǐ shǒu jiān",e:"washroom"},
+      {h:"洗",p:"Xǐ",e:"to wash"},
+      {h:"手",p:"Shǒu",e:"hand"},
+      {h:"厕所",p:"Cè suǒ",e:"toilet"},
+      {h:"我想问",p:"Wǒ xiǎng wèn",e:"I would like to ask"},
+      {h:"你今天有时间吗?",p:"Nǐ jīn tiān yǒu shí jiān ma?",e:"Do you have time today?"},
+      {h:"时间",p:"Shí jiān",e:"time"},
+      {h:"我们一起去深圳买东西吧。",p:"Wǒ men yī qǐ qù Shēn Zhèn mǎi dōng xī ba.",e:"Let's go to Shenzhen together to shop."},
+    ]},
+    { name:"Dialogue — buying a handbag", items:[
+      {h:"老板, 这个手提包有什么颜色?",p:"Lǎo bǎn, zhè gè shǒu tí bāo yǒu shén me yán sè?",e:"Boss, what colours does this handbag come in?"},
+      {h:"手提包",p:"Shǒu tí bāo",e:"handbag"},
+      {h:"颜色",p:"Yán sè",e:"colour"},
+      {h:"这个手提包有红色, 蓝色, (和)黑色。",p:"Zhè gè shǒu tí bāo yǒu hóng sè, lán sè (hé) hēi sè.",e:"This handbag comes in red, blue, and black."},
+      {h:"和",p:"Hé",e:"and"},
+      {h:"我很喜欢黑色, 黑色是最好的。",p:"Wǒ hěn xǐ huān hēi sè, hēi sè shì zuì hǎo de.",e:"I like black a lot, black is the best."},
+      {h:"这个手提包有小一点的吗?",p:"Zhè gè shǒu tí bāo yǒu xiǎo yī diǎn de ma?",e:"Does this handbag have a smaller one?"},
+      {h:"没有, 对不起。",p:"Méi yǒu, duì bù qǐ.",e:"No, sorry."},
+      {h:"这个手提包多少钱?",p:"Zhè gè shǒu tí bāo duō shǎo qián?",e:"How much is this handbag?"},
+      {h:"四百块。",p:"Sì bǎi kuài.",e:"$400."},
+      {h:"百",p:"Bǎi",e:"hundred"},
+      {h:"太贵了, 便宜一点。三百五十块可以吗?",p:"Tài guì le, pián yí yī diǎn. Sān bǎi wǔ shí kuài kě yǐ ma?",e:"Too expensive, cheaper please. Can it be $350?"},
+      {h:"可以",p:"Kě yǐ",e:"can / OK"},
+      {h:"可以, 谢谢(你)。",p:"Kě yǐ, xiè xie (nǐ).",e:"OK, thank you."},
+    ]},
+  ]
+},
+{
+  title:"Food & Beverage",
+  sections:[
+    { name:"Drinks", items:[
+      {h:"你要喝什么?",p:"Nǐ yào hē shén me?",e:"What do you want to drink?"},
+      {h:"很好喝",p:"Hěn hǎo hē",e:"very tasty (for drinks)"},
+      {h:"我爱喝",p:"Wǒ ài hē",e:"I love to drink"},
+      {h:"果汁",p:"Guǒ zhī",e:"fruit juice"},
+      {h:"水果",p:"Shuǐ guǒ",e:"fruit"},
+      {h:"汁",p:"Zhī",e:"juice"},
+      {h:"水",p:"Shuǐ",e:"water"},
+      {h:"牛奶",p:"Niú nǎi",e:"milk"},
+      {h:"牛",p:"Niú",e:"cow"},
+      {h:"牛肉",p:"Niú ròu",e:"beef"},
+      {h:"牛肉面",p:"Niú ròu miàn",e:"beef noodles"},
+      {h:"豆浆",p:"Dòu jiāng",e:"soy milk"},
+      {h:"咖啡",p:"Kā fēi",e:"coffee"},
+      {h:"可乐",p:"Kě lè",e:"cola"},
+      {h:"健怡可樂",p:"Jiàn yí kě lè",e:"Diet Coke"},
+      {h:"零度可乐",p:"Líng dù kě lè",e:"Coke Zero"},
+    ]},
+    { name:"What do you want to eat", items:[
+      {h:"你要吃什么?",p:"Nǐ yào chī shén me?",e:"What do you want to eat?"},
+      {h:"很好吃",p:"Hěn hǎo chī",e:"very tasty (for food)"},
+      {h:"我爱吃",p:"Wǒ ài chī",e:"I love to eat"},
+      {h:"面(条)",p:"Miàn (tiáo)",e:"noodles"},
+      {h:"炒面",p:"Chǎo miàn",e:"fried noodles"},
+      {h:"(米)饭",p:"(Mǐ) fàn",e:"rice"},
+      {h:"炒饭",p:"Chǎo fàn",e:"fried rice"},
+      {h:"包子",p:"Bāo zi",e:"steamed bun"},
+      {h:"包",p:"Bāo",e:"bun / bag"},
+      {h:"手提包",p:"Shǒu tí bāo",e:"handbag"},
+      {h:"饺子",p:"Jiǎo zi",e:"dumpling"},
+      {h:"水饺",p:"Shuǐ jiǎo",e:"dumpling in soup"},
+      {h:"睡觉",p:"Shuì jiào",e:"to sleep"},
+      {h:"水饺多少钱?",p:"Shuǐ jiǎo duō shǎo qián?",e:"How much for the soup dumplings?"},
+      {h:"睡觉多少钱?",p:"Shuì jiào duō shǎo qián?",e:"How much to sleep? (tonal pun on the line above)"},
+      {h:"披萨",p:"Pī sà",e:"pizza"},
+      {h:"意大利面",p:"Yì Dà Lì miàn",e:"spaghetti",n:"Italy noodles"},
+      {h:"沙拉",p:"Shā lā",e:"salad"},
+      {h:"你喜欢吃沙拉吗?",p:"Nǐ xǐ huān chī shā lā ma?",e:"Do you like eating salad?"},
+      {h:"冰淇淋",p:"Bīng qí lín",e:"ice cream"},
+      {h:"冰",p:"Bīng",e:"ice"},
+    ]},
+    { name:"Hot, cold & thirsty", items:[
+      {h:"茶",p:"Chá",e:"tea"},
+      {h:"今天外面好/很热啊",p:"Jīn tiān wài miàn hǎo/hěn rè a",e:"It's very hot outside today"},
+      {h:"外面",p:"Wài miàn",e:"outside"},
+      {h:"好热/很热",p:"Hǎo rè / hěn rè",e:"very hot"},
+      {h:"很冷/好冷",p:"Hěn lěng / hǎo lěng",e:"very cold"},
+      {h:"热水",p:"Rè shuǐ",e:"hot water"},
+      {h:"冷水",p:"Lěng shuǐ",e:"cold water"},
+      {h:"温水",p:"Wēn shuǐ",e:"warm water"},
+      {h:"你想喝(一)杯牛奶吗?",p:"Nǐ xiǎng hē (yī) bēi niú nǎi ma?",e:"Would you like to drink a glass of milk?"},
+      {h:"想",p:"Xiǎng",e:"would like to"},
+      {h:"我想你",p:"Wǒ xiǎng nǐ",e:"I miss you"},
+      {h:"杯(子)",p:"Bēi (zi)",e:"cup / glass"},
+      {h:"我(的口)好/很渴啊",p:"Wǒ (de kǒu) hǎo/hěn kě a",e:"I am very thirsty"},
+      {h:"我好/很饿",p:"Wǒ hǎo/hěn è",e:"I am very hungry"},
+      {h:"那(个)是什么?",p:"Nà (gè) shì shén me?",e:"What is that?"},
+      {h:"这(个)是牛奶",p:"Zhè (gè) shì niú nǎi",e:"This is milk"},
+    ]},
+    { name:"Dietary needs", items:[
+      {h:"我吃素。",p:"Wǒ chī sù.",e:"I am a vegetarian."},
+      {h:"素",p:"Sù",e:"vegetarian food"},
+      {h:"我吃全素。",p:"Wǒ chī quán sù.",e:"I am a vegan."},
+      {h:"全部",p:"Quán bù",e:"whole / all"},
+      {h:"你有素菜吗?",p:"Nǐ yǒu sù cài ma?",e:"Do you have vegetarian dishes?"},
+      {h:"素菜",p:"Sù cài",e:"vegetarian dishes"},
+      {h:"印度菜",p:"Yìn Dù cài",e:"Indian dishes"},
+      {h:"广东菜",p:"Guǎng Dōng cài",e:"Cantonese dishes"},
+      {h:"四川菜",p:"Sì Chuān cài",e:"Sichuan dishes"},
+      {h:"上海菜",p:"Shàng hǎi cài",e:"Shanghai dishes"},
+      {h:"西餐",p:"Xī cān",e:"Western food"},
+      {h:"这个有肉吗?",p:"Zhè gè yǒu ròu ma?",e:"Does this have meat?"},
+      {h:"猪肉",p:"Zhū ròu",e:"pork"},
+      {h:"鸡肉",p:"Jī ròu",e:"chicken"},
+      {h:"羊肉",p:"Yáng ròu",e:"mutton"},
+      {h:"海鲜",p:"Hǎi xiān",e:"seafood"},
+      {h:"你有清真菜吗?",p:"Nǐ yǒu qīng zhēn cài ma?",e:"Do you have halal food?"},
+      {h:"牛排",p:"Niú pái",e:"steak"},
+      {h:"猪排",p:"Zhū pái",e:"pork chop"},
+      {h:"鸡排",p:"Jī pái",e:"chicken steak"},
+      {h:"羊排",p:"Yáng pái",e:"lamb chop"},
+      {h:"我不可以吃猪肉。",p:"Wǒ bù kě yǐ chī zhū ròu.",e:"I cannot eat pork."},
+      {h:"我不吃猪肉",p:"Wǒ bù chī zhū ròu",e:"I don't eat pork"},
+      {h:"清真",p:"Qīng zhēn",e:"halal"},
+      {h:"鸡腿",p:"Jī tuǐ",e:"chicken drumstick"},
+    ]},
+    { name:"Ordering food", items:[
+      {h:"我要点炒饭。",p:"Wǒ yào diǎn chǎo fàn.",e:"I want to order fried rice."},
+      {h:"点",p:"Diǎn",e:"to order"},
+      {h:"五点",p:"Wǔ diǎn",e:"5 o'clock"},
+      {h:"便宜一点",p:"Pián yí yī diǎn",e:"a bit cheaper"},
+      {h:"点心",p:"Diǎn xīn",e:"dim sum"},
+      {h:"这里有什么出名的菜?",p:"Zhè lǐ yǒu shén me chū míng de cài?",e:"What is the famous dish here?"},
+      {h:"出名",p:"Chū míng",e:"famous"},
+      {h:"名字",p:"Míng zi",e:"name"},
+      {h:"出",p:"Chū",e:"out"},
+      {h:"出口",p:"Chū kǒu",e:"exit"},
+      {h:"出去",p:"Chū qù",e:"to go out"},
+      {h:"我出去买东西",p:"Wǒ chū qù mǎi dōng xī",e:"I'm going out to shop"},
+    ]},
+    { name:"Basic food words", items:[
+      {h:"面包",p:"Miàn bāo",e:"bread"},
+      {h:"面条",p:"Miàn tiáo",e:"noodles"},
+      {h:"肉",p:"Ròu",e:"meat"},
+      {h:"(蔬)菜",p:"(Shū) cài",e:"vegetable"},
+      {h:"(鸡)蛋",p:"(Jī) dàn",e:"egg"},
+      {h:"西红柿炒蛋",p:"Xī hóng shì chǎo dàn",e:"tomato and scrambled egg"},
+      {h:"汤",p:"Tāng",e:"soup"},
+    ]},
+    { name:"Spice & flavour", items:[
+      {h:"甜椒",p:"Tián jiāo",e:"capsicum / sweet pepper"},
+      {h:"甜",p:"Tián",e:"sweet"},
+      {h:"胡椒",p:"Hú jiāo",e:"pepper"},
+      {h:"黑胡椒",p:"Hēi hú jiāo",e:"black pepper"},
+      {h:"辣椒",p:"Là jiāo",e:"chili"},
+      {h:"辣椒酱",p:"Là jiāo jiàng",e:"chili sauce"},
+      {h:"大辣",p:"Dà là",e:"very spicy"},
+      {h:"中辣",p:"Zhōng là",e:"medium spicy"},
+      {h:"小辣",p:"Xiǎo là",e:"a little spicy"},
+      {h:"不辣",p:"Bù là",e:"not spicy"},
+    ]},
+    { name:"Vegetables", items:[
+      {h:"胡萝卜",p:"Hú luó bo",e:"carrot"},
+      {h:"萝卜",p:"Luó bo",e:"turnip / radish"},
+      {h:"萝卜糕",p:"Luó bo gāo",e:"turnip cake"},
+      {h:"洋葱",p:"Yáng cōng",e:"onion"},
+      {h:"(大)葱",p:"(Dà) cōng",e:"spring/green onion"},
+      {h:"很/好饱",p:"Hěn/hǎo bǎo",e:"very full"},
+      {h:"很/好多",p:"Hěn/hǎo duō",e:"a lot"},
+      {h:"土豆",p:"Tǔ dòu",e:"potato"},
+      {h:"薯条",p:"Shǔ tiáo",e:"French fries"},
+      {h:"薯片",p:"Shǔ piàn",e:"potato chips"},
+      {h:"蕃薯",p:"Fān shǔ",e:"sweet potato"},
+      {h:"三明治",p:"Sān míng zhì",e:"sandwich"},
+      {h:"三文鱼",p:"Sān wèn yú",e:"salmon"},
+      {h:"吐司",p:"Tǔ sī",e:"toast"},
+      {h:"汉堡包",p:"Hàn bǎo bāo",e:"hamburger"},
+      {h:"过敏",p:"Guò mǐn",e:"allergic"},
+      {h:"新鲜",p:"Xīn xiān",e:"fresh"},
+      {h:"新",p:"Xīn",e:"new"},
+      {h:"新年快乐",p:"Xīn nián kuài lè",e:"Happy New Year"},
+    ]},
+    { name:"At the restaurant", items:[
+      {h:"你好, 几位?",p:"Nǐ hǎo, jǐ wèi?",e:"Hello, how many people?"},
+      {h:"位",p:"Wèi",e:"seat / person (counter)"},
+      {h:"请给我菜单。",p:"Qǐng gěi wǒ cài dān.",e:"Please give me the menu."},
+      {h:"给",p:"Gěi",e:"to give"},
+      {h:"菜单",p:"Cài dān",e:"menu"},
+      {h:"英文菜单",p:"Yīng wén cài dān",e:"English menu"},
+      {h:"服务员, 我想点餐。",p:"Fú wù yuán, wǒ xiǎng diǎn cān.",e:"Waiter, I would like to order."},
+      {h:"服务",p:"Fú wù",e:"service"},
+      {h:"我想点外卖。",p:"Wǒ xiǎng diǎn wài mài.",e:"I would like to order takeaway."},
+      {h:"外卖",p:"Wài mài",e:"takeaway"},
+      {h:"外",p:"Wài",e:"outside"},
+      {h:"卖",p:"Mài",e:"to sell"},
+      {h:"做买卖",p:"Zuò mǎi mài",e:"to do business/trading"},
+      {h:"你有叉子吗?",p:"Nǐ yǒu chā zi ma?",e:"Do you have a fork?"},
+      {h:"叉子",p:"Chā zi",e:"fork"},
+      {h:"刀子",p:"Dāo zi",e:"knife"},
+      {h:"勺子",p:"Sháo zi",e:"spoon"},
+      {h:"筷子",p:"Kuài zi",e:"chopsticks"},
+      {h:"盘子",p:"Pán zi",e:"plate"},
+      {h:"杯子",p:"Bēi zi",e:"cup"},
+      {h:"瓶子",p:"Píng zi",e:"bottle"},
+      {h:"碗",p:"Wǎn",e:"bowl"},
+      {h:"小盘子",p:"Xiǎo pán zi",e:"small plate"},
+      {h:"不好意思/麻烦你, 这个我想打包。",p:"Bù hǎo yì si/Má fan nǐ, zhè gè wǒ xiǎng dǎ bāo.",e:"Excuse me/sorry to trouble you, I'd like to take this leftover away."},
+      {h:"不好意思",p:"Bù hǎo yì si",e:"excuse me / sorry"},
+      {h:"麻烦(你)",p:"Má fan (nǐ)",e:"to trouble (you)"},
+      {h:"打包",p:"Dǎ bāo",e:"to take away leftovers"},
+      {h:"服务员, 请买单。",p:"Fú wù yuán, qǐng mǎi dān.",e:"Waiter, the bill please."},
+      {h:"买单",p:"Mǎi dān",e:"the bill"},
+      {h:"今天我买单",p:"Jīn tiān wǒ mǎi dān",e:"I'll pay today / it's my treat"},
+    ]},
+    { name:"Fruits", items:[
+      {h:"苹果",p:"Píng guǒ",e:"apple"},
+      {h:"苹果汁",p:"Píng guǒ zhī",e:"apple juice"},
+      {h:"香蕉",p:"Xiāng jiāo",e:"banana"},
+      {h:"香水",p:"Xiāng shuǐ",e:"perfume"},
+      {h:"葡萄",p:"Pú táo",e:"grape"},
+      {h:"橙子",p:"Chéng zi",e:"orange"},
+      {h:"草莓",p:"Cǎo méi",e:"strawberry"},
+      {h:"西瓜",p:"Xī guā",e:"watermelon"},
+      {h:"南瓜",p:"Nán guā",e:"pumpkin"},
+      {h:"冬瓜",p:"Dōng guā",e:"winter melon"},
+      {h:"柠檬",p:"Níng méng",e:"lemon"},
+      {h:"一斤",p:"Yī jīn",e:"one catty (≈0.5kg)"},
+      {h:"一两",p:"Yī liǎng",e:"one tael"},
+      {h:"公斤",p:"Gōng jīn",e:"kilogram"},
+      {h:"桃子",p:"Táo zi",e:"peach"},
+      {h:"苦",p:"Kǔ",e:"bitter"},
+      {h:"苦瓜",p:"Kǔ guā",e:"bitter melon"},
+      {h:"酸辣汤",p:"Suān là tāng",e:"hot and sour soup"},
+      {h:"甜辣酱",p:"Tián là jiàng",e:"sweet chili sauce"},
+      {h:"盐",p:"Yán",e:"salt"},
+      {h:"很咸",p:"Hěn xián",e:"very salty"},
+      {h:"糖",p:"Táng",e:"sugar"},
+      {h:"唐朝",p:"Táng cháo",e:"Tang Dynasty"},
+      {h:"唐人街",p:"Táng rén jiē",e:"Chinatown"},
+      {h:"唐人",p:"Táng rén",e:"Chinese person (lit. Tang-dynasty person)"},
+    ]},
+    { name:"Taste words", items:[
+      {h:"甜",p:"Tián",e:"sweet"},
+      {h:"酸",p:"Suān",e:"sour"},
+      {h:"辣",p:"Là",e:"spicy"},
+      {h:"我喜欢吃辣",p:"Wǒ xǐ huān chī là",e:"I like eating spicy food"},
+      {h:"苦",p:"Kǔ",e:"bitter"},
+    ]},
+    { name:"Eating & drinking out", items:[
+      {h:"我最喜欢吃北京烤鸭, 你呢?",p:"Wǒ zuì xǐ huān chī Běi Jīng kǎo yā, nǐ ne?",e:"I like Peking duck the most, what about you?"},
+      {h:"北京",p:"Běi Jīng",e:"Beijing"},
+      {h:"南京",p:"Nán Jīng",e:"Nanjing"},
+      {h:"东京",p:"Dōng Jīng",e:"Tokyo"},
+      {h:"请给我发票。",p:"Qǐng gěi wǒ fā piào.",e:"Please give me an official invoice."},
+      {h:"发票",p:"Fā piào",e:"official invoice"},
+      {h:"请稍等。",p:"Qǐng shāo děng.",e:"Please wait a moment."},
+      {h:"一起去喝啤酒吧。",p:"Yī qǐ qù hē pí jiǔ ba.",e:"Let's go drink beer together."},
+      {h:"酒",p:"Jiǔ",e:"alcohol"},
+      {h:"红酒",p:"Hóng jiǔ",e:"red wine"},
+      {h:"白酒",p:"Bái jiǔ",e:"Chinese liquor"},
+      {h:"白葡萄酒",p:"Bái pú táo jiǔ",e:"white wine"},
+      {h:"一起",p:"Yī qǐ",e:"together"},
+      {h:"一起去吃火锅吧。",p:"Yī qǐ qù chī huǒ guō ba.",e:"Let's go eat hotpot together."},
+      {h:"麻辣火锅",p:"Má là huǒ guō",e:"numbing-spicy hotpot"},
+      {h:"麻",p:"Má",e:"numbing"},
+      {h:"大家干杯。",p:"Dà jiā gān bēi.",e:"Cheers, everybody."},
+    ]},
+    { name:"Practice sentences", items:[
+      {h:"我最喜欢吃土豆, 我最不喜欢吃茄子。",p:"Wǒ zuì xǐ huān chī tǔ dòu, wǒ zuì bù xǐ huān chī qié zi.",e:"I like eating potatoes the most, I dislike eating eggplant the most."},
+      {h:"这里很/好热. 我们(一起)去买冰淇淋吧。",p:"Zhè lǐ hěn/hǎo rè, wǒ men (yī qǐ) qù mǎi bīng qí lín ba.",e:"It's very hot here, let's go buy ice cream (together)."},
+      {h:"昨天我们吃了四川菜, 真的很好吃。",p:"Zuó tiān wǒ men chī le Sì Chuān cài, zhēn de hěn hǎo chī.",e:"We ate Sichuan food yesterday, it was really delicious."},
+      {h:"真的",p:"Zhēn de",e:"really"},
+      {h:"我想点一个牛肉面, 外卖, 谢谢。",p:"Wǒ xiǎng diǎn yī gè niú ròu miàn, wài mài, xiè xie.",e:"I would like to order one beef noodles, takeaway, thank you."},
+    ]},
+  ]
+},
+{
+  title:"Transportation & Directions",
+  sections:[
+    { name:"Vehicles", items:[
+      {h:"汽车",p:"Qì chē",e:"car"},
+      {h:"汽",p:"Qì",e:"gas / steam"},
+      {h:"车",p:"Chē",e:"vehicle"},
+      {h:"公交车",p:"Gōng jiāo chē",e:"bus"},
+      {h:"交通",p:"Jiāo tōng",e:"traffic"},
+      {h:"出租车",p:"Chū zū chē",e:"taxi"},
+      {h:"租",p:"Zū",e:"to rent"},
+      {h:"租房子",p:"Zū fáng zi",e:"to rent a house"},
+      {h:"滴滴",p:"Dī Dī",e:"Didi (ride-hailing app)"},
+      {h:"高德地图",p:"Gāo Dé dì tú",e:"Amap (Gaode Maps)"},
+      {h:"地图",p:"Dì tú",e:"map"},
+      {h:"火车",p:"Huǒ chē",e:"train"},
+      {h:"火",p:"Huǒ",e:"fire"},
+      {h:"高铁",p:"Gāo tiě",e:"high-speed train"},
+      {h:"消防车",p:"Xiāo fáng chē",e:"fire truck"},
+      {h:"着火啦, 救命啊!",p:"Zháo huǒ la, jiù mìng a!",e:"There's a fire, help/save me!"},
+      {h:"地铁",p:"Dì tiě",e:"metro"},
+      {h:"飞机",p:"Fēi jī",e:"airplane"},
+      {h:"飞",p:"Fēi",e:"to fly"},
+      {h:"机",p:"Jī",e:"machine"},
+      {h:"手机",p:"Shǒu jī",e:"mobile phone"},
+      {h:"升降机",p:"Shēng jiàng jī",e:"lift / elevator"},
+      {h:"飞机场",p:"Fēi jī chǎng",e:"airport"},
+      {h:"船",p:"Chuán",e:"boat / ship"},
+      {h:"自行车",p:"Zì xíng chē",e:"bicycle"},
+      {h:"你自己",p:"Nǐ zì jǐ",e:"yourself"},
+      {h:"你自己做",p:"Nǐ zì jǐ zuò",e:"do it yourself"},
+      {h:"坐",p:"Zuò",e:"to sit / to take (a vehicle)"},
+    ]},
+    { name:"Where would you like to go", items:[
+      {h:"你想去哪里?",p:"Nǐ xiǎng qù nǎ lǐ?",e:"Where would you like to go?"},
+      {h:"去",p:"Qù",e:"to go"},
+      {h:"我想去东门买东西。",p:"Wǒ xiǎng qù Dōng Mén mǎi dōng xī.",e:"I would like to go to Dongmen to shop."},
+      {h:"东门",p:"Dōng Mén",e:"Dongmen"},
+      {h:"门",p:"Mén",e:"door"},
+      {h:"老街站",p:"Lǎo Jiē zhàn",e:"Laojie Station"},
+      {h:"站",p:"Zhàn",e:"station"},
+      {h:"西游记",p:"Xī Yóu Jì",e:"Journey to the West"},
+      {h:"请开慢一点。",p:"Qǐng kāi màn yī diǎn.",e:"Please drive a bit slower."},
+      {h:"开车",p:"Kāi chē",e:"to drive"},
+      {h:"我(的)普通话不好",p:"Wǒ (de) Pǔ Tōng Huà bù hǎo",e:"My Mandarin isn't good"},
+      {h:"快一点",p:"Kuài yī diǎn",e:"faster"},
+      {h:"请开快一点",p:"Qǐng kāi kuài yī diǎn",e:"Please drive a bit faster"},
+      {h:"师父, 麻烦你打表。",p:"Shī fu, má fan nǐ dǎ biǎo.",e:"Driver, could you please turn on the meter."},
+      {h:"师父",p:"Shī fu",e:"master (polite address for a driver)"},
+      {h:"打表",p:"Dǎ biǎo",e:"to turn on the meter"},
+      {h:"我坐地铁去罗湖。",p:"Wǒ zuò dì tiě qù Luó Hú.",e:"I take the metro to Luohu."},
+      {h:"请问去福田要多久?",p:"Qǐng wèn qù Fú Tián yào duō jiǔ?",e:"Excuse me, how long does it take to Futian?"},
+      {h:"多",p:"Duō",e:"more"},
+      {h:"久",p:"Jiǔ",e:"a long time"},
+      {h:"好久不见",p:"Hǎo jiǔ bù jiàn",e:"long time no see"},
+      {h:"我会在华侨城站A出口等你",p:"Wǒ huì zài Huá Qiáo Chéng zhàn A chū kǒu děng nǐ.",e:"I'll wait for you at Exit A, OCT Station."},
+      {h:"出口",p:"Chū kǒu",e:"exit"},
+      {h:"入口",p:"Rù kǒu",e:"entrance"},
+      {h:"中国有五十六个民族",p:"Zhōng Guó yǒu wǔ shí liù gè mín zú",e:"China has 56 ethnic groups"},
+      {h:"汉人",p:"Hàn rén",e:"Han people"},
+      {h:"我们坐滴滴去深圳湾。",p:"Wǒ men zuò Dī Dī qù Shēn Zhèn Wān.",e:"We take Didi to Shenzhen Bay."},
+    ]},
+    { name:"Giving directions", items:[
+      {h:"左转",p:"Zuǒ zhuǎn",e:"turn left"},
+      {h:"左边/面",p:"Zuǒ biān/miàn",e:"left side"},
+      {h:"右转",p:"Yòu zhuǎn",e:"turn right"},
+      {h:"右边/面",p:"Yòu biān/miàn",e:"right side"},
+      {h:"直走",p:"Zhí zǒu",e:"go straight"},
+      {h:"走吧",p:"Zǒu ba",e:"let's go"},
+      {h:"前边/面",p:"Qián biān/miàn",e:"in front of"},
+      {h:"上边/面",p:"Shàng biān/miàn",e:"upper side"},
+      {h:"下边/面",p:"Xià biān/miàn",e:"lower side"},
+      {h:"后边/面",p:"Hòu biān/miàn",e:"behind / back"},
+      {h:"对面",p:"Duì miàn",e:"opposite"},
+      {h:"上车",p:"Shàng chē",e:"to get on a vehicle"},
+      {h:"下车",p:"Xià chē",e:"to get off a vehicle"},
+    ]},
+    { name:"Bonus body & object words", items:[
+      {h:"眉毛",p:"Méi máo",e:"eyebrow"},
+      {h:"眼睛",p:"Yǎn jīng",e:"eye"},
+      {h:"牙齿",p:"Yá chǐ",e:"teeth"},
+      {h:"嘴巴",p:"Zuǐ bā",e:"mouth"},
+      {h:"手",p:"Shǒu",e:"hand"},
+      {h:"脸",p:"Liǎn",e:"face"},
+      {h:"屁股",p:"Pì gu",e:"butt"},
+      {h:"猫",p:"Māo",e:"cat"},
+      {h:"桌子",p:"Zhuō zǐ",e:"table"},
+      {h:"狗",p:"Gǒu",e:"dog"},
+      {h:"书包",p:"Shū bāo",e:"school bag"},
+      {h:"椅子",p:"Yǐ zǐ",e:"chair"},
+    ]},
+    { name:"MTR & bus phrases", items:[
+      {h:"请问我怎么去世界之窗?",p:"Qǐng wèn wǒ zěn me qù Shì Jiè Zhī Chuāng?",e:"Excuse me, how do I get to Window of the World?"},
+      {h:"怎么",p:"Zěn me",e:"how"},
+      {h:"世界",p:"Shì jiè",e:"world"},
+      {h:"窗",p:"Chuāng",e:"window"},
+      {h:"你可以坐地铁一号线去那里。",p:"Nǐ kě yǐ zuò dì tiě yī hào xiàn qù nà lǐ.",e:"You can take metro line 1 there."},
+      {h:"可以",p:"Kě yǐ",e:"can"},
+      {h:"一号线",p:"Yī hào xiàn",e:"line number 1"},
+      {h:"我想在地铁站前面下车。",p:"Wǒ xiǎng zài dì tiě zhàn qián miàn xià chē.",e:"I would like to get off in front of the metro station."},
+      {h:"地铁站",p:"Dì tiě zhàn",e:"metro station"},
+      {h:"请问地铁站在哪里?",p:"Qǐng wèn dì tiě zhàn zài nǎ lǐ?",e:"Excuse me, where is the metro station?"},
+      {h:"地铁站在学校对面。",p:"Dì tiě zhàn zài xué xiào duì miàn.",e:"The metro station is opposite the school."},
+      {h:"学校",p:"Xué xiào",e:"school"},
+      {h:"请问我怎么去高铁站?",p:"Qǐng wèn wǒ zěn me qù Gāo Tiě zhàn?",e:"Excuse me, how do I get to the high-speed train station?"},
+      {h:"你可以坐地铁, 在深圳北站下车。",p:"Nǐ kě yǐ zuò dì tiě, zài Shēn Zhèn Běi zhàn xià chē.",e:"You can take the metro, get off at Shenzhen North station."},
+      {h:"我想问怎么去深圳机场?",p:"Wǒ xiǎng wèn zěn me qù Shēn Zhèn jī chǎng?",e:"I'd like to ask how to get to Shenzhen airport?"},
+      {h:"你可以坐地铁十一号线, 在机场站下车。",p:"Nǐ kě yǐ zuò dì tiě shí yī hào xiàn, zài jī chǎng zhàn xià chē.",e:"You can take metro line 11, get off at Airport Station."},
+      {h:"我每天坐公交车回家。",p:"Wǒ měi tiān zuò gōng jiāo chē huí jiā.",e:"I take the bus home every day."},
+      {h:"每天",p:"Měi tiān",e:"every day"},
+      {h:"回家",p:"Huí jiā",e:"to go home"},
+    ]},
+    { name:"Daily life on the go", items:[
+      {h:"今天是我生日。",p:"Jīn tiān shì wǒ shēng rì.",e:"Today is my birthday."},
+      {h:"祝你生日快乐",p:"Zhù nǐ shēng rì kuài lè",e:"Wishing you a happy birthday"},
+      {h:"我女儿请我来这里按摩。",p:"Wǒ nǚ ér qǐng wǒ lái zhè lǐ àn mó.",e:"My daughter treated me to come here for a massage."},
+      {h:"女儿",p:"Nǚ ér",e:"daughter"},
+      {h:"儿子",p:"Ér zi",e:"son"},
+      {h:"我有一个儿子, 一个女儿",p:"Wǒ yǒu yī gè ér zi, yī gè nǚ ér",e:"I have one son and one daughter"},
+      {h:"按摩",p:"Àn mó",e:"massage"},
+      {h:"我坐地铁去深圳湾口岸站回香港。",p:"Wǒ zuò dì tiě qù Shēn Zhèn Wān Kǒu Àn zhàn huí Xiāng Gǎng.",e:"I take the metro to Shenzhen Bay Checkpoint station to return to Hong Kong."},
+      {h:"口岸",p:"Kǒu àn",e:"checkpoint / port"},
+      {h:"我在蛇口坐船回香港。",p:"Wǒ zài Shé Kǒu zuò chuán huí Xiāng Gǎng.",e:"I take a ferry at Shekou to return to Hong Kong."},
+    ]},
+  ]
+},
+{
+  title:"Travel in China",
+  sections:[
+    { name:"Travel documents & places", items:[
+      {h:"飞机票",p:"Fēi jī piào",e:"plane ticket"},
+      {h:"地铁票",p:"Dì tiě piào",e:"metro ticket"},
+      {h:"回乡证",p:"Huí xiāng zhèng",e:"Mainland Travel Permit",n:"return-hometown permit"},
+      {h:"回",p:"Huí",e:"to return"},
+      {h:"家乡",p:"Jiā xiāng",e:"hometown"},
+      {h:"证件",p:"Zhèng jiàn",e:"ID / permit"},
+      {h:"中国签证",p:"Zhōng Guó qiān zhèng",e:"China visa"},
+      {h:"签名",p:"Qiān míng",e:"signature"},
+      {h:"护照",p:"Hù zhào",e:"passport"},
+      {h:"行李",p:"Xíng lǐ",e:"luggage"},
+      {h:"门票",p:"Mén piào",e:"entrance ticket",n:"for parks, museums, palaces"},
+      {h:"酒店",p:"Jiǔ diàn",e:"hotel"},
+      {h:"登机牌",p:"Dēng jī pái",e:"boarding pass"},
+      {h:"安检",p:"Ān jiǎn",e:"security check"},
+      {h:"安全",p:"Ān quán",e:"safety"},
+      {h:"检查",p:"Jiǎn chá",e:"to inspect / check"},
+      {h:"平安",p:"Píng ān",e:"peace / safe and sound"},
+      {h:"保险",p:"Bǎo xiǎn",e:"insurance"},
+      {h:"国家安全",p:"Guó jiā ān quán",e:"national security"},
+      {h:"警察/公安",p:"Jǐng chá / Gōng ān",e:"police"},
+      {h:"派出所",p:"Pài chū suǒ",e:"local police station"},
+      {h:"警察局",p:"Jǐng chá jú",e:"police bureau"},
+      {h:"医院",p:"Yī yuàn",e:"hospital"},
+      {h:"医生",p:"Yī shēng",e:"doctor"},
+      {h:"打点滴",p:"Dǎ diǎn dī",e:"to get an IV drip"},
+      {h:"领事馆",p:"Lǐng shì guǎn",e:"consulate"},
+      {h:"大使馆",p:"Dà shǐ guǎn",e:"embassy"},
+    ]},
+    { name:"Travel phrases", items:[
+      {h:"麻烦你帮我拍照。",p:"Má fan nǐ bāng wǒ pāi zhào.",e:"Could you please help me take a photo."},
+      {h:"帮我",p:"Bāng wǒ",e:"help me"},
+      {h:"拍照",p:"Pāi zhào",e:"to take a photo"},
+      {h:"我明天会去西安旅游。",p:"Wǒ míng tiān huì qù Xī Ān lǚ yóu.",e:"I will travel to Xi'an tomorrow."},
+      {h:"旅游/旅行",p:"Lǚ yóu / Lǚ xíng",e:"to travel"},
+      {h:"兵马俑",p:"Bīng Mǎ Yǒng",e:"the Terracotta Army"},
+      {h:"秦朝",p:"Qín cháo",e:"Qin Dynasty (221–206 BC)"},
+      {h:"我最喜欢去云南旅游。",p:"Wǒ zuì xǐ huān qù Yún Nán lǚ yóu.",e:"I like traveling to Yunnan the most."},
+      {h:"云南",p:"Yún Nán",e:"Yunnan"},
+      {h:"泸沽湖",p:"Lú Gū Hú",e:"Lugu Lake"},
+      {h:"旅行团",p:"Lǚ xíng tuán",e:"tour group"},
+      {h:"跟团",p:"Gēn tuán",e:"to join a tour group"},
+      {h:"国际",p:"Guó jì",e:"international"},
+      {h:"租车",p:"Zū chē",e:"to rent a car"},
+      {h:"包车",p:"Bāo chē",e:"to rent a car with a driver"},
+      {h:"我不会说普通话, 你会说英文吗?",p:"Wǒ bù huì shuō Pǔ Tōng Huà, nǐ huì shuō Yīng Wén ma?",e:"I can't speak Mandarin, can you speak English?"},
+      {h:"不会",p:"Bù huì",e:"not able to"},
+      {h:"英文",p:"Yīng wén",e:"English"},
+      {h:"中文",p:"Zhōng wén",e:"Chinese (language)"},
+      {h:"我想去青岛喝青岛啤酒。",p:"Wǒ xiǎng qù Qīng Dǎo hē Qīng Dǎo pí jiǔ.",e:"I would like to go to Qingdao to drink Tsingtao beer."},
+      {h:"我喜欢坐高铁去内地旅游。",p:"Wǒ xǐ huān zuò gāo tiě qù nèi dì lǚ yóu.",e:"I like taking the high-speed train to travel in Mainland China."},
+      {h:"内地",p:"Nèi dì",e:"Mainland China"},
+      {h:"内地人",p:"Nèi dì rén",e:"Mainland Chinese person"},
+      {h:"我去武汉看我(的)好朋友。",p:"Wǒ qù Wǔ Hàn kàn wǒ (de) hǎo péng yǒu.",e:"I go to Wuhan to see my good friend."},
+      {h:"武汉",p:"Wǔ Hàn",e:"Wuhan"},
+      {h:"汉语",p:"Hàn yǔ",e:"Mandarin Chinese"},
+      {h:"明天我们会去(万里)长城。",p:"Míng tiān wǒ men huì qù (Wàn Lǐ) Cháng Chéng.",e:"Tomorrow we will go to the Great Wall."},
+      {h:"(万里)长城",p:"(Wàn Lǐ) Cháng Chéng",e:"the Great Wall",n:"'10,000-li long wall'"},
+      {h:"请问去少林寺要多久?",p:"Qǐng wèn qù Shào Lín Sì yào duō jiǔ?",e:"Excuse me, how long does it take to get to the Shaolin Temple?"},
+      {h:"(这里)去少林寺要多少钱?",p:"(Zhè lǐ) qù Shào Lín Sì yào duō shǎo qián?",e:"How much does it cost to get to the Shaolin Temple (from here)?"},
+      {h:"功夫",p:"Gōng fū",e:"kung fu"},
+    ]},
+  ]
+},
+];
+
+/* ================= SPEECH ================= */
+let zhVoice = null;
+function pickVoice(){
+  const voices = speechSynthesis.getVoices();
+  zhVoice = voices.find(v=>v.lang === 'zh-CN') ||
+            voices.find(v=>v.lang && v.lang.toLowerCase().startsWith('zh')) ||
+            null;
+  document.getElementById('voiceWarning').style.display = zhVoice ? 'none' : 'block';
+}
+if('speechSynthesis' in window){
+  pickVoice();
+  speechSynthesis.onvoiceschanged = pickVoice;
+} else {
+  document.getElementById('voiceWarning').textContent = "This browser does not support speech synthesis.";
+  document.getElementById('voiceWarning').style.display = 'block';
+}
+
+function cleanForSpeech(hanzi){
+  // take the first alternative when slash-separated variants are given, drop parens markers but keep inner text
+  let t = hanzi.split('/')[0];
+  t = t.replace(/[()]/g,'');
+  return t.trim();
+}
+
+let currentUtterance = null;
+let playQueue = [];
+let queueRunning = false;
+let queueStopRequested = false;
+
+function speakOne(hanzi, onend){
+  if(!('speechSynthesis' in window)) { if(onend) onend(); return; }
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(cleanForSpeech(hanzi));
+  u.lang = 'zh-CN';
+  if(zhVoice) u.voice = zhVoice;
+  u.rate = parseFloat(document.getElementById('speedSlider').value);
+  u.onend = ()=>{ if(onend) onend(); };
+  u.onerror = ()=>{ if(onend) onend(); };
+  currentUtterance = u;
+  speechSynthesis.speak(u);
+}
+
+function stopQueue(){
+  queueStopRequested = true;
+  speechSynthesis.cancel();
+}
+
+/* ================= RENDER ================= */
+let activeLesson = 0;
+let hideEnglish = false;
+let filterText = "";
+
+const tabsEl = document.getElementById('tabs');
+const contentEl = document.getElementById('content');
+
+function renderTabs(){
+  tabsEl.innerHTML = '';
+  LESSONS.forEach((les, i)=>{
+    const tab = document.createElement('div');
+    tab.className = 'tab' + (i===activeLesson ? ' active' : '');
+    tab.innerHTML = `<span class="num">${i+1}</span><span>${les.title}</span>`;
+    tab.onclick = ()=>{ activeLesson = i; filterText=""; document.getElementById('filterBox').value=""; stopQueue(); render(); };
+    tabsEl.appendChild(tab);
+  });
+}
+
+function matchesFilter(item){
+  if(!filterText) return true;
+  const f = filterText.toLowerCase();
+  return item.h.toLowerCase().includes(f) || item.p.toLowerCase().includes(f) || item.e.toLowerCase().includes(f);
+}
+
+function renderContent(){
+  contentEl.innerHTML = '';
+  const lesson = LESSONS[activeLesson];
+  let anyMatch = false;
+
+  lesson.sections.forEach((section, sIdx)=>{
+    const filtered = section.items.filter(matchesFilter);
+    if(filtered.length === 0) return;
+    anyMatch = true;
+
+    const secDiv = document.createElement('div');
+    secDiv.className = 'section';
+
+    const head = document.createElement('div');
+    head.className = 'section-head';
+    head.innerHTML = `<div class="section-title">${section.name}<span class="section-count">${filtered.length} ${filtered.length===1?'item':'items'}</span></div>`;
+
+    const playBtn = document.createElement('button');
+    playBtn.className = 'play-section-btn';
+    playBtn.innerHTML = '&#9654; Play section';
+    playBtn.onclick = ()=>playSection(filtered, secDiv, playBtn);
+    head.appendChild(playBtn);
+    secDiv.appendChild(head);
+
+    filtered.forEach(item=>{
+      const row = document.createElement('div');
+      row.className = 'row';
+      row.dataset.hanzi = item.h;
+
+      const playCircle = document.createElement('div');
+      playCircle.className = 'row-play';
+      playCircle.innerHTML = '&#9654;';
+
+      const textDiv = document.createElement('div');
+      textDiv.className = 'row-text';
+      textDiv.innerHTML = `
+        <div class="row-hanzi">${item.h}</div>
+        <div class="row-pinyin">${item.p}</div>
+        <div class="row-en ${hideEnglish?'hidden':''}">${item.e}</div>
+        ${item.n ? `<div class="row-note">${item.n}</div>` : ''}
+      `;
+
+      row.appendChild(playCircle);
+      row.appendChild(textDiv);
+      row.onclick = ()=>{
+        stopQueue();
+        document.querySelectorAll('.row.speaking').forEach(r=>r.classList.remove('speaking'));
+        row.classList.add('speaking');
+        speakOne(item.h, ()=> row.classList.remove('speaking'));
+      };
+      secDiv.appendChild(row);
+    });
+
+    contentEl.appendChild(secDiv);
+  });
+
+  if(!anyMatch){
+    const empty = document.createElement('div');
+    empty.className = 'empty';
+    empty.textContent = 'No matching lines in this lesson — try a different search term.';
+    contentEl.appendChild(empty);
+  }
+}
+
+function playSection(items, secDiv, btn){
+  if(queueRunning){ stopQueue(); return; }
+  queueStopRequested = false;
+  queueRunning = true;
+  btn.classList.add('playing');
+  btn.innerHTML = '&#9632; Stop';
+
+  const rows = Array.from(secDiv.querySelectorAll('.row'));
+  let i = 0;
+  function next(){
+    if(queueStopRequested || i >= items.length){
+      queueRunning = false;
+      btn.classList.remove('playing');
+      btn.innerHTML = '&#9654; Play section';
+      document.querySelectorAll('.row.speaking').forEach(r=>r.classList.remove('speaking'));
+      return;
+    }
+    document.querySelectorAll('.row.speaking').forEach(r=>r.classList.remove('speaking'));
+    const row = rows[i];
+    if(row){
+      row.classList.add('speaking');
+      row.scrollIntoView({block:'center', behavior:'smooth'});
+    }
+    speakOne(items[i].h, ()=>{
+      i++;
+      setTimeout(next, 260);
+    });
+  }
+  next();
+}
+
+function render(){
+  renderTabs();
+  renderContent();
+}
+
+document.getElementById('speedSlider').addEventListener('input', (e)=>{
+  document.getElementById('speedVal').textContent = parseFloat(e.target.value).toFixed(2)+'x';
+});
+document.getElementById('hideEnBtn').addEventListener('click', (e)=>{
+  hideEnglish = !hideEnglish;
+  e.target.classList.toggle('active', hideEnglish);
+  e.target.textContent = hideEnglish ? 'Show English' : 'Hide English';
+  renderContent();
+});
+document.getElementById('filterBox').addEventListener('input', (e)=>{
+  filterText = e.target.value;
+  renderContent();
+});
+
+render();
+</script>
+</body>
+</html>

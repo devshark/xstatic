@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>廣東話 Audio Deck</title>
+<style>
+  :root{
+    --paper:#F7F3EC;
+    --paper-dim:#EFE9DD;
+    --ink:#242017;
+    --ink-soft:#6B6455;
+    --seal:#AA3B2E;
+    --seal-soft:#C97B6C;
+    --bamboo:#5C7A5C;
+    --line:#DCD3C0;
+    --card:#FFFDF9;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+    min-height:100vh;
+  }
+  .app{max-width:760px;margin:0 auto;padding:18px 16px 60px;}
+
+  /* Header */
+  .head{padding:6px 2px 16px;border-bottom:1px solid var(--line);margin-bottom:14px;}
+  .head-top{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;}
+  .cjk-title{
+    font-family:"Songti SC","Noto Serif SC","STSong",serif;
+    font-size:28px;font-weight:700;letter-spacing:1px;color:var(--ink);
+  }
+  .head-sub{font-size:12.5px;color:var(--ink-soft);margin-top:4px;}
+  .head-sub b{color:var(--seal);font-weight:600;}
+
+  .controls{display:flex;align-items:center;gap:14px;margin-top:12px;flex-wrap:wrap;}
+  .ctrl-group{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--ink-soft);}
+  input[type=range]{accent-color:var(--seal);width:110px;}
+  .speed-val{font-variant-numeric:tabular-nums;color:var(--ink);font-weight:600;min-width:32px;display:inline-block;}
+  .toggle-btn{
+    border:1px solid var(--line);background:var(--card);color:var(--ink-soft);
+    padding:5px 10px;border-radius:5px;font-size:12px;cursor:pointer;
+  }
+  .toggle-btn.active{border-color:var(--seal);color:var(--seal);}
+  .filter-box{
+    flex:1;min-width:140px;border:1px solid var(--line);background:var(--card);
+    padding:6px 10px;border-radius:5px;font-size:13px;color:var(--ink);
+  }
+  .filter-box:focus{outline:none;border-color:var(--seal-soft);}
+  .voice-warning{font-size:12px;color:var(--seal);margin-top:8px;display:none;}
+
+  /* Lesson tabs */
+  .tabs{display:flex;overflow-x:auto;gap:6px;padding:2px 0 14px;-webkit-overflow-scrolling:touch;}
+  .tabs::-webkit-scrollbar{height:5px;}
+  .tab{
+    flex:0 0 auto;cursor:pointer;padding:8px 13px;border-radius:6px;
+    border:1px solid transparent;font-size:13px;color:var(--ink-soft);
+    display:flex;align-items:center;gap:7px;white-space:nowrap;
+  }
+  .tab .num{
+    font-size:11px;color:var(--paper);background:var(--ink-soft);
+    width:16px;height:16px;border-radius:50%;display:inline-flex;
+    align-items:center;justify-content:center;font-weight:600;
+  }
+  .tab.active{background:var(--card);border-color:var(--line);color:var(--ink);font-weight:600;}
+  .tab.active .num{background:var(--seal);}
+
+  /* Section */
+  .section{margin-bottom:26px;}
+  .section-head{
+    display:flex;align-items:center;justify-content:space-between;
+    padding-bottom:8px;margin-bottom:10px;border-bottom:1px solid var(--line);
+  }
+  .section-title{font-size:14.5px;font-weight:600;color:var(--ink);}
+  .section-count{font-size:11.5px;color:var(--ink-soft);font-weight:400;margin-left:6px;}
+  .play-section-btn{
+    display:flex;align-items:center;gap:6px;border:1px solid var(--seal);
+    background:var(--card);color:var(--seal);border-radius:20px;
+    padding:5px 13px;font-size:12px;cursor:pointer;font-weight:600;
+  }
+  .play-section-btn:hover{background:var(--seal);color:#fff;}
+  .play-section-btn.playing{background:var(--seal);color:#fff;}
+
+  /* Rows */
+  .row{
+    display:flex;align-items:center;gap:12px;padding:10px 8px;
+    border-radius:8px;cursor:pointer;transition:background .15s;
+  }
+  .row:hover{background:var(--paper-dim);}
+  .row.speaking{background:#F0E4DD;}
+  .row-play{
+    flex:0 0 34px;height:34px;border-radius:50%;border:1px solid var(--line);
+    background:var(--card);display:flex;align-items:center;justify-content:center;
+    color:var(--seal);font-size:13px;cursor:pointer;
+  }
+  .row-play:hover{border-color:var(--seal);}
+  .row-text{flex:1;min-width:0;}
+  .row-hanzi{
+    font-family:"Songti SC","Noto Serif SC","STSong",serif;
+    font-size:19px;color:var(--ink);line-height:1.35;
+  }
+  .row-pinyin{font-size:13px;color:var(--bamboo);margin-top:1px;font-style:italic;}
+  .row-en{font-size:12.5px;color:var(--ink-soft);margin-top:2px;}
+  .row-en.hidden{display:none;}
+  .row-note{font-size:11px;color:#9A9182;margin-top:2px;}
+
+  .empty{padding:30px 10px;text-align:center;color:var(--ink-soft);font-size:13px;}
+
+  footer.tip{margin-top:30px;font-size:11.5px;color:var(--ink-soft);text-align:center;line-height:1.6;}
+
+  @media (max-width:480px){
+    .cjk-title{font-size:23px;}
+    .row-hanzi{font-size:17px;}
+    .controls{gap:10px;}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <div class="head">
+    <div class="head-top">
+      <span class="cjk-title">廣東話 學習</span>
+    </div>
+    <div class="head-sub">Cantonese for English speakers · Hong Kong context — tap any line to hear it, or play a whole section</div>
+
+    <div class="controls">
+      <div class="ctrl-group">
+        <span>Speed</span>
+        <input type="range" id="speedSlider" min="0.5" max="1.3" step="0.05" value="0.85">
+        <span class="speed-val" id="speedVal">0.85x</span>
+      </div>
+      <button class="toggle-btn" id="hideEnBtn">Hide English</button>
+      <input class="filter-box" id="filterBox" type="text" placeholder="Search this lesson (Chinese / Jyutping / English)…">
+    </div>
+    <div class="voice-warning" id="voiceWarning">No Cantonese voice was found in this browser — playback may fall back to a Mandarin or default voice. Chrome on desktop usually has the best zh-HK voice support.</div>
+  </div>
+
+  <div class="tabs" id="tabs"></div>
+  <div id="content"></div>
+
+  <footer class="tip">Uses your browser's built-in text-to-speech (zh-HK Cantonese). Quality and available voices depend on your device — Chrome tends to sound best. Romanization is Jyutping; the number after each syllable is its tone (1–6).</footer>
+</div>
+
+<script>
+/* ================= DATA ================= */
+const LESSONS = [
+{
+  title:"Greetings & Self-Introduction",
+  sections:[
+    { name:"Tone practice", items:[
+      {h:"詩",p:"si1",e:"poem — tone 1, high and level"},
+      {h:"史",p:"si2",e:"history — tone 2, rising"},
+      {h:"試",p:"si3",e:"try / test — tone 3, mid and level"},
+      {h:"時",p:"si4",e:"time — tone 4, low and falling"},
+      {h:"市",p:"si5",e:"market — tone 5, low and rising"},
+      {h:"事",p:"si6",e:"matter — tone 6, low and level"},
+    ]},
+    { name:"Hello & basic greetings", items:[
+      {h:"你好",p:"nei5 hou2",e:"Hello",n:"you + good"},
+      {h:"你",p:"nei5",e:"you"},
+      {h:"好",p:"hou2",e:"good"},
+      {h:"早晨",p:"zou2 san4",e:"Good morning"},
+      {h:"晚安",p:"maan5 on1",e:"Good night"},
+      {h:"大家好",p:"daai6 gaa1 hou2",e:"Hello, everyone"},
+      {h:"你好嗎?",p:"nei5 hou2 maa3",e:"How are you?"},
+      {h:"我幾好",p:"ngo5 gei2 hou2",e:"I'm quite good"},
+      {h:"唔錯",p:"m4 co3",e:"not bad / pretty good"},
+      {h:"你呢?",p:"nei5 ne1",e:"and you?"},
+      {h:"再見",p:"zoi3 gin3",e:"Goodbye"},
+      {h:"拜拜",p:"baai1 baai3",e:"bye-bye"},
+    ]},
+    { name:"Name & where you're from", items:[
+      {h:"你叫咩名呀?",p:"nei5 giu3 me1 meng2 aa3",e:"What is your name?"},
+      {h:"叫",p:"giu3",e:"to be called"},
+      {h:"名",p:"meng2",e:"name"},
+      {h:"我叫...",p:"ngo5 giu3...",e:"My name is..."},
+      {h:"你係邊度人呀?",p:"nei5 hai6 bin1 dou6 jan4 aa3",e:"Where are you from?"},
+      {h:"係",p:"hai6",e:"to be (am / is / are)"},
+      {h:"邊度",p:"bin1 dou6",e:"where"},
+      {h:"人",p:"jan4",e:"person"},
+      {h:"我係香港人",p:"ngo5 hai6 hoeng1 gong2 jan4",e:"I am from Hong Kong"},
+      {h:"香港",p:"hoeng1 gong2",e:"Hong Kong"},
+      {h:"中國",p:"zung1 gwok3",e:"China"},
+      {h:"美國",p:"mei5 gwok3",e:"USA"},
+      {h:"英國",p:"jing1 gwok3",e:"UK"},
+      {h:"印度",p:"jan3 dou6",e:"India"},
+      {h:"菲律賓",p:"fei1 leot6 ban1",e:"Philippines"},
+      {h:"印尼",p:"jan3 nei4",e:"Indonesia"},
+      {h:"泰國",p:"taai3 gwok3",e:"Thailand"},
+      {h:"日本",p:"jat6 bun2",e:"Japan"},
+      {h:"韓國",p:"hon4 gwok3",e:"Korea"},
+      {h:"越南",p:"jyut6 naam4",e:"Vietnam"},
+      {h:"馬來西亞",p:"maa5 loi4 sai1 aa3",e:"Malaysia"},
+      {h:"新加坡",p:"san1 gaa1 bo1",e:"Singapore"},
+      {h:"澳洲",p:"ou3 zau1",e:"Australia"},
+      {h:"加拿大",p:"gaa1 naa4 daai6",e:"Canada"},
+    ]},
+    { name:"Age & years in Hong Kong", items:[
+      {h:"你幾多歲呀?",p:"nei5 gei2 do1 seoi3 aa3",e:"How old are you?"},
+      {h:"幾多",p:"gei2 do1",e:"how many / how much"},
+      {h:"歲",p:"seoi3",e:"years old"},
+      {h:"我三十歲",p:"ngo5 saam1 sap6 seoi3",e:"I am 30 years old"},
+      {h:"我嚟咗香港五年",p:"ngo5 lei4 zo2 hoeng1 gong2 ng5 nin4",e:"I have been in Hong Kong for 5 years"},
+      {h:"嚟",p:"lei4",e:"to come"},
+      {h:"咗",p:"zo2",e:"completed-action marker"},
+      {h:"年",p:"nin4",e:"year"},
+      {h:"我喺香港出世",p:"ngo5 hai2 hoeng1 gong2 ceot1 sai3",e:"I was born in Hong Kong"},
+      {h:"喺",p:"hai2",e:"at / in (location)"},
+      {h:"出世",p:"ceot1 sai3",e:"to be born"},
+    ]},
+  ]
+},
+{
+  title:"Polite Phrases & Everyday Life",
+  sections:[
+    { name:"Thanks, sorry & manners", items:[
+      {h:"唔該",p:"m4 goi1",e:"Thanks / excuse me",n:"used for service, asking for something, or getting past someone"},
+      {h:"多謝",p:"do1 ze6",e:"Thanks",n:"used for a gift, compliment, or favour"},
+      {h:"唔使客氣",p:"m4 sai2 haak3 hei3",e:"You're welcome / no need to be so polite"},
+      {h:"唔使",p:"m4 sai2",e:"no need to"},
+      {h:"客氣",p:"haak3 hei3",e:"polite"},
+      {h:"對唔住",p:"deoi3 m4 zyu6",e:"Sorry"},
+      {h:"唔緊要",p:"m4 gan2 jiu3",e:"It's OK / never mind"},
+      {h:"麻煩你",p:"maa4 faan4 nei5",e:"Sorry to trouble you"},
+      {h:"唔好意思",p:"m4 hou2 ji3 si1",e:"Excuse me / sorry",n:"milder, e.g. bumping into someone"},
+      {h:"請",p:"cing2",e:"please"},
+      {h:"唔該晒",p:"m4 goi1 saai3",e:"thanks a lot"},
+    ]},
+    { name:"Sentence-final particles", items:[
+      {h:"呀",p:"aa3",e:"softens a statement or question — the most common all-purpose particle"},
+      {h:"喇",p:"laa3",e:"marks a change of state — roughly 'now / already'"},
+      {h:"咩",p:"me1",e:"turns a statement into a skeptical question — 'really?'"},
+      {h:"啦",p:"laa1",e:"softens a suggestion — 'come on, let's...'"},
+      {h:"㗎",p:"gaa3",e:"adds certainty or emphasis to a statement"},
+      {h:"囉",p:"lo1",e:"casual, resigned tone — 'that's just how it is'"},
+    ]},
+    { name:"Where you live & work", items:[
+      {h:"你住喺邊度呀?",p:"nei5 zyu6 hai2 bin1 dou6 aa3",e:"Where do you live?"},
+      {h:"住",p:"zyu6",e:"to live"},
+      {h:"我住喺銅鑼灣",p:"ngo5 zyu6 hai2 tung4 lo4 waan1",e:"I live in Causeway Bay"},
+      {h:"銅鑼灣",p:"tung4 lo4 waan1",e:"Causeway Bay"},
+      {h:"你喺邊度返工呀?",p:"nei5 hai2 bin1 dou6 faan1 gung1 aa3",e:"Where do you work?"},
+      {h:"返工",p:"faan1 gung1",e:"to go to work"},
+      {h:"我喺中環返工",p:"ngo5 hai2 zung1 waan4 faan1 gung1",e:"I work in Central"},
+      {h:"中環",p:"zung1 waan4",e:"Central"},
+      {h:"放工",p:"fong3 gung1",e:"to finish work / get off work"},
+    ]},
+    { name:"Likes & language ability", items:[
+      {h:"我好鍾意香港",p:"ngo5 hou2 zung1 ji3 hoeng1 gong2",e:"I like Hong Kong a lot"},
+      {h:"鍾意",p:"zung1 ji3",e:"to like"},
+      {h:"唔鍾意",p:"m4 zung1 ji3",e:"to dislike"},
+      {h:"我好鍾意學廣東話",p:"ngo5 hou2 zung1 ji3 hok6 gwong2 dung1 waa2",e:"I like learning Cantonese a lot"},
+      {h:"學",p:"hok6",e:"to learn"},
+      {h:"廣東話",p:"gwong2 dung1 waa2",e:"Cantonese"},
+      {h:"我識講少少廣東話",p:"ngo5 sik1 gong2 siu2 siu2 gwong2 dung1 waa2",e:"I can speak a little Cantonese"},
+      {h:"識",p:"sik1",e:"to know how to"},
+      {h:"講",p:"gong2",e:"to speak"},
+      {h:"少少",p:"siu2 siu2",e:"a little bit"},
+      {h:"請講慢啲",p:"cing2 gong2 maan6 di1",e:"Please speak more slowly"},
+      {h:"慢啲",p:"maan6 di1",e:"a bit slower"},
+      {h:"快啲",p:"faai3 di1",e:"a bit faster"},
+      {h:"你講乜嘢呀?",p:"nei5 gong2 mat1 je5 aa3",e:"What did you say?"},
+      {h:"乜嘢",p:"mat1 je5",e:"what"},
+    ]},
+    { name:"Friends & time words", items:[
+      {h:"朋友",p:"pang4 jau5",e:"friend"},
+      {h:"好朋友",p:"hou2 pang4 jau5",e:"good friend"},
+      {h:"今日",p:"gam1 jat6",e:"today"},
+      {h:"聽日",p:"ting1 jat6",e:"tomorrow"},
+      {h:"琴日",p:"kam4 jat6",e:"yesterday"},
+      {h:"聽日見",p:"ting1 jat6 gin3",e:"see you tomorrow"},
+      {h:"下次見",p:"haa6 ci3 gin3",e:"see you next time"},
+      {h:"而家",p:"ji4 gaa1",e:"now"},
+    ]},
+  ]
+},
+{
+  title:"Numbers, Money, Time & Dates",
+  sections:[
+    { name:"Numbers 1–10", items:[
+      {h:"一",p:"jat1",e:"one"},
+      {h:"二",p:"ji6",e:"two"},
+      {h:"三",p:"saam1",e:"three"},
+      {h:"四",p:"sei3",e:"four"},
+      {h:"五",p:"ng5",e:"five"},
+      {h:"六",p:"luk6",e:"six"},
+      {h:"七",p:"cat1",e:"seven"},
+      {h:"八",p:"baat3",e:"eight"},
+      {h:"九",p:"gau2",e:"nine"},
+      {h:"十",p:"sap6",e:"ten"},
+    ]},
+    { name:"Bigger numbers & lucky numbers", items:[
+      {h:"十一",p:"sap6 jat1",e:"eleven"},
+      {h:"十二",p:"sap6 ji6",e:"twelve"},
+      {h:"二十",p:"ji6 sap6",e:"twenty"},
+      {h:"三十",p:"saam1 sap6",e:"thirty"},
+      {h:"一百",p:"jat1 baak3",e:"one hundred"},
+      {h:"一千",p:"jat1 cin1",e:"one thousand"},
+      {h:"一萬",p:"jat1 maan6",e:"ten thousand"},
+      {h:"八",p:"baat3",e:"eight — sounds like 發 (faat3, 'to prosper'), considered lucky"},
+      {h:"四",p:"sei3",e:"four — sounds like 死 (sei2, 'death'), considered unlucky"},
+    ]},
+    { name:"Money", items:[
+      {h:"幾多錢呀?",p:"gei2 do1 cin2 aa3",e:"How much is it?"},
+      {h:"錢",p:"cin2",e:"money"},
+      {h:"蚊",p:"man1",e:"dollar",n:"colloquial, like 'buck'"},
+      {h:"五蚊",p:"ng5 man1",e:"$5"},
+      {h:"五十蚊",p:"ng5 sap6 man1",e:"$50"},
+      {h:"平",p:"peng4",e:"cheap"},
+      {h:"貴",p:"gwai3",e:"expensive"},
+      {h:"平啲",p:"peng4 di1",e:"a bit cheaper"},
+      {h:"太貴喇",p:"taai3 gwai3 laa3",e:"too expensive"},
+      {h:"有冇平啲㗎?",p:"jau5 mou5 peng4 di1 gaa3",e:"Do you have anything cheaper?"},
+      {h:"畀錢",p:"bei2 cin2",e:"to pay"},
+      {h:"找錢",p:"zaau2 cin2",e:"to give change"},
+    ]},
+    { name:"Telling the time", items:[
+      {h:"而家幾點呀?",p:"ji4 gaa1 gei2 dim2 aa3",e:"What time is it now?"},
+      {h:"點",p:"dim2",e:"o'clock"},
+      {h:"三點",p:"saam1 dim2",e:"3:00"},
+      {h:"三點半",p:"saam1 dim2 bun3",e:"3:30"},
+      {h:"半",p:"bun3",e:"half"},
+      {h:"三點一刻",p:"saam1 dim2 jat1 hak1",e:"3:15"},
+      {h:"一刻",p:"jat1 hak1",e:"a quarter (15 minutes)"},
+      {h:"一個字",p:"jat1 go3 zi6",e:"5 minutes",n:"clock-reading unit — each number on the clock face is one 'zi6'"},
+      {h:"三點九個字",p:"saam1 dim2 gau2 go3 zi6",e:"3:45",n:"9 × 5 minutes"},
+      {h:"分鐘",p:"fan1 zung1",e:"minute"},
+    ]},
+    { name:"Days of the week", items:[
+      {h:"星期",p:"sing1 kei4",e:"week"},
+      {h:"星期一",p:"sing1 kei4 jat1",e:"Monday"},
+      {h:"星期二",p:"sing1 kei4 ji6",e:"Tuesday"},
+      {h:"星期三",p:"sing1 kei4 saam1",e:"Wednesday"},
+      {h:"星期四",p:"sing1 kei4 sei3",e:"Thursday"},
+      {h:"星期五",p:"sing1 kei4 ng5",e:"Friday"},
+      {h:"星期六",p:"sing1 kei4 luk6",e:"Saturday"},
+      {h:"星期日",p:"sing1 kei4 jat6",e:"Sunday"},
+    ]},
+    { name:"Months & dates", items:[
+      {h:"一月",p:"jat1 jyut6",e:"January"},
+      {h:"二月",p:"ji6 jyut6",e:"February"},
+      {h:"三月",p:"saam1 jyut6",e:"March"},
+      {h:"四月",p:"sei3 jyut6",e:"April"},
+      {h:"五月",p:"ng5 jyut6",e:"May"},
+      {h:"六月",p:"luk6 jyut6",e:"June"},
+      {h:"七月",p:"cat1 jyut6",e:"July"},
+      {h:"八月",p:"baat3 jyut6",e:"August"},
+      {h:"九月",p:"gau2 jyut6",e:"September"},
+      {h:"十月",p:"sap6 jyut6",e:"October"},
+      {h:"十一月",p:"sap6 jat1 jyut6",e:"November"},
+      {h:"十二月",p:"sap6 ji6 jyut6",e:"December"},
+      {h:"今日幾多號呀?",p:"gam1 jat6 gei2 do1 hou6 aa3",e:"What is today's date?"},
+      {h:"四月十三號",p:"sei3 jyut6 sap6 saam1 hou6",e:"April 13th"},
+      {h:"號",p:"hou6",e:"date / number"},
+    ]},
+  ]
+},
+{
+  title:"Shopping",
+  sections:[
+    { name:"This, that, here, there", items:[
+      {h:"呢個",p:"ni1 go3",e:"this"},
+      {h:"嗰個",p:"go2 go3",e:"that"},
+      {h:"呢度",p:"ni1 dou6",e:"here"},
+      {h:"嗰度",p:"go2 dou6",e:"there"},
+      {h:"邊度",p:"bin1 dou6",e:"where"},
+    ]},
+    { name:"Bargaining", items:[
+      {h:"平",p:"peng4",e:"cheap"},
+      {h:"貴",p:"gwai3",e:"expensive"},
+      {h:"可唔可以平啲呀?",p:"ho2 m4 ho2 ji5 peng4 di1 aa3",e:"Can it be cheaper?"},
+      {h:"太貴喇",p:"taai3 gwai3 laa3",e:"too expensive"},
+      {h:"有冇折㗎?",p:"jau5 mou5 zit3 gaa3",e:"Is there a discount?"},
+      {h:"折",p:"zit3",e:"discount"},
+    ]},
+    { name:"Sizes & colours", items:[
+      {h:"大",p:"daai6",e:"big"},
+      {h:"細",p:"sai3",e:"small"},
+      {h:"大啲",p:"daai6 di1",e:"a bit bigger"},
+      {h:"細啲",p:"sai3 di1",e:"a bit smaller"},
+      {h:"紅色",p:"hung4 sik1",e:"red"},
+      {h:"橙色",p:"caang2 sik1",e:"orange"},
+      {h:"黃色",p:"wong4 sik1",e:"yellow"},
+      {h:"綠色",p:"luk6 sik1",e:"green"},
+      {h:"藍色",p:"laam4 sik1",e:"blue"},
+      {h:"紫色",p:"zi2 sik1",e:"purple"},
+      {h:"黑色",p:"hak1 sik1",e:"black"},
+      {h:"白色",p:"baak6 sik1",e:"white"},
+      {h:"灰色",p:"fui1 sik1",e:"grey"},
+    ]},
+    { name:"Payment", items:[
+      {h:"現金",p:"jin6 gam1",e:"cash"},
+      {h:"八達通",p:"baat3 daat6 tung1",e:"Octopus card",n:"Hong Kong's transit & payment card"},
+      {h:"信用卡",p:"seon3 jung6 kaat1",e:"credit card"},
+      {h:"微信支付",p:"mei4 seon3 zi1 fu6",e:"WeChat Pay"},
+      {h:"支付寶",p:"zi1 fu6 bou2",e:"Alipay"},
+      {h:"畀錢",p:"bei2 cin2",e:"to pay"},
+      {h:"收據",p:"sau1 geoi3",e:"receipt"},
+    ]},
+    { name:"Shopping — short sentences", items:[
+      {h:"呢個幾多錢呀?",p:"ni1 go3 gei2 do1 cin2 aa3",e:"How much is this?"},
+      {h:"我想買呢個",p:"ngo5 soeng2 maai5 ni1 go3",e:"I want to buy this"},
+      {h:"買",p:"maai5",e:"to buy"},
+      {h:"賣",p:"maai6",e:"to sell"},
+      {h:"我要去買嘢",p:"ngo5 jiu3 heoi3 maai5 je5",e:"I need to go shopping"},
+      {h:"買嘢",p:"maai5 je5",e:"to shop / buy things"},
+      {h:"有冇大啲嘅呀?",p:"jau5 mou5 daai6 di1 ge3 aa3",e:"Do you have a bigger one?"},
+      {h:"有冇細啲嘅呀?",p:"jau5 mou5 sai3 di1 ge3 aa3",e:"Do you have a smaller one?"},
+      {h:"呢個有冇紅色呀?",p:"ni1 go3 jau5 mou5 hung4 sik1 aa3",e:"Does this come in red?"},
+      {h:"洗手間喺邊度呀?",p:"sai2 sau2 gaan1 hai2 bin1 dou6 aa3",e:"Where is the washroom?"},
+      {h:"洗手間",p:"sai2 sau2 gaan1",e:"washroom"},
+    ]},
+  ]
+},
+{
+  title:"Food & Beverage",
+  sections:[
+    { name:"The basics", items:[
+      {h:"食",p:"sik6",e:"to eat"},
+      {h:"飲",p:"jam2",e:"to drink"},
+      {h:"你想食乜嘢呀?",p:"nei5 soeng2 sik6 mat1 je5 aa3",e:"What do you want to eat?"},
+      {h:"你想飲乜嘢呀?",p:"nei5 soeng2 jam2 mat1 je5 aa3",e:"What do you want to drink?"},
+      {h:"飯",p:"faan6",e:"cooked rice"},
+      {h:"炒飯",p:"caau2 faan6",e:"fried rice"},
+      {h:"麵",p:"min6",e:"noodles"},
+      {h:"炒麵",p:"caau2 min6",e:"fried noodles"},
+      {h:"粥",p:"zuk1",e:"congee"},
+      {h:"餸",p:"sung3",e:"dish (to go with rice)"},
+    ]},
+    { name:"Hong Kong drinks", items:[
+      {h:"奶茶",p:"naai5 caa4",e:"milk tea",n:"HK-style"},
+      {h:"凍檸茶",p:"dung3 ning2 caa4",e:"iced lemon tea"},
+      {h:"熱檸水",p:"jit6 ning2 seoi2",e:"hot lemon water"},
+      {h:"凍",p:"dung3",e:"cold / iced"},
+      {h:"熱",p:"jit6",e:"hot"},
+      {h:"咖啡",p:"gaa3 fe1",e:"coffee"},
+      {h:"凍奶茶",p:"dung3 naai5 caa4",e:"iced milk tea"},
+      {h:"可樂",p:"ho2 lok6",e:"cola"},
+      {h:"水",p:"seoi2",e:"water"},
+    ]},
+    { name:"Dim sum & restaurant culture", items:[
+      {h:"飲茶",p:"jam2 caa4",e:"to go for dim sum",n:"literally 'drink tea'"},
+      {h:"點心",p:"dim2 sam1",e:"dim sum"},
+      {h:"蝦餃",p:"haa1 gaau2",e:"shrimp dumpling"},
+      {h:"燒賣",p:"siu1 maai2",e:"siu mai"},
+      {h:"腸粉",p:"coeng2 fan2",e:"rice noodle roll"},
+      {h:"叉燒包",p:"caa1 siu1 baau1",e:"char siu bun"},
+    ]},
+    { name:"Ordering & the bill", items:[
+      {h:"餐牌",p:"caan1 paai2",e:"menu"},
+      {h:"我要呢個",p:"ngo5 jiu3 ni1 go3",e:"I want this one"},
+      {h:"外賣",p:"ngoi6 maai6",e:"takeaway"},
+      {h:"唔該,埋單",p:"m4 goi1, maai4 daan1",e:"Bill please"},
+      {h:"埋單",p:"maai4 daan1",e:"to settle the bill"},
+      {h:"夠飽喇",p:"gau3 baau2 laa3",e:"I'm full"},
+      {h:"好味",p:"hou2 mei6",e:"delicious"},
+    ]},
+    { name:"Tastes & dietary needs", items:[
+      {h:"甜",p:"tim4",e:"sweet"},
+      {h:"酸",p:"syun1",e:"sour"},
+      {h:"辣",p:"laat6",e:"spicy"},
+      {h:"鹹",p:"haam4",e:"salty"},
+      {h:"苦",p:"fu2",e:"bitter"},
+      {h:"我食素",p:"ngo5 sik6 sou3",e:"I am vegetarian"},
+      {h:"素",p:"sou3",e:"vegetarian"},
+      {h:"我唔食豬肉",p:"ngo5 m4 sik6 zyu1 juk6",e:"I don't eat pork"},
+      {h:"豬肉",p:"zyu1 juk6",e:"pork"},
+      {h:"牛肉",p:"ngau4 juk6",e:"beef"},
+      {h:"雞肉",p:"gai1 juk6",e:"chicken"},
+      {h:"魚",p:"jyu2",e:"fish"},
+    ]},
+  ]
+},
+{
+  title:"Transportation & Directions",
+  sections:[
+    { name:"Vehicles", items:[
+      {h:"港鐵",p:"gong2 tit3",e:"MTR"},
+      {h:"巴士",p:"baa1 si6",e:"bus"},
+      {h:"小巴",p:"siu2 baa1",e:"minibus"},
+      {h:"的士",p:"dik1 si6",e:"taxi"},
+      {h:"渡輪",p:"dou6 leon4",e:"ferry"},
+      {h:"電車",p:"din6 ce1",e:"tram",n:"the 'ding ding'"},
+      {h:"搭",p:"daap3",e:"to take / ride (a vehicle)"},
+      {h:"搭的士",p:"daap3 dik1 si6",e:"to take a taxi"},
+      {h:"上車",p:"soeng5 ce1",e:"to get on"},
+      {h:"落車",p:"lok6 ce1",e:"to get off"},
+    ]},
+    { name:"Asking & giving directions", items:[
+      {h:"呢度去...點去呀?",p:"ni1 dou6 heoi3...dim2 heoi3 aa3",e:"How do I get to ... from here?"},
+      {h:"轉左",p:"zyun3 zo2",e:"turn left"},
+      {h:"轉右",p:"zyun3 jau6",e:"turn right"},
+      {h:"直行",p:"zik6 hang4",e:"go straight"},
+      {h:"前面",p:"cin4 min6",e:"in front"},
+      {h:"後面",p:"hau6 min6",e:"behind"},
+      {h:"對面",p:"deoi3 min6",e:"opposite"},
+      {h:"遠",p:"jyun5",e:"far"},
+      {h:"近",p:"kan5",e:"near"},
+    ]},
+    { name:"On the MTR & bus", items:[
+      {h:"呢班車去邊呀?",p:"ni1 baan1 ce1 heoi3 bin1 aa3",e:"Where does this train/bus go?"},
+      {h:"落唔落車呀?",p:"lok6 m4 lok6 ce1 aa3",e:"Are you getting off?",n:"asked when squeezing past someone"},
+      {h:"唔該,借歪",p:"m4 goi1, ze3 me2",e:"Excuse me, coming through"},
+      {h:"車費",p:"ce1 fai3",e:"fare"},
+    ]},
+    { name:"Common Hong Kong places", items:[
+      {h:"中環",p:"zung1 waan4",e:"Central"},
+      {h:"銅鑼灣",p:"tung4 lo4 waan1",e:"Causeway Bay"},
+      {h:"旺角",p:"wong6 gok3",e:"Mong Kok"},
+      {h:"尖沙咀",p:"zim1 saa1 zeoi2",e:"Tsim Sha Tsui"},
+      {h:"機場",p:"gei1 coeng4",e:"airport"},
+    ]},
+  ]
+},
+{
+  title:"Travel & Hong Kong Life",
+  sections:[
+    { name:"Travel essentials", items:[
+      {h:"簽證",p:"cim1 zing3",e:"visa"},
+      {h:"護照",p:"wu6 ziu3",e:"passport"},
+      {h:"酒店",p:"zau2 dim3",e:"hotel"},
+      {h:"行李",p:"hang4 lei5",e:"luggage"},
+      {h:"登機證",p:"dang1 gei1 zing3",e:"boarding pass"},
+    ]},
+    { name:"Sightseeing", items:[
+      {h:"去邊度玩呀?",p:"heoi3 bin1 dou6 waan2 aa3",e:"Where are you going / what are you up to?"},
+      {h:"玩",p:"waan2",e:"to play / have fun"},
+      {h:"旅遊",p:"leoi5 jau4",e:"to travel"},
+      {h:"影相",p:"jing2 soeng2",e:"to take a photo"},
+      {h:"海洋公園",p:"hoi2 joeng4 gung1 jyun2",e:"Ocean Park"},
+      {h:"迪士尼樂園",p:"dik6 si6 nei4 lok6 jyun2",e:"Disneyland"},
+      {h:"太平山",p:"taai3 ping4 saan1",e:"The Peak"},
+      {h:"維多利亞港",p:"wai4 do1 lei6 aa3 gong2",e:"Victoria Harbour"},
+      {h:"夜市",p:"je6 si5",e:"night market"},
+      {h:"廟街",p:"miu6 gaai1",e:"Temple Street"},
+    ]},
+    { name:"Emergencies & useful phrases", items:[
+      {h:"救命呀!",p:"gau3 meng6 aa3",e:"Help!"},
+      {h:"我蕩失路",p:"ngo5 dong6 sat1 lou6",e:"I'm lost"},
+      {h:"蕩失路",p:"dong6 sat1 lou6",e:"to be lost"},
+      {h:"醫院",p:"ji1 jyun2",e:"hospital"},
+      {h:"警察",p:"ging2 caat3",e:"police"},
+      {h:"你識唔識講英文呀?",p:"nei5 sik1 m4 sik1 gong2 jing1 man2 aa3",e:"Do you know how to speak English?"},
+    ]},
+  ]
+},
+];
+
+/* ================= SPEECH ================= */
+let zhVoice = null;
+function pickVoice(){
+  const voices = speechSynthesis.getVoices();
+  zhVoice = voices.find(v=>v.lang === 'zh-HK') ||
+            voices.find(v=>v.lang && v.lang.toLowerCase().startsWith('yue')) ||
+            voices.find(v=>v.lang && v.lang.toLowerCase().startsWith('zh')) ||
+            null;
+  document.getElementById('voiceWarning').style.display = zhVoice ? 'none' : 'block';
+}
+if('speechSynthesis' in window){
+  pickVoice();
+  speechSynthesis.onvoiceschanged = pickVoice;
+} else {
+  document.getElementById('voiceWarning').textContent = "This browser does not support speech synthesis.";
+  document.getElementById('voiceWarning').style.display = 'block';
+}
+
+function cleanForSpeech(hanzi){
+  let t = hanzi.split('/')[0];
+  t = t.replace(/[()]/g,'');
+  return t.trim();
+}
+
+let currentUtterance = null;
+let queueRunning = false;
+let queueStopRequested = false;
+
+function speakOne(hanzi, onend){
+  if(!('speechSynthesis' in window)) { if(onend) onend(); return; }
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(cleanForSpeech(hanzi));
+  u.lang = 'zh-HK';
+  if(zhVoice) u.voice = zhVoice;
+  u.rate = parseFloat(document.getElementById('speedSlider').value);
+  u.onend = ()=>{ if(onend) onend(); };
+  u.onerror = ()=>{ if(onend) onend(); };
+  currentUtterance = u;
+  speechSynthesis.speak(u);
+}
+
+function stopQueue(){
+  queueStopRequested = true;
+  speechSynthesis.cancel();
+}
+
+/* ================= RENDER ================= */
+let activeLesson = 0;
+let hideEnglish = false;
+let filterText = "";
+
+const tabsEl = document.getElementById('tabs');
+const contentEl = document.getElementById('content');
+
+function renderTabs(){
+  tabsEl.innerHTML = '';
+  LESSONS.forEach((les, i)=>{
+    const tab = document.createElement('div');
+    tab.className = 'tab' + (i===activeLesson ? ' active' : '');
+    tab.innerHTML = `<span class="num">${i+1}</span><span>${les.title}</span>`;
+    tab.onclick = ()=>{ activeLesson = i; filterText=""; document.getElementById('filterBox').value=""; stopQueue(); render(); };
+    tabsEl.appendChild(tab);
+  });
+}
+
+function matchesFilter(item){
+  if(!filterText) return true;
+  const f = filterText.toLowerCase();
+  return item.h.toLowerCase().includes(f) || item.p.toLowerCase().includes(f) || item.e.toLowerCase().includes(f);
+}
+
+function renderContent(){
+  contentEl.innerHTML = '';
+  const lesson = LESSONS[activeLesson];
+  let anyMatch = false;
+
+  lesson.sections.forEach((section)=>{
+    const filtered = section.items.filter(matchesFilter);
+    if(filtered.length === 0) return;
+    anyMatch = true;
+
+    const secDiv = document.createElement('div');
+    secDiv.className = 'section';
+
+    const head = document.createElement('div');
+    head.className = 'section-head';
+    head.innerHTML = `<div class="section-title">${section.name}<span class="section-count">${filtered.length} ${filtered.length===1?'item':'items'}</span></div>`;
+
+    const playBtn = document.createElement('button');
+    playBtn.className = 'play-section-btn';
+    playBtn.innerHTML = '&#9654; Play section';
+    playBtn.onclick = ()=>playSection(filtered, secDiv, playBtn);
+    head.appendChild(playBtn);
+    secDiv.appendChild(head);
+
+    filtered.forEach(item=>{
+      const row = document.createElement('div');
+      row.className = 'row';
+      row.dataset.hanzi = item.h;
+
+      const playCircle = document.createElement('div');
+      playCircle.className = 'row-play';
+      playCircle.innerHTML = '&#9654;';
+
+      const textDiv = document.createElement('div');
+      textDiv.className = 'row-text';
+      textDiv.innerHTML = `
+        <div class="row-hanzi">${item.h}</div>
+        <div class="row-pinyin">${item.p}</div>
+        <div class="row-en ${hideEnglish?'hidden':''}">${item.e}</div>
+        ${item.n ? `<div class="row-note">${item.n}</div>` : ''}
+      `;
+
+      row.appendChild(playCircle);
+      row.appendChild(textDiv);
+      row.onclick = ()=>{
+        stopQueue();
+        document.querySelectorAll('.row.speaking').forEach(r=>r.classList.remove('speaking'));
+        row.classList.add('speaking');
+        speakOne(item.h, ()=> row.classList.remove('speaking'));
+      };
+      secDiv.appendChild(row);
+    });
+
+    contentEl.appendChild(secDiv);
+  });
+
+  if(!anyMatch){
+    const empty = document.createElement('div');
+    empty.className = 'empty';
+    empty.textContent = 'No matching lines in this lesson — try a different search term.';
+    contentEl.appendChild(empty);
+  }
+}
+
+function playSection(items, secDiv, btn){
+  if(queueRunning){ stopQueue(); return; }
+  queueStopRequested = false;
+  queueRunning = true;
+  btn.classList.add('playing');
+  btn.innerHTML = '&#9632; Stop';
+
+  const rows = Array.from(secDiv.querySelectorAll('.row'));
+  let i = 0;
+  function next(){
+    if(queueStopRequested || i >= items.length){
+      queueRunning = false;
+      btn.classList.remove('playing');
+      btn.innerHTML = '&#9654; Play section';
+      document.querySelectorAll('.row.speaking').forEach(r=>r.classList.remove('speaking'));
+      return;
+    }
+    document.querySelectorAll('.row.speaking').forEach(r=>r.classList.remove('speaking'));
+    const row = rows[i];
+    if(row){
+      row.classList.add('speaking');
+      row.scrollIntoView({block:'center', behavior:'smooth'});
+    }
+    speakOne(items[i].h, ()=>{
+      i++;
+      setTimeout(next, 260);
+    });
+  }
+  next();
+}
+
+function render(){
+  renderTabs();
+  renderContent();
+}
+
+document.getElementById('speedSlider').addEventListener('input', (e)=>{
+  document.getElementById('speedVal').textContent = parseFloat(e.target.value).toFixed(2)+'x';
+});
+document.getElementById('hideEnBtn').addEventListener('click', (e)=>{
+  hideEnglish = !hideEnglish;
+  e.target.classList.toggle('active', hideEnglish);
+  e.target.textContent = hideEnglish ? 'Show English' : 'Hide English';
+  renderContent();
+});
+document.getElementById('filterBox').addEventListener('input', (e)=>{
+  filterText = e.target.value;
+  renderContent();
+});
+
+render();
+</script>
+</body>
+</html>
